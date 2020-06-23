@@ -9202,10 +9202,10 @@ expo-pwa@0.0.20:
     fs-extra "9.0.0"
     update-check "1.5.3"
 
-expo-splash-screen@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/expo-splash-screen/-/expo-splash-screen-0.2.3.tgz#3f913652596de128828499db3a6a9da1cb201d61"
-  integrity sha512-gKSD+RqShvCopHJssw32ugKJcAT9zHGi6ZkhG3N+VvJSHisZcMFFMcQAzMPdt6IntGjOnib/f79NVCsl6pXyTA==
+expo-splash-screen@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/expo-splash-screen/-/expo-splash-screen-0.3.1.tgz#4dd79d9d1ab8135281f7cc5889a68e3003223f37"
+  integrity sha512-j87n6utSq8irvx9dA3YvFwHsqT9c/Cc/QnmpZHB0g3mPh3QBWReKgR3x41tHnkLMKHAi9Au9D4k/o615kUNeDg==
   dependencies:
     "@expo/configure-splash-screen" "~0.1.0"
 
