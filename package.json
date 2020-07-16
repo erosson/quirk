@@ -31,7 +31,7 @@
     "expokit": "37.0.0",
     "i18n-js": "^3.7.0",
     "json-stringify-safe": "^5.0.1",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "prop-types": "^15.6.2",
     "react": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-37.0.1.tar.gz",
