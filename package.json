@@ -27,7 +27,7 @@
     "expo-haptics": "^8.1.0",
     "expo-linking": "^1.0.1",
     "expo-localization": "^8.1.0",
-    "expo-splash-screen": "^0.2.3",
+    "expo-splash-screen": "^0.4.0",
     "expokit": "37.0.0",
     "i18n-js": "^3.7.0",
     "json-stringify-safe": "^5.0.1",
