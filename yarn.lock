@@ -9042,10 +9042,10 @@ expect@^25.5.0:
     jest-message-util "^25.5.0"
     jest-regex-util "^25.2.6"
 
-expo-analytics-segment@^8.1.0:
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/expo-analytics-segment/-/expo-analytics-segment-8.1.0.tgz#a8307b445f4417ccf48b6d1e614d35fe5f327bd9"
-  integrity sha512-7eCWnAGmic3Xnha8nQWwXU5+xGUILn5qCAnVMoZ/7JnX2wceBXhQrYWCGCQ9TGCa3WL4r3lRXrpJY9JG5pvtSQ==
+expo-analytics-segment@^8.2.1:
+  version "8.2.1"
+  resolved "https://registry.yarnpkg.com/expo-analytics-segment/-/expo-analytics-segment-8.2.1.tgz#a17bfcf416d47b83d7940310614122b4b0308b4b"
+  integrity sha512-svVFIfGYoJm7WzLrJFuwARjnlGLMRnJWXo3a3BOk6N1pXbQSwMNSH45rzXcRZgJEjziWipxdUD4StVhBnd7YnQ==
 
 expo-asset@~8.1.5:
   version "8.1.5"

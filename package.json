@@ -22,7 +22,7 @@
     "@sentry/integrations": "^5.17.0",
     "dayjs": "^1.8.28",
     "expo": "^37.0.12",
-    "expo-analytics-segment": "^8.1.0",
+    "expo-analytics-segment": "^8.2.1",
     "expo-constants": "^9.0.0",
     "expo-haptics": "^8.1.0",
     "expo-linking": "^1.0.3",
