@@ -9183,10 +9183,10 @@ expo-linking@^1.0.3, expo-linking@~1.0.0:
     qs "^6.5.0"
     url-parse "^1.4.4"
 
-expo-localization@^8.1.0:
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/expo-localization/-/expo-localization-8.1.0.tgz#6003133e75849022918ae5638af6d553a04cde37"
-  integrity sha512-+wbsn9QLNG2GNOsbc+dfTQ39VEwrbn0TAungNqZ0UI9K2ZhrfQpAaAzAdN3TMOEhHluQKe0hiuULHpUgg8o7Kg==
+expo-localization@^8.2.1:
+  version "8.2.1"
+  resolved "https://registry.yarnpkg.com/expo-localization/-/expo-localization-8.2.1.tgz#99d422670d9e4261268f1feed9c4d228183a745b"
+  integrity sha512-T2S1J6L0VaKdiO10kQk690GGMdO990zKXKGvdw5D8UEfoFomXh0W2CTtfqN2HCkkpc7iqvn7MYaKN0yJxu+jJQ==
   dependencies:
     rtl-detect "^1.0.2"
 
