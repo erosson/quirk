@@ -9159,10 +9159,10 @@ expo-font@~8.1.0:
     fbjs "1.0.0"
     fontfaceobserver "^2.1.0"
 
-expo-haptics@^8.1.0:
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/expo-haptics/-/expo-haptics-8.1.0.tgz#99ba3fd220f523041321ec260e6d3ec5cf4ac6c7"
-  integrity sha512-4aJUD3JYdxjj72tNo7tz5NKdhAHFtke+zOT2eaHdO8Vk2Az2IdmvWm99C7yGZKZvmRI2bnJGRyWo+rFgDWCQ3A==
+expo-haptics@^8.2.1:
+  version "8.2.1"
+  resolved "https://registry.yarnpkg.com/expo-haptics/-/expo-haptics-8.2.1.tgz#e4723cc6f25280631841ef178cb732b4cf637267"
+  integrity sha512-isw7ocEK1lNZ5dFfgyiJMj9s6jYIqfOKyEUYwhFP8KPOIDYVZJ2N5RPwvS95MRGprwrVetxbbGNEqZOELyhZKg==
 
 expo-keep-awake@~8.1.0:
   version "8.1.0"
