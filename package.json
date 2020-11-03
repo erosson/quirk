@@ -62,7 +62,7 @@
     "@types/expo__vector-icons": "^9.0.1",
     "@types/jest": "^25.2.3",
     "@types/react": "~16.9.41",
-    "@types/react-native": "~0.62.13",
+    "@types/react-native": "~0.63.32",
     "babel-eslint": "^10.0.1",
     "babel-preset-expo": "^8.2.3",
     "eslint": "^7.7.0",
