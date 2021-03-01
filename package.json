@@ -51,7 +51,7 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.10.2",
+    "@babel/core": "^7.13.8",
     "@storybook/addon-knobs": "^5.3.19",
     "@storybook/addon-ondevice-knobs": "^5.3.19",
     "@storybook/addon-ondevice-notes": "^5.3.19",
