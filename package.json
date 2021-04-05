@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@babel/core": "~7.13.8",
-    "@storybook/addon-knobs": "^5.3.19",
+    "@storybook/addon-knobs": "^6.2.2",
     "@storybook/addon-ondevice-knobs": "^5.3.25",
     "@storybook/addon-ondevice-notes": "^5.3.23",
     "@storybook/addon-storyshots": "^5.3.19",
