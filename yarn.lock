@@ -18643,10 +18643,12 @@ react-native-safe-area-view@^0.14.9:
   dependencies:
     hoist-non-react-statics "^2.3.1"
 
-react-native-screens@~2.15.2:
-  version "2.15.2"
-  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.15.2.tgz#a449700e895b462937211ec72ed6f09652758f06"
-  integrity sha512-CagNf2APXkVoRlF3Mugr264FbKbrBg9eXUkqhIPVeZB8EsdS8XPrnt99yj/pzmT+yJMBY0dGrjXT8+68WYh6YQ==
+react-native-screens@~3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-3.4.0.tgz#91deeac7630db9f3984053e2ab146d71bba7af4e"
+  integrity sha512-cg+q9MRnVdeOcJyvJtqffoXLur/C2wHA/7IO2+FAipzTlgHbbM1mTuSM7qG+SeiQjoIs4mHOEf7A0ziPKW04sA==
+  dependencies:
+    warn-once "^0.1.0"
 
 react-native-simple-markdown@^1.1.0:
   version "1.1.0"
@@ -22282,6 +22284,11 @@ walker@^1.0.7, walker@~1.0.5:
   integrity sha1-L3+bj9ENZ3JisYqITijRlhjgKPs=
   dependencies:
     makeerror "1.0.x"
+
+warn-once@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/warn-once/-/warn-once-0.1.0.tgz#4f58d89b84f968d0389176aa99e0cf0f14ffd4c8"
+  integrity sha512-recZTSvuaH/On5ZU5ywq66y99lImWqzP93+AiUo9LUwG8gXHW+LJjhOd6REJHm7qb0niYqrEQJvbHSQfuJtTqA==
 
 warning@^4.0.2, warning@^4.0.3:
   version "4.0.3"
