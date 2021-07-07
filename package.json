@@ -55,7 +55,7 @@
     "@storybook/addon-knobs": "^5.3.19",
     "@storybook/addon-ondevice-knobs": "^5.3.25",
     "@storybook/addon-ondevice-notes": "^5.3.23",
-    "@storybook/addon-storyshots": "^5.3.19",
+    "@storybook/addon-storyshots": "^6.3.3",
     "@storybook/cli": "^5.3.19",
     "@storybook/react-native": "^5.3.25",
     "@types/expo": "^33.0.1",
