@@ -5,9 +5,9 @@ import {
   Text,
   Switch,
   Platform,
-  AsyncStorage,
   Button,
 } from "react-native";
+import AsyncStorage from "@react-native-community/async-storage";
 import Constants from "expo-constants";
 import * as Feature from "./feature";
 import versionJson from "../.version.json";

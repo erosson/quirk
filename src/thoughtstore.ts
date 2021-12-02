@@ -1,4 +1,4 @@
-import { AsyncStorage } from "react-native";
+import AsyncStorage from "@react-native-community/async-storage";
 import stringify from "json-stringify-safe";
 import uuidv4 from "uuid/v4";
 import { Thought, SavedThought } from "./thoughts";
