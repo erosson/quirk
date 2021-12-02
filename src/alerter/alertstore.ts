@@ -1,4 +1,4 @@
-import { AsyncStorage } from "react-native";
+import AsyncStorage from "@react-native-community/async-storage";
 import stringify from "json-stringify-safe";
 
 const HIDDEN_KEY = `@AlertStore:hidden`;

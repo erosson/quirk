@@ -1,4 +1,4 @@
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from "@react-native-community/async-storage";
 import { getStorybookUI, configure } from '@storybook/react-native';
 
 import './rn-addons';
