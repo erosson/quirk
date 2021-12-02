@@ -21,10 +21,16 @@ jobs:
           java-version: "8"
       - run: yarn --dev --frozen-lockfile
       - run: yarn turtle setup:android
-      - run: yarn turtle build:android -t apk | tee build.out
+      - run: yarn turtle build:android -t apk --output freecbt.apk | tee build.log
         env:
           EXPO_USERNAME: erosson
           EXPO_PASSWORD: ${{ secrets.EXPO_CLI_PASSWORD }}
-      # turtle doesn't have a useful exit code, so we'll force it with `tee` + `grep`
-      - run: '! grep -v "Failed to build standalone app" build.out'
-      # TODO incomplete
+          #EXPO_ANDROID_KEYSTORE_PASSWORD: ${{ secrets.EXPO_ANDROID_KEYSTORE_PASSWORD }}
+          #EXPO_ANDROID_KEY_PASSWORD: ${{ secrets.EXPO_ANDROID_KEY_PASSWORD }}
+      # turtle doesn't have a useful exit code, so we'll make our own with `grep`
+      - run: 'grep -q "INFO:  copied build to" build.log'
+      - uses: softprops/action-gh-release@v1
+        #if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            freecbt.apk
