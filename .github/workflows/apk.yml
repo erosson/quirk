@@ -21,5 +21,10 @@ jobs:
           java-version: "8"
       - run: yarn --dev --frozen-lockfile
       - run: yarn turtle setup:android
-      - run: yarn turtle build:android -t apk
+      - run: yarn turtle build:android -t apk | tee build.out
+        env:
+          EXPO_USERNAME: erosson
+          EXPO_PASSWORD: ${{ secrets.EXPO_CLI_PASSWORD }}
+      # turtle doesn't have a useful exit code, so we'll force it with `tee` + `grep`
+      - run: ! grep -v "Failed to build standalone app" build.out
       # TODO incomplete
