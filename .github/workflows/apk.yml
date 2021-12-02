@@ -26,5 +26,5 @@ jobs:
           EXPO_USERNAME: erosson
           EXPO_PASSWORD: ${{ secrets.EXPO_CLI_PASSWORD }}
       # turtle doesn't have a useful exit code, so we'll force it with `tee` + `grep`
-      - run: ! grep -v "Failed to build standalone app" build.out
+      - run: '! grep -v "Failed to build standalone app" build.out'
       # TODO incomplete
