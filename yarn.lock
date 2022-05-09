@@ -10908,10 +10908,10 @@ expect@^26.6.2:
     jest-message-util "^26.6.2"
     jest-regex-util "^26.0.0"
 
-expo-analytics-segment@~9.1.0:
-  version "9.1.0"
-  resolved "https://registry.yarnpkg.com/expo-analytics-segment/-/expo-analytics-segment-9.1.0.tgz#3a8d5c63b257874f2c4eafc42c83aeffd48c1718"
-  integrity sha512-1PCK+t/ty6tDqHOraSYf3rAgmDPDHjCVE/ricH9QSfQdjzkXIDcRDrmZ/8sHS79/Xx+5joRWvsH7LRcve+oZDg==
+expo-analytics-segment@~11.2.0:
+  version "11.2.0"
+  resolved "https://registry.yarnpkg.com/expo-analytics-segment/-/expo-analytics-segment-11.2.0.tgz#07ac50caba88f3a86c4f6d701bb1976b85a4ea86"
+  integrity sha512-bgtUbRSxxAleqZBuJbfAgY1AcbIxkOjFLc2Jicqff9ZZ3IM6raQ6IEI9mqlmUcSv5/OxTPT86uGP+T30fUnzzg==
 
 expo-application@~2.4.1:
   version "2.4.1"
