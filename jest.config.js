@@ -21,4 +21,5 @@ module.exports = {
       },
     },
   },
+  "setupFiles": ["./src/jestSetup.js"],
 };
