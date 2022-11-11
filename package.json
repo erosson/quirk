@@ -1,5 +1,9 @@
 {
   "main": "node_modules/expo/AppEntry.js",
+  "engines" : {
+    "npm" : ">=8.0.0 <9.0.0",
+    "node" : ">=18.0.0 <19.0.0"
+  },
   "scripts": {
     "www": "serve www/public",
     "start": "yarn _version && expo start",
