@@ -38,7 +38,6 @@ export function Pure({
 }) {
   const items = [
     ["Release channel", Constants.manifest.releaseChannel || "(dev)"],
-    ["Installation id", Constants.installationId],
     ["Expo version", Constants.expoVersion],
     ["App version", Constants.manifest.version],
     ["Revision", Constants.manifest.revisionId || "(dev)"],
