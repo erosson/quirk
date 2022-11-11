@@ -2,7 +2,7 @@
   "main": "node_modules/expo/AppEntry.js",
   "engines": {
     "npm": ">=8.0.0 <9.0.0",
-    "node": ">=18.0.0 <19.0.0"
+    "node": ">=16.0.0 <17.0.0"
   },
   "scripts": {
     "www": "serve www/public",
@@ -67,15 +67,13 @@
     "@types/expo": "^33.0.1",
     "@types/expo__vector-icons": "^9.0.1",
     "@types/jest": "^25.2.3",
-    "@types/react": "~16.9.35",
-    "@types/react-native": "~0.63.2",
     "babel-eslint": "^10.0.1",
     "babel-preset-expo": "8.3.0",
     "eslint": "^7.21.0",
     "eslint-config-xo-react": "^0.23.0",
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-native-a11y": "^2.0.4",
-    "expo-cli": "^4.2.1",
+    "expo-cli": "^6.0.8",
     "jest": "^26.6.3",
     "jest-expo": "^40.0.0",
     "prettier": "2.2.1",
