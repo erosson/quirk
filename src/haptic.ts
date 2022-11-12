@@ -12,19 +12,19 @@ export default {
       return;
     }
 
-    Haptic.notification(type);
+    Haptic.notificationAsync(type);
   },
   selection: () => {
     if (Platform.OS !== "ios") {
       return;
     }
-    Haptic.selection();
+    Haptic.selectionAsync();
   },
   impact: (type) => {
     if (Platform.OS !== "ios") {
       return;
     }
 
-    Haptic.impact(type);
+    Haptic.impactAsync(type);
   },
 };
