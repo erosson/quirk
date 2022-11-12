@@ -1,3 +1,4 @@
+// TODO disabled, sadly: storybook/react-native is broken right now
 import initStoryshots from "@storybook/addon-storyshots";
 
 // Various mocks for quieter logging during tests:
