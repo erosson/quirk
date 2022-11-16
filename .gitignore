@@ -7,7 +7,6 @@ npm-debug.*
 *.p12
 *.key
 *.mobileprovision
-.gitignore
 .DS_Store
 app.ipa
 app.apk
