@@ -1,7 +1,6 @@
 import React from "react";
 import { ScrollView, StatusBar, Platform } from "react-native";
-import { Notifications } from "expo";
-import * as Permissions from "expo-permissions";
+import * as Notifications from "expo-notifications";
 import theme from "./theme";
 import Constants from "expo-constants";
 import * as Linking from "expo-linking";
@@ -38,7 +37,7 @@ import i18n from "./i18n";
 import { recordScreenCallOnFocus } from "./navigation";
 import { FadesIn } from "./animations";
 import * as Localization from "expo-localization";
-import { Picker } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 
 export { HistoryButtonLabelSetting };
 
@@ -90,43 +89,40 @@ export async function setNotifications(
   // don't enable without permission
   enabled = enabled && (await registerForLocalNotificationsAsync());
   if (enabled) {
-    await Notifications.presentLocalNotificationAsync({
-      title: i18n.t("reminder_notification.intro.title"),
-      body: i18n.t("reminder_notification.intro.body"),
-      android: {
-        channelId: "default",
-        // icon: "https://freecbt.erosson.org/notifications/quirk-bw.png",
-        icon: "https://freecbt.erosson.org/static/favicon/favicon.ico",
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: i18n.t("reminder_notification.intro.title"),
+        body: i18n.t("reminder_notification.intro.body"),
         color: "#F78FB3",
+        // icon: "https://freecbt.erosson.org/static/favicon/favicon.ico",
+        // icon: "https://freecbt.erosson.org/notifications/quirk-bw.png",
       },
+      trigger: null,
     });
-    await Notifications.scheduleLocalNotificationAsync(
-      {
+    await Notifications.scheduleNotificationAsync({
+      content: {
         title: i18n.t("reminder_notification.1.title"),
         body: i18n.t("reminder_notification.1.body"),
-        android: {
-          channelId: "default",
-          // icon: "https://freecbt.erosson.org/notifications/quirk-bw.png",
-          icon: "https://freecbt.erosson.org/static/favicon/favicon.ico",
-          color: "#F78FB3",
-        },
+        color: "#F78FB3",
+        // icon: "https://freecbt.erosson.org/static/favicon/favicon.ico",
+        // icon: "https://freecbt.erosson.org/notifications/quirk-bw.png",
       },
-      feature.remindersEachMinute
-        ? { time: Date.now() + 10 * 1000, repeat: "minute" } // ridiculously often, for debugging
-        : { time: Date.now() + 86400 * 10000, repeat: "day" } // start one day later
-    );
+      trigger: feature.remindersEachMinute
+        ? { channelId: 'default', repeats: true, seconds: 60 } // ridiculously often, for debugging
+        // TODO use dailynotificationtrigger/calendarnotificationtrigger
+        // https://docs.expo.dev/versions/latest/sdk/notifications/#notificationcontentinput
+        : { channelId: 'default', repeats: true, seconds: 86400 }
+    });
   }
   setSetting(NOTIFICATIONS_KEY, JSON.stringify(enabled));
   return enabled;
 }
 
 async function registerForLocalNotificationsAsync() {
-  const { status: existingStatus } = await Permissions.getAsync(
-    Permissions.NOTIFICATIONS
-  );
+  const { status: existingStatus } = await Notifications.getPermissionsAsync();
   let finalStatus = existingStatus;
   if (existingStatus !== "granted") {
-    const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+    const { status } = await Notifications.requestPermissionsAsync();
     finalStatus = status;
   }
   if (finalStatus !== "granted") {
@@ -134,11 +130,10 @@ async function registerForLocalNotificationsAsync() {
   }
 
   if (Platform.OS === "android") {
-    await Notifications.createChannelAndroidAsync("default", {
+    await Notifications.setNotificationChannelAsync("default", {
       name: "default",
-      sound: true,
-      priority: "max",
-      vibrate: [0, 250, 250, 250],
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
     });
   }
   return true;
