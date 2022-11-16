@@ -1,3 +1,5 @@
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
 export const enum Screen {
     CBT_FORM = "CBT_FORM_SCREEN",
     CBT_LIST = "CBT_LIST_SCREEN",
@@ -9,3 +11,10 @@ export const enum Screen {
     LOCK = "LOCK_SCREEN",
     DEBUG = "DEBUG_SCREEN",
 }
+
+export type ParamList = {
+    [Screen.DEBUG]: undefined,
+    [Screen.EXPLANATION]: undefined,
+}
+
+export type NavigationProp = NativeStackNavigationProp<ParamList>
