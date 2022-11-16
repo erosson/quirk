@@ -18,11 +18,10 @@ import FinishedThoughtScreen from "./src/form/FinishedThoughtScreen";
 import ExplanationScreen from "./src/ExplanationScreen";
 import SettingScreen from "./src/SettingsScreen";
 import OnboardingScreen from "./src/onboarding/OnboardingScreen";
-import withErrorBoundary from "./src/sentry/withErrorBoundary";
 import InitScreen from "./src/InitScreen";
 import LockScreen from "./src/lock/LockScreen";
 import DebugScreen from "./src/DebugScreen";
-import Storybook from "./storybook";
+// import Storybook from "./storybook";
 
 const App = createStackNavigator(
   {
@@ -42,6 +41,6 @@ const App = createStackNavigator(
   }
 );
 
-export default process.env.EXPO_STORYBOOK
-  ? Storybook
-  : withErrorBoundary(Feature.withState(createAppContainer(App)));
+// export default process.env.EXPO_STORYBOOK
+  // ? Storybook
+export default Feature.withState(createAppContainer(App));

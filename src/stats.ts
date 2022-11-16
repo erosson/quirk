@@ -25,14 +25,13 @@
  * publicly due to legal + company risk)
  */
 
-import * as Segment from "expo-analytics-segment";
 import isInDev from "./isInDev";
 import dayjs from "dayjs";
 
-Segment.initialize({
-  androidWriteKey: "8HtHVn4EIoIbIkvpFPuzckTxQXcOxw6b",
-  iosWriteKey: "n6U9DUWX0GhihvTMWQgLRfQKCUGHj4H8",
-});
+// Segment.initialize({
+  // androidWriteKey: "8HtHVn4EIoIbIkvpFPuzckTxQXcOxw6b",
+  // iosWriteKey: "n6U9DUWX0GhihvTMWQgLRfQKCUGHj4H8",
+// });
 
 // Don't rename these; it can mess a bunch of stuff down the pipe
 export type ScreenType =
@@ -56,14 +55,14 @@ export function screen(val: ScreenType) {
   if (isInDev()) {
     return;
   }
-  Segment.screen(val);
+  // Segment.screen(val);
 }
 
 export function userGrandfathered() {
   if (isInDev()) {
     return;
   }
-  Segment.track("user_grandfathered");
+  // Segment.track("user_grandfathered");
 }
 
 /**
@@ -75,7 +74,7 @@ export function newuser() {
   if (isInDev()) {
     return;
   }
-  Segment.track("newuser");
+  // Segment.track("newuser");
 }
 
 /**
@@ -87,7 +86,7 @@ export function endedOnboarding() {
   if (isInDev()) {
     return;
   }
-  Segment.track("ended_onboarding");
+  // Segment.track("ended_onboarding");
 }
 
 /**
@@ -98,7 +97,7 @@ export function thoughtRecorded() {
   if (isInDev()) {
     return;
   }
-  Segment.track("thought_recorded");
+  // Segment.track("thought_recorded");
 }
 
 /**
@@ -110,25 +109,25 @@ export function thoughtRecorded() {
  * numbers, then there's likely a bug.
  */
 export function userStartedPayment() {
-  Segment.track("user_started_payment");
+  // Segment.track("user_started_payment");
 }
 
 /**
  * User Encountered Payment Error
  */
 export function userEncounteredPaymentError(err: string) {
-  Segment.trackWithProperties("user_encountered_payment_error", {
-    error: err,
-  });
+  // Segment.trackWithProperties("user_encountered_payment_error", {
+    // error: err,
+  // });
 }
 
 /**
  * User Subscribed
  */
 export function userSubscribed(expirationUnixTimestamp: number) {
-  Segment.trackWithProperties("user_subscribed", {
-    expirationDate: dayjs.unix(expirationUnixTimestamp).format(),
-  });
+  // Segment.trackWithProperties("user_subscribed", {
+    // expirationDate: dayjs.unix(expirationUnixTimestamp).format(),
+  // });
 }
 
 /**
@@ -143,34 +142,34 @@ export function userSubscribed(expirationUnixTimestamp: number) {
 export function subscriptionVerified(
   method: "cache" | "online" | "grandfathered"
 ) {
-  Segment.trackWithProperties("subscription_verified", {
-    method,
-  });
+  // Segment.trackWithProperties("subscription_verified", {
+    // method,
+  // });
 }
 
 /**
  * If there's a spike in expired, there's probably a payment error.
  */
 export function subscriptionUnverified(reason: "expired" | "never-bought") {
-  Segment.trackWithProperties("subscription_unverified", {
-    reason,
-  });
+  // Segment.trackWithProperties("subscription_unverified", {
+    // reason,
+  // });
 }
 
 /**
  * If there's a spike these, there's probably a payment error.
  */
 export function subscriptionGivenForFreeDueToError() {
-  Segment.track("subscription_given_for_free_due_to_error");
+  // Segment.track("subscription_given_for_free_due_to_error");
 }
 
 /**
  * If this drops dramatically, there's a cache bug
  */
 export function subscriptionFoundInCache(value: string) {
-  Segment.trackWithProperties("subscription_found_in_cache", {
-    value,
-  });
+  // Segment.trackWithProperties("subscription_found_in_cache", {
+    // value,
+  // });
 }
 
 /**
@@ -180,7 +179,7 @@ export function subscriptionFoundInCache(value: string) {
 export function userFilledOutFormField(
   value: "automatic" | "distortions" | "challenge" | "alternative"
 ) {
-  Segment.track("user_filled_out_" + value);
+  // Segment.track("user_filled_out_" + value);
 }
 
 /**
@@ -190,27 +189,27 @@ export function userFilledOutFormField(
  * it could mean the description is bad.
  */
 export function userCheckedDistortion(slug: string) {
-  Segment.track("user_checked_distortion_" + slug);
+  // Segment.track("user_checked_distortion_" + slug);
 }
 
 export function userClickedQuirkGuide() {
-  Segment.track("user_clicked_quirk_guide");
+  // Segment.track("user_clicked_quirk_guide");
 }
 
 export function userCantOpenLink() {
-  Segment.track("user_cant_open_link");
+  // Segment.track("user_cant_open_link");
 }
 
 export function userTurnedOnNotifications() {
-  Segment.track("user_turned_on_notifications");
+  // Segment.track("user_turned_on_notifications");
 }
 
 export function userTurnedOffNotifications() {
-  Segment.track("user_turned_off_notifications");
+  // Segment.track("user_turned_off_notifications");
 }
 
 export function userReviewed() {
-  Segment.track("user_reviewed");
+  // Segment.track("user_reviewed");
 }
 
 /**
@@ -222,6 +221,6 @@ export function log(label: string, properties?: object) {
   if (isInDev()) {
     console.log(args);
   } else {
-    Segment.trackWithProperties("log", args);
+    // Segment.trackWithProperties("log", args);
   }
 }
