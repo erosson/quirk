@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -euo pipefail
 echo "{"
 echo "  \"timestamp\": `date +%s`,"
