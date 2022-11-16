@@ -1,0 +1,7 @@
+{
+    "scripts": {
+        "start": "cd expo47 && yarn start",
+        "build": "cd expo47 && yarn build",
+        "test": "cd expo47 && yarn test"
+    }
+}
