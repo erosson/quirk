@@ -1,35 +1,46 @@
 {
   "expo": {
-    "name": "freecbt",
+    "icon": "./assets/ios.png",
+    "name": "FreeCBT",
     "slug": "freecbt",
-    "version": "1.0.0",
+    "privacy": "unlisted",
+    "platforms": ["android", "ios"],
+    "version": "2.3.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "githubUrl": "https://github.com/erosson/freecbt",
+    "primaryColor": "#F8A5C2",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#F8A5C2"
     },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
+      "bundleIdentifier": "org.erosson.freecbt",
       "supportsTablet": true,
-      "bundleIdentifier": "org.erosson.freecbt"
+      "icon": "./assets/ios.png",
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
+      "package": "org.erosson.freecbt",
+      "permissions": [],
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "foregroundImage": "./assets/android.png",
+        "backgroundColor": "#F8A5C2"
       },
-      "package": "org.erosson.freecbt"
+      "versionCode": 20
+    },
+    "notification": {
+      "icon": "./assets/quirk-bw.png"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/ios.png"
+    },
+    "userInterfaceStyle": "light",
+    "updates": {
+      "fallbackToCacheTimeout": 0
     },
     "extra": {
       "eas": {
