@@ -1,29 +1,31 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Screen } from "./src/screens"
+import { Screen, ParamList } from "./src/screens"
 import * as Feature from "./src/feature";
 // import CBTListScreen from "./src/CBTListScreen";
 // import CBTFormScreen from "./src/form/FormScreen";
 // import FinishedThoughtScreen from "./src/form/FinishedThoughtScreen";
-// import ExplanationScreen from "./src/ExplanationScreen";
+import ExplanationScreen from "./src/ExplanationScreen";
 // import SettingScreen from "./src/SettingsScreen";
 // import OnboardingScreen from "./src/onboarding/OnboardingScreen";
 // import InitScreen from "./src/InitScreen";
 // import LockScreen from "./src/lock/LockScreen";
 import DebugScreen from "./src/DebugScreen";
-import { StackFrame } from "react-native/Libraries/Core/Devtools/parseErrorStack";
 // import Storybook from "./storybook";
 
-const Stack = createNativeStackNavigator()
+const Stack = createNativeStackNavigator<ParamList>()
 
 export function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={Screen.DEBUG}
-        // screenOptions={{headerShown: false}}
+        // initialRouteName={Screen.DEBUG}
+        initialRouteName={Screen.EXPLANATION}
+        screenOptions={{headerShown: false}}
       >
-        <Stack.Screen name={Screen.DEBUG} component={DebugScreen} options={{title: ""}} />
+        <Stack.Screen name={Screen.EXPLANATION} component={ExplanationScreen} />
+        {/* <Stack.Screen name={Screen.SETTING} component={SettingScreen} /> */}
+        <Stack.Screen name={Screen.DEBUG} component={DebugScreen} options={{headerShown: true, title: ""}} />
       </Stack.Navigator>
     </NavigationContainer>
   )
