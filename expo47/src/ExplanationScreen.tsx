@@ -205,8 +205,7 @@ class ExplanationScreen extends React.Component<Props> {
   };
 
   navigateToOnboardingScreen = () => {
-    // this.props.navigation.navigate(Screen.CBT_ON_BOARDING);
-    this.props.navigation.navigate(Screen.DEBUG);
+    this.props.navigation.navigate(Screen.ONBOARDING);
   };
 
   render() {

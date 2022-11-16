@@ -1,13 +1,14 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Screen, ParamList } from "./src/screens"
+import { GestureHandlerRootView } from "react-native-gesture-handler"
 import * as Feature from "./src/feature";
 // import CBTListScreen from "./src/CBTListScreen";
 // import CBTFormScreen from "./src/form/FormScreen";
 // import FinishedThoughtScreen from "./src/form/FinishedThoughtScreen";
 import ExplanationScreen from "./src/ExplanationScreen";
 // import SettingScreen from "./src/SettingsScreen";
-// import OnboardingScreen from "./src/onboarding/OnboardingScreen";
+import OnboardingScreen from "./src/OnboardingScreen";
 // import InitScreen from "./src/InitScreen";
 // import LockScreen from "./src/lock/LockScreen";
 import DebugScreen from "./src/DebugScreen";
@@ -17,17 +18,20 @@ const Stack = createNativeStackNavigator<ParamList>()
 
 export function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        // initialRouteName={Screen.DEBUG}
-        initialRouteName={Screen.EXPLANATION}
-        screenOptions={{headerShown: false}}
-      >
-        <Stack.Screen name={Screen.EXPLANATION} component={ExplanationScreen} />
-        {/* <Stack.Screen name={Screen.SETTING} component={SettingScreen} /> */}
-        <Stack.Screen name={Screen.DEBUG} component={DebugScreen} options={{headerShown: true, title: ""}} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <NavigationContainer>
+        <Stack.Navigator
+          // initialRouteName={Screen.DEBUG}
+          initialRouteName={Screen.EXPLANATION}
+          screenOptions={{headerShown: false}}
+        >
+          <Stack.Screen name={Screen.EXPLANATION} component={ExplanationScreen} />
+          <Stack.Screen name={Screen.ONBOARDING} component={OnboardingScreen} />
+          {/* <Stack.Screen name={Screen.SETTING} component={SettingScreen} /> */}
+          <Stack.Screen name={Screen.DEBUG} component={DebugScreen} options={{headerShown: true, title: ""}} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </GestureHandlerRootView>
   )
 }
 //  {
@@ -50,4 +54,4 @@ export function App() {
 
 // export default process.env.EXPO_STORYBOOK
   // ? Storybook
-export default Feature.withState(App);
+export default Feature.withState(App)
