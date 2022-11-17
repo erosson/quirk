@@ -1,4 +1,4 @@
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
 
 export const enum Screen {
     CBT_FORM = "CBT_FORM_SCREEN",
@@ -13,9 +13,12 @@ export const enum Screen {
 }
 
 export type ParamList = {
-    [Screen.DEBUG]: undefined,
+    [Screen.CBT_FORM]: {fromOnboarding: boolean} | undefined,
     [Screen.EXPLANATION]: undefined,
     [Screen.ONBOARDING]: undefined,
+    [Screen.DEBUG]: undefined,
 }
 
 export type NavigationProp = NativeStackNavigationProp<ParamList>
+
+export type ScreenProps<T extends keyof ParamList> = NativeStackScreenProps<ParamList, T>

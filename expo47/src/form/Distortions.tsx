@@ -3,7 +3,6 @@ import { SubHeader, RoundedSelector } from "../ui";
 import { View, ScrollView } from "react-native";
 import i18n from "../i18n";
 import { CognitiveDistortion } from "../distortions";
-import * as stats from "../stats";
 
 export default ({
   distortions = [],
@@ -29,11 +28,7 @@ export default ({
           </SubHeader>
           <RoundedSelector
             items={distortions}
-            onPress={(slug) => {
-              stats.userFilledOutFormField("distortions");
-              stats.userCheckedDistortion(slug);
-              onChange(slug);
-            }}
+            onPress={onChange}
           />
         </View>
       </ScrollView>

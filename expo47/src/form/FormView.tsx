@@ -1,6 +1,6 @@
 import { ActionButton } from "../ui";
 import React from "react";
-import Carousel from "react-native-snap-carousel";
+import Carousel from "react-native-reanimated-carousel";
 import { View, Keyboard } from "react-native";
 import * as Haptic from "expo-haptics";
 import { sliderWidth, itemWidth } from "./sizes";
@@ -11,7 +11,6 @@ import AlternativeThought from "./AlternativeThought";
 import Challenge from "./Challenge";
 import Distortions from "./Distortions";
 import { saveExercise } from "../thoughtstore";
-import * as stats from "../stats";
 import i18n from "../i18n";
 
 export type Slides = "automatic" | "distortions" | "challenge" | "alternative";
@@ -53,13 +52,10 @@ export default class extends React.Component<FormViewProps, FormViewState> {
     activeSlide: 0,
   };
 
-  _carousel = null;
-
   onSave = () => {
     universalHaptic.notification(Haptic.NotificationFeedbackType.Success);
 
     saveExercise(this.props.thought).then((thought) => {
-      stats.thoughtRecorded();
       this.props.onSave(thought);
     });
   };
@@ -123,9 +119,6 @@ export default class extends React.Component<FormViewProps, FormViewState> {
   render() {
     return (
       <Carousel
-        ref={(c) => {
-          this._carousel = c;
-        }}
         data={[
           { slug: "automatic-thought" },
           { slug: "distortions" },
@@ -133,13 +126,22 @@ export default class extends React.Component<FormViewProps, FormViewState> {
           { slug: "alternative-thought" },
         ]}
         renderItem={this._renderItem}
-        sliderWidth={sliderWidth}
-        itemWidth={itemWidth}
+        width={sliderWidth}
         onSnapToItem={(index) => {
           this.setState({ activeSlide: index });
           Keyboard.dismiss();
         }}
-        firstItem={slideToIndex(this.props.slideToShow)}
+        loop={false}
+        defaultIndex={slideToIndex(this.props.slideToShow)}
+        mode="parallax"
+        modeConfig={{
+          parallaxScrollingScale: 0.9,
+          parallaxScrollingOffset: Math.round(sliderWidth * 0.15),
+        }}
+        // fix vertical scrolling for distortions
+        panGestureHandlerProps={{
+          activeOffsetX: [-10, 10],
+        }}
       />
     );
   }

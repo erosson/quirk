@@ -1,33 +1,21 @@
 import { Container, Row, Header, IconButton } from "../ui";
 import React from "react";
 import { StatusBar } from "react-native";
-import { NavigationAction } from "react-navigation";
-import { NavigationStackProp } from "react-navigation-stack";
 import theme from "../theme";
 import Constants from "expo-constants";
 import * as Haptic from "expo-haptics";
 import i18n from "../i18n";
-import {
-  CBT_LIST_SCREEN,
-  EXPLANATION_SCREEN,
-  CBT_ON_BOARDING_SCREEN,
-  CBT_VIEW_SCREEN,
-} from "../screens";
+import {Screen, NavigationProp} from "../screens";
 import * as flagstore from "../flagstore";
 import FormView, { Slides } from "./FormView";
 import { SavedThought, Thought, newThought } from "../thoughts";
 import { get } from "lodash";
 import { getIsExistingUser, setIsExistingUser } from "../thoughtstore";
 import haptic from "../haptic";
-import { recordScreenCallOnFocus } from "../navigation";
-import * as stats from "../stats";
 import * as Promise from "../promise";
 import { FadesIn } from "../animations";
 
-interface ScreenProps {
-  navigation?: NavigationStackProp<any, NavigationAction>;
-  slideToShow?: Slides;
-}
+type ScreenProps = Screen.ScreenProps<Screen.CBT_FORM>
 
 interface FormScreenState {
   thought?: SavedThought | Thought;
@@ -87,21 +75,10 @@ export default class extends React.Component<ScreenProps, FormScreenState> {
         isReady: true,
       });
     });
-
-    recordScreenCallOnFocus(this.props.navigation, "form");
-
-    getIsExistingUser().then((isExisting) => {
-      // New Users
-      if (!isExisting) {
-        stats.newuser();
-      }
-    });
   }
 
   componentDidMount() {
-    // Check if coming from onboarding
-    // @ts-ignore argle bargle typescript plz don't do these things
-    if (this.props.navigation.getParam("fromOnboarding", false)) {
+    if (this.props.route.params?.fromOnboarding) {
       this.setState({
         shouldShowInFlowOnboarding: true,
       });
@@ -124,7 +101,7 @@ export default class extends React.Component<ScreenProps, FormScreenState> {
       delete this.fetchIsExistingUser;
       if (!exists) {
         setIsExistingUser();
-        this.props.navigation.replace(CBT_ON_BOARDING_SCREEN);
+        this.props.navigation.replace(Screen.ONBOARDING);
       }
     });
   }
@@ -177,7 +154,7 @@ export default class extends React.Component<ScreenProps, FormScreenState> {
   };
 
   onSave = (thought) => {
-    this.props.navigation.push(CBT_VIEW_SCREEN, {
+    this.props.navigation.push(Screen.CBT_VIEW, {
       thought,
     });
     this.setState({
@@ -239,7 +216,7 @@ export default class extends React.Component<ScreenProps, FormScreenState> {
               onPress={() => {
                 flagstore.setFalse("start-help-badge").then(() => {
                   this.setState({ shouldShowHelpBadge: false });
-                  this.props.navigation.push(EXPLANATION_SCREEN);
+                  this.props.navigation.push(Screen.EXPLANATION);
                 });
               }}
               hasBadge={shouldShowHelpBadge}
@@ -251,7 +228,8 @@ export default class extends React.Component<ScreenProps, FormScreenState> {
               accessibilityLabel={i18n.t("accessibility.list_button")}
               featherIconName={"list"}
               onPress={() => {
-                this.props.navigation.push(CBT_LIST_SCREEN);
+                // this.props.navigation.push(Screen.CBT_LIST);
+                this.props.navigation.push(Screen.DEBUG);
               }}
             />
           </Row>
