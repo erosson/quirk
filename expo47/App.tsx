@@ -25,34 +25,19 @@ export function App() {
           initialRouteName={Screen.CBT_FORM}
           screenOptions={{headerShown: false}}
         >
-          <Stack.Screen name={Screen.EXPLANATION} component={ExplanationScreen} />
-          <Stack.Screen name={Screen.ONBOARDING} component={OnboardingScreen} />
           <Stack.Screen name={Screen.CBT_FORM} component={CBTFormScreen} />
+          {/* <Stack.Screen name={Screen.CBT_LIST} component={CBTListScreen} /> */}
+          <Stack.Screen name={Screen.ONBOARDING} component={OnboardingScreen} />
+          <Stack.Screen name={Screen.EXPLANATION} component={ExplanationScreen} />
           {/* <Stack.Screen name={Screen.SETTING} component={SettingScreen} /> */}
+          {/* <Stack.Screen name={Screen.INIT} component={InitScreen} /> */}
+          {/* <Stack.Screen name={Screen.FINISHED_THOUGHT} component={FinishedThoughtScreen} /> */}
+          {/* <Stack.Screen name={Screen.LOCK} component={LockScreen} /> */}
           <Stack.Screen name={Screen.DEBUG} component={DebugScreen} options={{headerShown: true, title: ""}} />
         </Stack.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>
   )
 }
-//  {
-//    // [INIT_SCREEN]: InitScreen,
-//    // [CBT_ON_BOARDING_SCREEN]: OnboardingScreen,
-//    // [CBT_LIST_SCREEN]: CBTListScreen,
-//    // [CBT_FORM_SCREEN]: CBTFormScreen,
-//    // [EXPLANATION_SCREEN]: ExplanationScreen,
-//    // [SETTING_SCREEN]: SettingScreen,
-//    // [CBT_VIEW_SCREEN]: FinishedThoughtScreen,
-//    // [LOCK_SCREEN]: LockScreen,
-//    [Screen.DEBUG.valueOf()]: DebugScreen,
-//  },
-//  {
-//    // initialRouteName: INIT_SCREEN,
-//    initialRouteName: Screen.DEBUG.valueOf(),
-//    mode: "modal",
-//  }
-//);
 
-// export default process.env.EXPO_STORYBOOK
-  // ? Storybook
 export default Feature.withState(App)
