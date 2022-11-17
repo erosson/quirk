@@ -18,6 +18,7 @@ export type ParamList = {
     [Screen.CBT_FORM]: {
         fromOnboarding?: boolean,
         clear?: boolean,
+        // TODO replace with thought-id
         thought?: SavedThought
         slide?: Slides,
     } | undefined,
@@ -27,6 +28,7 @@ export type ParamList = {
     // [Screen.SETTING]: undefined,
     // [Screen.INIT]: undefined,
     [Screen.FINISHED_THOUGHT]: {
+        // TODO replace with thought-id
         thought: SavedThought,
     },
     // [Screen.LOCK]: undefined,
