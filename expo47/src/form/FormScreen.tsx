@@ -5,17 +5,16 @@ import theme from "../theme";
 import Constants from "expo-constants";
 import * as Haptic from "expo-haptics";
 import i18n from "../i18n";
-import {Screen, NavigationProp} from "../screens";
+import {Screen, ScreenProps} from "../screens";
 import * as flagstore from "../flagstore";
 import FormView, { Slides } from "./FormView";
 import { SavedThought, Thought, newThought } from "../thoughts";
-import { get } from "lodash";
 import { getIsExistingUser, setIsExistingUser } from "../thoughtstore";
 import haptic from "../haptic";
 import * as Promise from "../promise";
 import { FadesIn } from "../animations";
 
-type ScreenProps = Screen.ScreenProps<Screen.CBT_FORM>
+type Props = ScreenProps<Screen.CBT_FORM>
 
 interface FormScreenState {
   thought?: SavedThought | Thought;
@@ -25,7 +24,8 @@ interface FormScreenState {
   isReady: boolean;
 }
 
-export default class extends React.Component<ScreenProps, FormScreenState> {
+// TODO functionify this, and change FinishedThought to navigate instead of push. with push, it builds a nav stack which makes back really weird
+export default class extends React.Component<Props, FormScreenState> {
   static navigationOptions = {
     header: null,
   };
@@ -154,9 +154,7 @@ export default class extends React.Component<ScreenProps, FormScreenState> {
   };
 
   onSave = (thought) => {
-    this.props.navigation.push(Screen.CBT_VIEW, {
-      thought,
-    });
+    this.props.navigation.push(Screen.FINISHED_THOUGHT, {thought});
     this.setState({
       slideToShow: "automatic",
       isReady: false, // "refreshes" the screen
@@ -236,9 +234,7 @@ export default class extends React.Component<ScreenProps, FormScreenState> {
           <FormView
             onSave={this.onSave}
             thought={this.state.thought}
-            // props.slideToShow is used only in storybook/unit tests.
-            // usually we use state.slideToShow
-            slideToShow={this.props.slideToShow || this.state.slideToShow}
+            slideToShow={this.state.slideToShow}
             shouldShowInFlowOnboarding={shouldShowInFlowOnboarding}
             onChangeAlternativeThought={this.onChangeAlternativeThought}
             onChangeAutomaticThought={this.onChangeAutomaticThought}

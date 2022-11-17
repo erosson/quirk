@@ -6522,6 +6522,11 @@ react-native-screens@^3.18.2:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
 
+react-native-store-review@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/react-native-store-review/-/react-native-store-review-0.3.0.tgz#67480b9736c10bd00ad8d4d80324d2146e18d7dd"
+  integrity sha512-PipH/p3O10DDCUWHiW0sVZ0020HPx6gRFFZOyuAYRRVwdssO7or/+H2pHTlwUt2lasVzLenTf2aZ9sMrpryuKA==
+
 react-native@0.70.5:
   version "0.70.5"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.70.5.tgz#f60540b21d338891086e0a834e331c124dd1f55c"

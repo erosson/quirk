@@ -1,7 +1,6 @@
 import React from "react";
 import { Container, Row, Header, IconButton } from "../ui";
 import { View, StatusBar } from "react-native";
-import { NavigationScreenProp, NavigationAction } from "react-navigation";
 import theme from "../theme";
 import Constants from "expo-constants";
 import * as Haptic from "expo-haptics";
@@ -9,18 +8,16 @@ import i18n from "../i18n";
 import FinishedThoughtView from "./FinishedThoughtView";
 import { SavedThought } from "../thoughts";
 import haptic from "../haptic";
-import { CBT_FORM_SCREEN } from "../screens";
+import { Screen, ScreenProps} from "../screens";
 import { Slides } from "./FormView";
 
-interface ScreenProps {
-  navigation: NavigationScreenProp<any, NavigationAction>;
-}
+type Props = ScreenProps<Screen.FINISHED_THOUGHT>
 
 interface ScreenState {
   thought: SavedThought;
 }
 
-export default class extends React.Component<ScreenProps, ScreenState> {
+export default class extends React.Component<Props, ScreenState> {
   static navigationOptions = {
     header: null,
   };
@@ -29,13 +26,12 @@ export default class extends React.Component<ScreenProps, ScreenState> {
     super(props);
 
     this.state = {
-      // @ts-ignore argle bargle typescript plz don't do these things
-      thought: this.props.navigation.getParam("thought"),
+      thought: this.props.route.params.thought,
     };
   }
 
   onEdit = (_: string, slide: Slides) => {
-    this.props.navigation.navigate(CBT_FORM_SCREEN, {
+    this.props.navigation.push(Screen.CBT_FORM, {
       thought: this.state.thought,
       slide,
     });
@@ -73,7 +69,7 @@ export default class extends React.Component<ScreenProps, ScreenState> {
               featherIconName={"x"}
               onPress={() => {
                 haptic.impact(Haptic.ImpactFeedbackStyle.Light);
-                this.props.navigation.navigate(CBT_FORM_SCREEN, {
+                this.props.navigation.push(Screen.CBT_FORM, {
                   clear: true,
                 });
               }}
@@ -85,7 +81,7 @@ export default class extends React.Component<ScreenProps, ScreenState> {
             onEdit={this.onEdit}
             onNew={() => {
               haptic.impact(Haptic.ImpactFeedbackStyle.Light);
-              this.props.navigation.navigate(CBT_FORM_SCREEN, {
+              this.props.navigation.push(Screen.CBT_FORM, {
                 clear: true,
               });
             }}

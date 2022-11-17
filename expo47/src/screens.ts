@@ -1,4 +1,6 @@
 import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Slides } from "./form/FormView";
+import { SavedThought } from "./thoughts";
 
 export const enum Screen {
     CBT_FORM = "CBT_FORM_SCREEN",
@@ -13,13 +15,20 @@ export const enum Screen {
 }
 
 export type ParamList = {
-    [Screen.CBT_FORM]: {fromOnboarding: boolean} | undefined,
+    [Screen.CBT_FORM]: {
+        fromOnboarding?: boolean,
+        clear?: boolean,
+        thought?: SavedThought
+        slide?: Slides,
+    } | undefined,
     // [Screen.CBT_LIST]: undefined,
     [Screen.ONBOARDING]: undefined,
     [Screen.EXPLANATION]: undefined,
     // [Screen.SETTING]: undefined,
     // [Screen.INIT]: undefined,
-    // [Screen.FINISHED_THOUGHT]: undefined,
+    [Screen.FINISHED_THOUGHT]: {
+        thought: SavedThought,
+    },
     // [Screen.LOCK]: undefined,
     [Screen.DEBUG]: undefined,
 }
