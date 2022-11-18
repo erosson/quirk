@@ -1,17 +1,12 @@
-import React from "react";
-import theme from "../theme";
-import { SubHeader, Paragraph, IconButton } from "../ui";
-import posed from "react-native-pose";
-import { TouchableWithoutFeedback, View } from "react-native";
-import universalHaptic from "../haptic";
-import * as Haptic from "expo-haptics";
-import {
-  hiddenAlerts,
-  hide,
-  hideMultipleAlerts,
-  isNewUser,
-} from "./alertstore";
-import { sortBy } from "lodash";
+import React from "react"
+import theme from "../theme"
+import { SubHeader, Paragraph, IconButton } from "../ui"
+import posed from "react-native-pose"
+import { TouchableWithoutFeedback, View } from "react-native"
+import universalHaptic from "../haptic"
+import * as Haptic from "expo-haptics"
+import { hiddenAlerts, hide, hideMultipleAlerts, isNewUser } from "./alertstore"
+import { sortBy } from "lodash"
 
 const PopsUp = posed.View({
   full: { height: 380, paddingTop: 18, paddingBottom: 18 },
@@ -22,33 +17,33 @@ const PopsUp = posed.View({
     transition: { type: "spring", stiffness: 150 },
   },
   hidden: { height: 0, paddingTop: 0, paddingBottom: 0 },
-});
+})
 
 interface AlertViewProps {
-  title: string;
-  body: string;
-  onHide: () => void;
+  title: string
+  body: string
+  onHide: () => void
 }
 
 class AlertView extends React.Component<AlertViewProps> {
   state = {
     view: "hidden",
-  };
+  }
 
   componentDidMount() {
     setTimeout(() => {
-      this.setState({ view: "peak" });
-      universalHaptic.notification(Haptic.NotificationFeedbackType.Success);
-    }, 350);
+      this.setState({ view: "peak" })
+      universalHaptic.notification(Haptic.NotificationFeedbackType.Success)
+    }, 350)
   }
 
   render() {
-    const { title, body } = this.props;
+    const { title, body } = this.props
 
     return (
       <TouchableWithoutFeedback
         onPress={() => {
-          this.setState({ view: "full" });
+          this.setState({ view: "full" })
         }}
       >
         <PopsUp
@@ -97,79 +92,79 @@ class AlertView extends React.Component<AlertViewProps> {
               onPress={() => {
                 this.setState({
                   view: "hidden",
-                });
-                this.props.onHide();
+                })
+                this.props.onHide()
               }}
             />
           </View>
           <Paragraph>{body}</Paragraph>
         </PopsUp>
       </TouchableWithoutFeedback>
-    );
+    )
   }
 }
 
 export interface Alert {
-  title: string;
-  body: string;
-  slug: string;
+  title: string
+  body: string
+  slug: string
 
   // Increase this number for newer alerts if you'd like
-  priority: 0;
+  priority: 0
 }
 
 interface AlerterProps {
-  alerts: Alert[];
+  alerts: Alert[]
 }
 
 interface AlerterState {
-  shown?: Alert;
+  shown?: Alert
 }
 
 class Alerter extends React.Component<AlerterProps, AlerterState> {
   constructor(props) {
-    super(props);
-    this.state = {};
+    super(props)
+    this.state = {}
   }
 
   async componentDidMount() {
-    const { alerts } = this.props;
+    const { alerts } = this.props
 
     // If someone is a new user, just go ahead and hide
     // all anouncements. They can just see the app as it is
     if (await isNewUser()) {
-      await hideMultipleAlerts(alerts.map(({ slug }) => slug));
-      return;
+      await hideMultipleAlerts(alerts.map(({ slug }) => slug))
+      return
     }
 
-    const hidden = await hiddenAlerts();
+    const hidden = await hiddenAlerts()
     const showableAlerts = sortBy(alerts, ["priority"]).filter(
       ({ slug }) => !hidden.includes(slug)
-    );
+    )
 
     this.setState({
       shown: showableAlerts[0],
-    });
+    })
   }
 
   onHide = (slug: string) => {
-    hide(slug);
-  };
+    hide(slug)
+  }
 
   render() {
     if (!this.state.shown) {
-      return false;
+      return false
     }
 
-    const { shown } = this.state;
+    const { shown } = this.state
     return (
       <AlertView
         title={shown.title}
         body={shown.body}
         onHide={() => this.onHide(shown.slug)}
       />
-    );
+    )
   }
 }
 
-export default Alerter;
+export default Alerter

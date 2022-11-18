@@ -1,14 +1,14 @@
-import React from "react";
-import { StatusBar } from "react-native";
-import { Container, Row, GhostButton, Header, IconButton } from "../ui";
-import theme from "../theme";
-import Constants from "expo-constants";
-import * as Haptic from "expo-haptics";
-import { FadesIn, BouncyBigOnActive } from "../animations";
-import { isCorrectPincode, setPincode } from "./lockstore";
-import { Screen, ScreenProps } from "../screens";
-import { get } from "lodash";
-import haptic from "../haptic";
+import React from "react"
+import { StatusBar } from "react-native"
+import { Container, Row, GhostButton, Header, IconButton } from "../ui"
+import theme from "../theme"
+import Constants from "expo-constants"
+import * as Haptic from "expo-haptics"
+import { FadesIn, BouncyBigOnActive } from "../animations"
+import { isCorrectPincode, setPincode } from "./lockstore"
+import { Screen, ScreenProps } from "../screens"
+import { get } from "lodash"
+import haptic from "../haptic"
 
 type Props = ScreenProps<Screen.LOCK>
 
@@ -26,7 +26,7 @@ const KeypadButton = ({ title, onPress, style = {} }) => (
     }}
     onPress={onPress}
   />
-);
+)
 
 const KeypadSideButton = ({
   icon,
@@ -44,7 +44,7 @@ const KeypadSideButton = ({
     }}
     onPress={onPress}
   />
-);
+)
 
 const Notifier = ({ isActive }) => (
   <BouncyBigOnActive
@@ -58,92 +58,92 @@ const Notifier = ({ isActive }) => (
     }}
     pose={isActive ? "active" : "inactive"}
   />
-);
+)
 
-const BUTTON_SIZE = 96;
+const BUTTON_SIZE = 96
 
 export default class extends React.Component<
   Props,
   {
-    isReady: boolean;
-    isSettingCode: boolean;
-    code: string;
+    isReady: boolean
+    isSettingCode: boolean
+    code: string
   }
 > {
   static navigationOptions = {
     header: null,
-  };
+  }
 
   state = {
     isReady: false,
     isSettingCode: false,
     code: "",
-  };
+  }
 
   async componentDidMount() {
     this.props.navigation.addListener("willFocus", async (payload) => {
-      const isSettingCode = get(payload, "state.params.isSettingCode", false);
+      const isSettingCode = get(payload, "state.params.isSettingCode", false)
       this.setState({
         isSettingCode,
-      });
-    });
+      })
+    })
 
     // Purely just for a smooth fade in
     setTimeout(() => {
-      this.setState({ isReady: true });
-    }, 100);
+      this.setState({ isReady: true })
+    }, 100)
   }
 
   onEnterCode = async (key: string) => {
-    haptic.impact(Haptic.ImpactFeedbackStyle.Light);
+    haptic.impact(Haptic.ImpactFeedbackStyle.Light)
 
     await this.setState((prevState) => {
       if (prevState.code.length === 4) {
-        return prevState;
+        return prevState
       }
       return {
         ...prevState,
         code: prevState.code + key,
-      };
-    });
+      }
+    })
 
     if (this.state.code.length !== 4) {
-      return;
+      return
     }
 
     if (this.state.isSettingCode) {
-      await setPincode(this.state.code);
-      haptic.notification(Haptic.NotificationFeedbackType.Success);
-      this.props.navigation.replace(Screen.CBT_FORM);
+      await setPincode(this.state.code)
+      haptic.notification(Haptic.NotificationFeedbackType.Success)
+      this.props.navigation.replace(Screen.CBT_FORM)
     }
 
-    const isGood = await isCorrectPincode(this.state.code);
+    const isGood = await isCorrectPincode(this.state.code)
     if (isGood) {
-      haptic.notification(Haptic.NotificationFeedbackType.Success);
-      this.props.navigation.replace(Screen.CBT_FORM);
+      haptic.notification(Haptic.NotificationFeedbackType.Success)
+      this.props.navigation.replace(Screen.CBT_FORM)
     } else {
       this.setState({
         code: "",
-      });
-      haptic.notification(Haptic.NotificationFeedbackType.Error);
+      })
+      haptic.notification(Haptic.NotificationFeedbackType.Error)
     }
-  };
+  }
 
   onBackspace = () => {
-    haptic.impact(Haptic.ImpactFeedbackStyle.Medium);
+    haptic.impact(Haptic.ImpactFeedbackStyle.Medium)
     this.setState((prevState) => {
       if (prevState.code.length === 0) {
-        return prevState;
+        return prevState
       }
       return {
         ...prevState,
         code: prevState.code.substring(0, prevState.code.length - 1),
-      };
-    });
-  };
+      }
+    })
+  }
 
   render() {
-    const { code, isSettingCode } = this.state;
+    const { code, isSettingCode } = this.state
     return (
       <FadesIn
         style={{
@@ -256,6 +256,6 @@ export default class extends React.Component<
           </Row>
         </Container>
       </FadesIn>
-    );
+    )
   }
 }

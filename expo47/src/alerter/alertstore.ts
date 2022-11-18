@@ -1,42 +1,42 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import stringify from "json-stringify-safe";
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import stringify from "json-stringify-safe"
 
-const HIDDEN_KEY = `@AlertStore:hidden`;
-const NEW_USER_KEY = `@AlertStore:new-user`;
+const HIDDEN_KEY = `@AlertStore:hidden`
+const NEW_USER_KEY = `@AlertStore:new-user`
 
 export async function hiddenAlerts(): Promise<string[]> {
   try {
-    const value = await AsyncStorage.getItem(HIDDEN_KEY);
-    return value ? JSON.parse(value) : []; // empty is fine and not an error
+    const value = await AsyncStorage.getItem(HIDDEN_KEY)
+    return value ? JSON.parse(value) : [] // empty is fine and not an error
   } catch (err) {
-    console.error(err);
-    return [];
+    console.error(err)
+    return []
   }
 }
 
 export async function hide(slug: string): Promise<boolean> {
   try {
-    const current = await hiddenAlerts();
-    current.push(slug);
+    const current = await hiddenAlerts()
+    current.push(slug)
 
-    await AsyncStorage.setItem(HIDDEN_KEY, stringify(current));
-    return true;
+    await AsyncStorage.setItem(HIDDEN_KEY, stringify(current))
+    return true
   } catch (err) {
-    console.error(err);
-    return false;
+    console.error(err)
+    return false
   }
 }
 
 export async function hideMultipleAlerts(slugs: string[]): Promise<boolean> {
   try {
-    const current = await hiddenAlerts();
-    current.push(...slugs);
+    const current = await hiddenAlerts()
+    current.push(...slugs)
 
-    await AsyncStorage.setItem(HIDDEN_KEY, stringify(current));
-    return true;
+    await AsyncStorage.setItem(HIDDEN_KEY, stringify(current))
+    return true
   } catch (err) {
-    console.error(err);
-    return false;
+    console.error(err)
+    return false
   }
 }
 
@@ -44,15 +44,15 @@ export async function hideMultipleAlerts(slugs: string[]): Promise<boolean> {
 // If this function has ever been called before, they're not a new user
 export async function isNewUser(): Promise<boolean> {
   try {
-    const value = await AsyncStorage.getItem(NEW_USER_KEY);
+    const value = await AsyncStorage.getItem(NEW_USER_KEY)
     if (!!value) {
-      return false;
+      return false
     }
 
-    await AsyncStorage.setItem(NEW_USER_KEY, "false");
-    return true;
+    await AsyncStorage.setItem(NEW_USER_KEY, "false")
+    return true
   } catch (err) {
-    console.error(err);
-    return false;
+    console.error(err)
+    return false
   }
 }

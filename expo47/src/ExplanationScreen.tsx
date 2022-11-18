@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import {
   SubHeader,
   Paragraph,
@@ -6,18 +6,18 @@ import {
   IconButton,
   ActionButton,
   GhostButton,
-} from "./ui";
-import { ScrollView, View, Linking } from "react-native";
-import Constants from "expo-constants";
-import * as Haptic from "expo-haptics";
-import theme from "./theme";
-import { Screen, NavigationProp } from "./screens";
-import i18n from "./i18n";
-import { BubbleThought } from "./imgs/Bubbles";
-import haptic from "./haptic";
+} from "./ui"
+import { ScrollView, View, Linking } from "react-native"
+import Constants from "expo-constants"
+import * as Haptic from "expo-haptics"
+import theme from "./theme"
+import { Screen, NavigationProp } from "./screens"
+import i18n from "./i18n"
+import { BubbleThought } from "./imgs/Bubbles"
+import haptic from "./haptic"
 
 interface Props {
-  navigation: NavigationProp;
+  navigation: NavigationProp
 }
 
 const Distortion = ({ children }) => (
@@ -28,7 +28,7 @@ const Distortion = ({ children }) => (
   >
     {children}
   </View>
-);
+)
 
 const AllOrNothingThinking = () => (
   <Distortion>
@@ -40,7 +40,7 @@ const AllOrNothingThinking = () => (
 
     <BubbleThought>{i18n.t("all_or_nothing_thinking_thought")}</BubbleThought>
   </Distortion>
-);
+)
 
 const Catastrophizing = () => (
   <Distortion>
@@ -54,7 +54,7 @@ const Catastrophizing = () => (
       {i18n.t("catastrophizing_thought")}
     </BubbleThought>
   </Distortion>
-);
+)
 
 const EmotionalReasoning = () => (
   <Distortion>
@@ -72,7 +72,7 @@ const EmotionalReasoning = () => (
       {i18n.t("emotional_reasoning_thought")}
     </BubbleThought>
   </Distortion>
-);
+)
 
 const FortuneTelling = () => (
   <Distortion>
@@ -86,7 +86,7 @@ const FortuneTelling = () => (
       {i18n.t("fortune_telling_thought")}
     </BubbleThought>
   </Distortion>
-);
+)
 
 const Labeling = () => (
   <Distortion>
@@ -98,7 +98,7 @@ const Labeling = () => (
 
     <BubbleThought>{i18n.t("labeling_thought")}</BubbleThought>
   </Distortion>
-);
+)
 
 const MagnificationOfTheNegative = () => (
   <Distortion>
@@ -112,7 +112,7 @@ const MagnificationOfTheNegative = () => (
       {i18n.t("magnification_of_the_negative_thought")}
     </BubbleThought>
   </Distortion>
-);
+)
 
 const MindReading = () => (
   <Distortion>
@@ -124,7 +124,7 @@ const MindReading = () => (
 
     <BubbleThought color="pink">{i18n.t("mind_reading_thought")}</BubbleThought>
   </Distortion>
-);
+)
 
 const MimizationOfThePositive = () => (
   <Distortion>
@@ -138,7 +138,7 @@ const MimizationOfThePositive = () => (
       {i18n.t("minimization_of_the_positive_thought")}
     </BubbleThought>
   </Distortion>
-);
+)
 
 const OtherBlaming = () => (
   <Distortion>
@@ -156,7 +156,7 @@ const OtherBlaming = () => (
       {i18n.t("other_blaming_thought")}
     </BubbleThought>
   </Distortion>
-);
+)
 
 const OverGeneralization = () => (
   <Distortion>
@@ -168,7 +168,7 @@ const OverGeneralization = () => (
 
     <BubbleThought>{i18n.t("over_generalization_thought")}</BubbleThought>
   </Distortion>
-);
+)
 
 const SelfBlaming = () => (
   <Distortion>
@@ -181,7 +181,7 @@ const SelfBlaming = () => (
 
     <BubbleThought color="pink">{i18n.t("self_blaming_thought")}</BubbleThought>
   </Distortion>
-);
+)
 
 const ShouldStatements = () => (
   <Distortion>
@@ -197,16 +197,16 @@ const ShouldStatements = () => (
 
     <BubbleThought>{i18n.t("should_statements_thought")}</BubbleThought>
   </Distortion>
-);
+)
 
 class ExplanationScreen extends React.Component<Props> {
   static navigationOptions = {
     header: null,
-  };
+  }
 
   navigateToOnboardingScreen = () => {
-    this.props.navigation.navigate(Screen.ONBOARDING);
-  };
+    this.props.navigation.navigate(Screen.ONBOARDING)
+  }
 
   render() {
     return (
@@ -259,8 +259,8 @@ class ExplanationScreen extends React.Component<Props> {
                 featherIconName={"x"}
                 accessibilityLabel={i18n.t("accessibility.new_thought_button")}
                 onPress={() => {
-                  haptic.impact(Haptic.ImpactFeedbackStyle.Light);
-                  this.props.navigation.pop();
+                  haptic.impact(Haptic.ImpactFeedbackStyle.Light)
+                  this.props.navigation.pop()
                 }}
               />
             </View>
@@ -279,8 +279,8 @@ class ExplanationScreen extends React.Component<Props> {
               fillColor="#EDF0FC"
               textColor={theme.darkBlue}
               onPress={() => {
-                const url = "https://freecbt.erosson.org/explanation?ref=quirk";
-                Linking.canOpenURL(url).then(() => Linking.openURL(url));
+                const url = "https://freecbt.erosson.org/explanation?ref=quirk"
+                Linking.canOpenURL(url).then(() => Linking.openURL(url))
               }}
             />
           </View>
@@ -299,8 +299,8 @@ class ExplanationScreen extends React.Component<Props> {
           <ShouldStatements />
         </View>
       </ScrollView>
-    );
+    )
   }
 }
 
-export default ExplanationScreen;
+export default ExplanationScreen

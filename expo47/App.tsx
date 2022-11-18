@@ -17,11 +17,11 @@ const Stack = createNativeStackNavigator<ParamList>()
 
 export function App() {
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName={Screen.INIT}
-          screenOptions={{headerShown: false}}
+          screenOptions={{ headerShown: false }}
         >
           <Stack.Screen name={Screen.CBT_FORM} component={CBTFormScreen} />
           <Stack.Screen name={Screen.CBT_LIST} component={CBTListScreen} />
@@ -31,7 +31,7 @@ export function App() {
           <Stack.Screen name={Screen.INIT} component={InitScreen} />
           <Stack.Screen name={Screen.FINISHED_THOUGHT} component={FinishedThoughtScreen} />
           <Stack.Screen name={Screen.LOCK} component={LockScreen} />
-          <Stack.Screen name={Screen.DEBUG} component={DebugScreen} options={{headerShown: true, title: ""}} />
+          <Stack.Screen name={Screen.DEBUG} component={DebugScreen} options={{ headerShown: true, title: "" }} />
         </Stack.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>

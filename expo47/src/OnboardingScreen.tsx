@@ -1,17 +1,17 @@
-import React from "react";
-import Carousel from "react-native-reanimated-carousel";
-import { sliderWidth, itemWidth } from "./form/sizes";
-import { View, Image, Linking, Alert, Dimensions } from "react-native";
-import { Header, Container, Paragraph, ActionButton, Row } from "./ui";
-import Constants from "expo-constants";
-import * as Haptic from "expo-haptics";
-import theme from "./theme";
-import haptic from "./haptic";
-import { Screen, NavigationProp } from "./screens";
-import { FadesIn } from "./animations";
-import i18n from "./i18n";
+import React from "react"
+import Carousel from "react-native-reanimated-carousel"
+import { sliderWidth, itemWidth } from "./form/sizes"
+import { View, Image, Linking, Alert, Dimensions } from "react-native"
+import { Header, Container, Paragraph, ActionButton, Row } from "./ui"
+import Constants from "expo-constants"
+import * as Haptic from "expo-haptics"
+import theme from "./theme"
+import haptic from "./haptic"
+import { Screen, NavigationProp } from "./screens"
+import { FadesIn } from "./animations"
+import i18n from "./i18n"
 // import { setNotifications } from "./SettingsScreen";
-import * as Feature from "./feature";
+import * as Feature from "./feature"
 
 interface ScreenProps {
   navigation: NavigationProp
@@ -55,14 +55,14 @@ const RecordStep = () => (
             Alert.alert(
               "You can't open this",
               `We're not sure why, but your phone is telling us that you can't open this link. You can find it at '${url}'`
-            );
+            )
           }
-          Linking.openURL(url);
-        });
+          Linking.openURL(url)
+        })
       }}
     />
   </View>
-);
+)
 
 const ChallengeStep = () => (
   <View
@@ -97,7 +97,7 @@ const ChallengeStep = () => (
       {i18n.t("onboarding_screen.block1.body")}
     </Paragraph>
   </View>
-);
+)
 
 const ChangeStep = () => (
   <View
@@ -132,10 +132,10 @@ const ChangeStep = () => (
       {i18n.t("onboarding_screen.block2.body")}
     </Paragraph>
   </View>
-);
+)
 
 const RemindersStep = ({ onContinue }) => {
-  const { feature } = React.useContext(Feature.Context);
+  const { feature } = React.useContext(Feature.Context)
   return (
     <View
       style={{
@@ -177,7 +177,7 @@ const RemindersStep = ({ onContinue }) => {
               title={i18n.t("onboarding_screen.reminders.button.yes")}
               onPress={async () => {
                 // await DEBUGsetNotifications(feature, true);
-                onContinue();
+                onContinue()
               }}
             />
           </Row>
@@ -205,57 +205,57 @@ const RemindersStep = ({ onContinue }) => {
         </Row>
       )}
     </View>
-  );
-};
+  )
+}
 
 export default class extends React.Component<ScreenProps> {
   static navigationOptions = {
     header: null,
-  };
+  }
 
   state = {
     activeSlide: 0,
     isReady: false,
-  };
+  }
 
   componentDidMount() {
     // Triggers a fade in for fancy reasons
     setTimeout(() => {
       this.setState({
         isReady: true,
-      });
-    }, 60);
+      })
+    }, 60)
   }
 
   stopOnBoarding = () => {
-    haptic.notification(Haptic.NotificationFeedbackType.Success);
+    haptic.notification(Haptic.NotificationFeedbackType.Success)
     this.props.navigation.replace(Screen.CBT_FORM, {
       fromOnboarding: true,
-    });
-  };
+    })
+  }
 
   _renderItem = ({ item, index }) => {
     if (item.slug === "record") {
-      return <RecordStep />;
+      return <RecordStep />
     }
 
     if (item.slug === "challenge") {
-      return <ChallengeStep />;
+      return <ChallengeStep />
     }
 
     if (item.slug === "change") {
-      return <ChangeStep />;
+      return <ChangeStep />
     }
 
     if (item.slug === "reminders-or-continue") {
-      return <RemindersStep onContinue={this.stopOnBoarding} />;
+      return <RemindersStep onContinue={this.stopOnBoarding} />
     }
 
-    return null;
-  };
+    return null
+  }
 
   render() {
-    const {width, height} = Dimensions.get('window')
+    const { width, height } = Dimensions.get("window")
     return (
       <Container
         style={{
@@ -293,6 +293,6 @@ export default class extends React.Component<ScreenProps> {
           />
         </FadesIn>
       </Container>
-    );
+    )
   }
 }
