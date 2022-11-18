@@ -25,6 +25,7 @@ import i18n from "../i18n"
 import { emojiForSlug } from "../distortions"
 import { take } from "lodash"
 import { FadesIn } from "../animations"
+import { useAsyncEffect } from "../util"
 
 const ThoughtItem = ({
   thought,
@@ -176,142 +177,98 @@ interface State {
   isReady: boolean
 }
 
-class CBTListScreen extends React.Component<Props, State> {
-  static navigationOptions = {
-    header: null,
-  }
-
-  constructor(props) {
-    super(props)
-    this.state = {
-      groups: [],
-      historyButtonLabel: "alternative-thought",
-      isReady: false,
-    }
-
-    this.props.navigation.addListener("willFocus", () => {
-      this.loadSettings()
-    })
-  }
-
-  loadExercises = (): void => {
-    const fixTimestamps = (json): SavedThought => {
-      const createdAt: Date = new Date(json.createdAt)
-      const updatedAt: Date = new Date(json.updatedAt)
-      return {
-        createdAt,
-        updatedAt,
-        ...json,
-      }
-    }
-
-    getExercises()
-      .then((data) => {
-        const thoughts: SavedThought[] = data
-          .map(([_, value]) => JSON.parse(value))
-          .filter((n) => n) // Worst case scenario, if bad data gets in we don't show it.
-          .map(fixTimestamps)
-
-        const groups: ThoughtGroup[] =
-          groupThoughtsByDay(thoughts).filter(validThoughtGroup)
-
-        this.setState({ groups })
-      })
-      .catch(console.error)
-      .finally(() => {
-        this.setState({
-          isReady: true,
-        })
-      })
-  }
-
-  loadSettings = (): void => {
-    getHistoryButtonLabel().then((historyButtonLabel) => {
-      this.setState({ historyButtonLabel })
-    })
-  }
-
-  componentDidMount = () => {
-    this.loadExercises()
-    this.loadSettings()
-  }
-
-  navigateToSettings = () => {
-    this.props.navigation.push(Screen.SETTING)
-  }
-
-  navigateToForm = () => {
-    universalHaptic.impact(Haptic.ImpactFeedbackStyle.Light)
-    this.props.navigation.navigate(Screen.CBT_FORM, {
-      clear: true,
-    })
-  }
-
-  navigateToViewerWithThought = (thought: SavedThought) => {
-    this.props.navigation.push(Screen.FINISHED_THOUGHT, {
-      thought,
-    })
-  }
-
-  onItemDelete = (thought: SavedThought) => {
-    // Ignore the typescript error here, Expo's v31 has a bug
-    // Upgrade to 32 when it's released to fix
-    universalHaptic.notification(Haptic.NotificationFeedbackType.Success)
-
-    deleteExercise(thought.uuid).then(() => this.loadExercises())
-  }
-
-  render() {
-    const { groups, historyButtonLabel, isReady } = this.state
-
-    return (
-      <View style={{ backgroundColor: theme.lightOffwhite }}>
-        <ScrollView
-          style={{
-            backgroundColor: theme.lightOffwhite,
-            marginTop: Constants.statusBarHeight,
-            paddingTop: 24,
-            height: "100%",
-          }}
-        >
-          <Container>
-            <StatusBar barStyle="dark-content" />
-            <Row style={{ marginBottom: 18 }}>
-              <Header allowFontScaling={false}>
-                {i18n.t("cbt_list.header")}
-              </Header>
-
-              <View style={{ flexDirection: "row" }}>
-                <IconButton
-                  featherIconName={"settings"}
-                  onPress={() => this.navigateToSettings()}
-                  accessibilityLabel={i18n.t("accessibility.settings_button")}
-                  style={{ marginRight: 18 }}
-                />
-                <IconButton
-                  featherIconName={"x"}
-                  onPress={() => this.navigateToForm()}
-                  accessibilityLabel={i18n.t(
-                    "accessibility.new_thought_button"
-                  )}
-                />
-              </View>
-            </Row>
-
-            <FadesIn pose={isReady ? "visible" : "hidden"}>
-              <ThoughtItemList
-                groups={groups}
-                navigateToViewer={this.navigateToViewerWithThought}
-                onItemDelete={this.onItemDelete}
-                historyButtonLabel={historyButtonLabel}
-              />
-            </FadesIn>
-          </Container>
-        </ScrollView>
-        <Alerter alerts={alerts} />
-      </View>
-    )
+function fixTimestamps(json): SavedThought {
+  const createdAt: Date = new Date(json.createdAt)
+  const updatedAt: Date = new Date(json.updatedAt)
+  return {
+    createdAt,
+    updatedAt,
+    ...json,
   }
 }
 
-export default CBTListScreen
+export default function CBTListScreen({ navigation }: Props): JSX.Element {
+  const [groups, setGroups] = React.useState<ThoughtGroup[]>([])
+  const [historyButtonLabel, setHistoryButtonLabel] = React.useState<HistoryButtonLabelSetting>("alternative-thought")
+  const [isReady, setIsReady] = React.useState<boolean>(false)
+
+  useAsyncEffect(async () => {
+    try {
+      const [label, exercises] = await Promise.all([getHistoryButtonLabel(), getExercises()])
+      setHistoryButtonLabel(label)
+      const thoughts: SavedThought[] = exercises
+        .map(([_, value]) => JSON.parse(value))
+        .filter((n) => n) // Worst case scenario, if bad data gets in we don't show it.
+        .map(fixTimestamps)
+      const groups: ThoughtGroup[] =
+        groupThoughtsByDay(thoughts).filter(validThoughtGroup)
+      setGroups(groups)
+    }
+    catch (e) {
+      console.error(e)
+    }
+    finally {
+      setIsReady(true)
+    }
+  })
+
+  return (
+    <View style={{ backgroundColor: theme.lightOffwhite }}>
+      <ScrollView
+        style={{
+          backgroundColor: theme.lightOffwhite,
+          marginTop: Constants.statusBarHeight,
+          paddingTop: 24,
+          height: "100%",
+        }}
+      >
+        <Container>
+          <StatusBar barStyle="dark-content" />
+          <Row style={{ marginBottom: 18 }}>
+            <Header allowFontScaling={false}>
+              {i18n.t("cbt_list.header")}
+            </Header>
+
+            <View style={{ flexDirection: "row" }}>
+              <IconButton
+                featherIconName={"settings"}
+                onPress={() => navigation.push(Screen.SETTING)}
+                accessibilityLabel={i18n.t("accessibility.settings_button")}
+                style={{ marginRight: 18 }}
+              />
+              <IconButton
+                featherIconName={"x"}
+                onPress={() => {
+                  universalHaptic.impact(Haptic.ImpactFeedbackStyle.Light)
+                  navigation.push(Screen.CBT_FORM, { clear: true })
+                }}
+                accessibilityLabel={i18n.t(
+                  "accessibility.new_thought_button"
+                )}
+              />
+            </View>
+          </Row>
+
+          <FadesIn pose={isReady ? "visible" : "hidden"}>
+            <ThoughtItemList
+              groups={groups}
+              navigateToViewer={(thought: SavedThought) => {
+                navigation.push(Screen.FINISHED_THOUGHT, {
+                  thought,
+                })
+              }}
+              onItemDelete={async (thought: SavedThought) => {
+                universalHaptic.notification(Haptic.NotificationFeedbackType.Success)
+                await deleteExercise(thought.uuid)
+                // triggers reload
+                setIsReady(false)
+              }}
+              historyButtonLabel={historyButtonLabel}
+            />
+          </FadesIn>
+        </Container>
+      </ScrollView>
+      <Alerter alerts={alerts} />
+    </View>
+  )
+}

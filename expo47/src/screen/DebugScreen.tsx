@@ -3,75 +3,66 @@ import { ScrollView, View, Text, Switch, Platform, Button } from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import Constants from "expo-constants"
 import * as Feature from "../feature"
+import { useAsyncEffect } from "../util"
+import { Screen, ScreenProps } from "../screens"
+import { KeyValuePair } from "@react-native-async-storage/async-storage/lib/typescript/types"
 // TODO json imports seem to be broken
 // import versionJson from "../.version.json"
 
-export default function Component(props) {
-  const [storage, setStorage] = React.useState(null)
-  const [dump, setDump] = React.useState(false)
-  // console.log(versionJson)
-  React.useEffect(() => {
+type Props = ScreenProps<Screen.DEBUG>
+
+const constItems = [
+  ["Release channel", Constants.manifest.releaseChannel || "(dev)"],
+  ["Expo version", Constants.expoVersion],
+  ["App version", Constants.manifest.version],
+  ["Revision", Constants.manifest.revisionId || "(dev)"],
+  // ["Revision Git", version.hash],
+  // ["Revision Date", version.date],
+  // ["Revision Timestamp", version.timestamp + ""],
+  [
+    "Test exception reporting",
+    <Button
+      title="Oops"
+      onPress={() => {
+        throw new Error("oops")
+      }}
+    />,
+  ],
+  [
+    "Test console.error reporting",
+    <Button
+      title="Oops"
+      onPress={() => {
+        console.error("oops")
+      }}
+    />,
+  ],
+  [
+    "Test console.warn reporting",
+    <Button
+      title="Oops"
+      onPress={() => {
+        console.warn("oops")
+      }}
+    />,
+  ],
+  ["OS", Platform.OS],
+]
+export default function DebugScreen(props: Props): JSX.Element {
+  const [storage, setStorage] = React.useState<readonly KeyValuePair[] | null>(null)
+  const [dump, setDump] = React.useState<boolean>(false)
+  const { feature, updateFeature } = React.useContext(Feature.Context)
+
+  useAsyncEffect(async () => {
     if (dump && storage === null) {
-      ; (async () => {
-        const keys = await AsyncStorage.getAllKeys()
-        const state = await AsyncStorage.multiGet(keys)
-        setStorage(state)
-      })()
+      const keys = await AsyncStorage.getAllKeys()
+      const state = await AsyncStorage.multiGet(keys)
+      setStorage(state)
     }
   })
-  return Pure({
-    ...React.useContext(Feature.Context),
-    // version: versionJson,
-    storage,
-    dump,
-    setDump,
-  })
-}
 
-export function Pure({
-  // version,
-  feature,
-  updateFeature,
-  storage,
-  dump,
-  setDump,
-}) {
   const items = [
-    ["Release channel", Constants.manifest.releaseChannel || "(dev)"],
-    ["Expo version", Constants.expoVersion],
-    ["App version", Constants.manifest.version],
-    ["Revision", Constants.manifest.revisionId || "(dev)"],
-    // ["Revision Git", version.hash],
-    // ["Revision Date", version.date],
-    // ["Revision Timestamp", version.timestamp + ""],
-    [
-      "Test exception reporting",
-      <Button
-        title="Oops"
-        onPress={() => {
-          throw new Error("oops")
-        }}
-      />,
-    ],
-    [
-      "Test console.error reporting",
-      <Button
-        title="Oops"
-        onPress={() => {
-          console.error("oops")
-        }}
-      />,
-    ],
-    [
-      "Test console.warn reporting",
-      <Button
-        title="Oops"
-        onPress={() => {
-          console.warn("oops")
-        }}
-      />,
-    ],
-    ["OS", Platform.OS],
+    ...constItems,
     ...Object.entries(feature)
       // @ts-ignore: sort features by name. I promise key in [key, value] is a string
       .sort((a, b) => a[0] > b[0])
@@ -97,9 +88,8 @@ export function Pure({
     </ScrollView>
   )
 }
-Component.Pure = Pure
 
-function renderEntry([key, val], i) {
+function renderEntry([key, val], i): JSX.Element {
   if (typeof val === "string") {
     return (
       <View
