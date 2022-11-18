@@ -3,15 +3,15 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Screen, ParamList } from "./src/screens"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import * as Feature from "./src/feature";
-import CBTListScreen from "./src/CBTListScreen";
-import CBTFormScreen from "./src/form/FormScreen";
-import FinishedThoughtScreen from "./src/form/FinishedThoughtScreen";
-import ExplanationScreen from "./src/ExplanationScreen";
-import SettingScreen from "./src/SettingsScreen";
-import OnboardingScreen from "./src/OnboardingScreen";
-import InitScreen from "./src/InitScreen";
-import LockScreen from "./src/lock/LockScreen";
-import DebugScreen from "./src/DebugScreen";
+import CBTListScreen from "./src/screen/CBTListScreen";
+import CBTFormScreen from "./src/screen/FormScreen";
+import FinishedThoughtScreen from "./src/screen/FinishedThoughtScreen";
+import ExplanationScreen from "./src/screen/ExplanationScreen";
+import SettingScreen from "./src/screen/SettingsScreen";
+import OnboardingScreen from "./src/screen/OnboardingScreen";
+import InitScreen from "./src/screen/InitScreen";
+import LockScreen from "./src/screen/LockScreen";
+import DebugScreen from "./src/screen/DebugScreen";
 
 const Stack = createNativeStackNavigator<ParamList>()
 

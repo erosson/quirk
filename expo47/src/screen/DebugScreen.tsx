@@ -2,7 +2,7 @@ import React from "react"
 import { ScrollView, View, Text, Switch, Platform, Button } from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import Constants from "expo-constants"
-import * as Feature from "./feature"
+import * as Feature from "../feature"
 // TODO json imports seem to be broken
 // import versionJson from "../.version.json"
 
@@ -12,7 +12,7 @@ export default function Component(props) {
   // console.log(versionJson)
   React.useEffect(() => {
     if (dump && storage === null) {
-      ;(async () => {
+      ; (async () => {
         const keys = await AsyncStorage.getAllKeys()
         const state = await AsyncStorage.multiGet(keys)
         setStorage(state)
