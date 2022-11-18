@@ -1,4 +1,4 @@
-import { Alert } from "./alerter";
+import { Alert } from "./alerter"
 
 const alerts: Alert[] = [
   {
@@ -33,6 +33,6 @@ You can turn it on in the settings. If you lock yourself out, send us an email.
 Love/hate it? Let me know by pressing the feedback button or sending an email to "freecbt@erosson.org".
     `,
   },
-];
+]
 
-export default alerts;
+export default alerts

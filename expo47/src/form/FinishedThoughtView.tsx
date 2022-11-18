@@ -1,18 +1,13 @@
-import React from "react";
-import { SavedThought } from "../thoughts";
-import { ScrollView } from "react-native";
-import {
-  SubHeader,
-  Paragraph,
-  FormContainer,
-  GhostButtonWithGuts,
-} from "../ui";
-import i18n from "../i18n";
-import { BubbleThought } from "../imgs/Bubbles";
-import { emojiForSlug } from "../distortions";
-import theme from "../theme";
-import { Slides } from "./FormView";
-import Feedback from "../feedback";
+import React from "react"
+import { SavedThought } from "../thoughts"
+import { ScrollView } from "react-native"
+import { SubHeader, Paragraph, FormContainer, GhostButtonWithGuts } from "../ui"
+import i18n from "../i18n"
+import { BubbleThought } from "../imgs/Bubbles"
+import { emojiForSlug } from "../distortions"
+import theme from "../theme"
+import { Slides } from "./FormView"
+import Feedback from "../feedback"
 
 const cognitiveDistortionsToText = (cognitiveDistortions) => {
   const paragraphs = cognitiveDistortions
@@ -26,21 +21,21 @@ const cognitiveDistortionsToText = (cognitiveDistortions) => {
       >
         {emojiForSlug(slug)} {label}
       </Paragraph>
-    ));
+    ))
 
   if (!paragraphs || paragraphs.length === 0) {
-    return <Paragraph>🤷‍</Paragraph>;
+    return <Paragraph>🤷‍</Paragraph>
   }
 
-  return paragraphs;
-};
+  return paragraphs
+}
 
 const CBTView = ({
   thought,
   onEdit,
 }: {
-  thought: SavedThought;
-  onEdit: (uuid: string, slide: Slides) => void;
+  thought: SavedThought
+  onEdit: (uuid: string, slide: Slides) => void
 }) => (
   <>
     <FormContainer>
@@ -117,19 +112,19 @@ const CBTView = ({
       </GhostButtonWithGuts>
     </FormContainer>
   </>
-);
+)
 
 export default ({
   thought,
   onEdit,
   onNew,
 }: {
-  thought: SavedThought;
-  onEdit: (uuid: string, slide: Slides) => void;
-  onNew: () => void;
+  thought: SavedThought
+  onEdit: (uuid: string, slide: Slides) => void
+  onNew: () => void
 }) => {
   if (!thought.uuid) {
-    console.error("Viewing something that's not saved");
+    console.error("Viewing something that's not saved")
   }
 
   return (
@@ -150,5 +145,5 @@ export default ({
       <CBTView thought={thought} onEdit={onEdit} />
       <Feedback />
     </ScrollView>
-  );
-};
+  )
+}

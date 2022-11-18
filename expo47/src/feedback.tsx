@@ -1,78 +1,78 @@
-import React from "react";
-import * as StoreReview from "react-native-store-review";
-import { View, Linking, Platform } from "react-native";
-import { SubHeader, Row, ActionButton } from "./ui";
-import theme from "./theme";
-import * as flagstore from "./flagstore";
-import { countThoughts } from "./thoughtstore";
+import React from "react"
+import * as StoreReview from "react-native-store-review"
+import { View, Linking, Platform } from "react-native"
+import { SubHeader, Row, ActionButton } from "./ui"
+import theme from "./theme"
+import * as flagstore from "./flagstore"
+import { countThoughts } from "./thoughtstore"
 
 const PLAY_STORE_URL =
-  "http://play.google.com/store/apps/details?id=org.erosson.freecbt";
+  "http://play.google.com/store/apps/details?id=org.erosson.freecbt"
 
 async function shouldShowRatingComponent() {
   if (
     Platform.OS === "android" &&
     !(await Linking.canOpenURL(PLAY_STORE_URL))
   ) {
-    return false;
+    return false
   }
 
   // Don't show if they've rated before
-  const hasRatedBefore = await flagstore.get("has-rated", "false");
+  const hasRatedBefore = await flagstore.get("has-rated", "false")
   if (hasRatedBefore) {
-    console.log("has rated before isn't available");
-    return false;
+    console.log("has rated before isn't available")
+    return false
   }
 
   // Mainly show to power users
-  const count = await countThoughts();
+  const count = await countThoughts()
   if (count < 4) {
-    return false;
+    return false
   }
 
-  return true;
+  return true
 }
 
 export default class extends React.Component<
   {},
   {
-    shouldShowRate: boolean;
-    isReady: boolean;
+    shouldShowRate: boolean
+    isReady: boolean
   }
 > {
   state = {
     isReady: false,
     shouldShowRate: false,
-  };
+  }
 
   onRate = async () => {
     if (Platform.OS === "ios") {
-      StoreReview.requestReview();
+      StoreReview.requestReview()
     } else if (Platform.OS === "android") {
       await Linking.openURL(
         "http://play.google.com/store/apps/details?id=org.erosson.freecbt"
-      );
+      )
     }
 
-    flagstore.setTrue("has-rated");
+    flagstore.setTrue("has-rated")
     this.setState({
       shouldShowRate: false,
-    });
-  };
+    })
+  }
 
   async componentDidMount() {
-    const shouldShowRate = await shouldShowRatingComponent();
+    const shouldShowRate = await shouldShowRatingComponent()
 
     this.setState({
       shouldShowRate,
       isReady: true,
-    });
+    })
   }
 
   render() {
-    const { isReady, shouldShowRate } = this.state;
+    const { isReady, shouldShowRate } = this.state
     if (!isReady) {
-      return null;
+      return null
     }
 
     return (
@@ -104,7 +104,7 @@ export default class extends React.Component<
             title={"Let us know"}
             width={"100%"}
             onPress={() => {
-              Linking.openURL("mailto:freecbt@erosson.org");
+              Linking.openURL("mailto:freecbt@erosson.org")
             }}
           />
         </Row>
@@ -132,13 +132,13 @@ export default class extends React.Component<
                 title={"Give it a review 🙏"}
                 width={"100%"}
                 onPress={() => {
-                  this.onRate();
+                  this.onRate()
                 }}
               />
             </Row>
           </>
         )}
       </View>
-    );
+    )
   }
 }

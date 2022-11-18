@@ -12,10 +12,10 @@ export default function Component(props) {
   // console.log(versionJson)
   React.useEffect(() => {
     if (dump && storage === null) {
-      (async () => {
-        const keys = await AsyncStorage.getAllKeys();
-        const state = await AsyncStorage.multiGet(keys);
-        setStorage(state);
+      ;(async () => {
+        const keys = await AsyncStorage.getAllKeys()
+        const state = await AsyncStorage.multiGet(keys)
+        setStorage(state)
       })()
     }
   })
@@ -49,7 +49,7 @@ export function Pure({
       <Button
         title="Oops"
         onPress={() => {
-          throw new Error("oops");
+          throw new Error("oops")
         }}
       />,
     ],
@@ -58,7 +58,7 @@ export function Pure({
       <Button
         title="Oops"
         onPress={() => {
-          console.error("oops");
+          console.error("oops")
         }}
       />,
     ],
@@ -67,7 +67,7 @@ export function Pure({
       <Button
         title="Oops"
         onPress={() => {
-          console.warn("oops");
+          console.warn("oops")
         }}
       />,
     ],
@@ -89,15 +89,15 @@ export function Pure({
     ...(dump ? storage || [] : []).map(([key, val]: [string, string]) => [
       'AsyncStorage["' + key + '"]: \n' + val,
     ]),
-  ];
+  ]
   return (
     <ScrollView>
       <Text style={{ fontSize: 24, borderBottomWidth: 1 }}>Debug</Text>
       <View>{items.map(renderEntry)}</View>
     </ScrollView>
-  );
+  )
 }
-Component.Pure = Pure;
+Component.Pure = Pure
 
 function renderEntry([key, val], i) {
   if (typeof val === "string") {
@@ -113,7 +113,7 @@ function renderEntry([key, val], i) {
         <Text>{key}: </Text>
         <Text style={{ alignSelf: "flex-end" }}>{val}</Text>
       </View>
-    );
+    )
   } else if (React.isValidElement(val)) {
     return (
       <View
@@ -127,7 +127,7 @@ function renderEntry([key, val], i) {
         <Text>{key}: </Text>
         <View>{val}</View>
       </View>
-    );
+    )
   } else {
     return (
       <View
@@ -140,6 +140,6 @@ function renderEntry([key, val], i) {
       >
         <Text>{key}</Text>
       </View>
-    );
+    )
   }
 }

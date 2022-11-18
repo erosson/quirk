@@ -3,28 +3,28 @@
  * to not warn on Android
  */
 
-import { Platform } from "react-native";
-import * as Haptic from "expo-haptics";
+import { Platform } from "react-native"
+import * as Haptic from "expo-haptics"
 
 export default {
   notification: (type) => {
     if (Platform.OS !== "ios") {
-      return;
+      return
     }
 
-    Haptic.notificationAsync(type);
+    Haptic.notificationAsync(type)
   },
   selection: () => {
     if (Platform.OS !== "ios") {
-      return;
+      return
     }
-    Haptic.selectionAsync();
+    Haptic.selectionAsync()
   },
   impact: (type) => {
     if (Platform.OS !== "ios") {
-      return;
+      return
     }
 
-    Haptic.impactAsync(type);
+    Haptic.impactAsync(type)
   },
-};
+}

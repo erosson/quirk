@@ -17,59 +17,59 @@
  * I tried a bunch and they all had unruly awful problems. 🤷‍
  */
 
-import { Thought, SavedThought, newThought, ThoughtGroup } from "./thoughts";
-import { defaults, isObject, has } from "lodash";
+import { Thought, SavedThought, newThought, ThoughtGroup } from "./thoughts"
+import { defaults, isObject, has } from "lodash"
 
 export function validThought(thought: Thought | SavedThought): boolean {
   if (!thought || !isObject(thought)) {
-    return false;
+    return false
   }
 
   // Check that we generally have the correct properties
   // The validate library can't handle empty strings, so this is a double check
   if (Object.keys(thought).length < 4) {
-    return false;
+    return false
   }
 
   if (typeof thought.automaticThought !== "string") {
-    return false;
+    return false
   }
 
-  return true;
+  return true
 }
 
 export function validThoughtGroup(group: ThoughtGroup): boolean {
   if (!group) {
-    return false;
+    return false
   }
 
   const hasCorrectKeys =
-    has(group, "date") && has(group, "thoughts[0].automaticThought");
+    has(group, "date") && has(group, "thoughts[0].automaticThought")
   if (!hasCorrectKeys) {
-    return false;
+    return false
   }
 
   if (!group.date) {
-    return false;
+    return false
   }
 
   if (!group.thoughts.every(validThought)) {
-    return false;
+    return false
   }
 
-  return true;
+  return true
 }
 
 // Attempts to "fix" an incorrect thought with sensible defaults
 export function maybeRepairThought(thought: any): Thought {
   // Never repair a valid thought.
   if (validThought(thought)) {
-    return thought as Thought;
+    return thought as Thought
   }
 
   if (!thought || !isObject(thought)) {
-    return newThought();
+    return newThought()
   }
 
-  return defaults(thought, newThought());
+  return defaults(thought, newThought())
 }

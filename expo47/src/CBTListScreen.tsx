@@ -1,30 +1,30 @@
-import React from "react";
+import React from "react"
 import {
   TouchableOpacity,
   ScrollView,
   StatusBar,
   View,
   Image,
-} from "react-native";
-import { getExercises, deleteExercise } from "./thoughtstore";
-import { Header, Row, Container, IconButton, Label, Paragraph } from "./ui";
-import theme from "./theme";
-import {Screen, ScreenProps} from "./screens";
-import { SavedThought, ThoughtGroup, groupThoughtsByDay } from "./thoughts";
-import universalHaptic from "./haptic";
-import Constants from "expo-constants";
-import * as Haptic from "expo-haptics";
-import { validThoughtGroup } from "./sanitize";
-import Alerter from "./alerter";
-import alerts from "./alerts";
+} from "react-native"
+import { getExercises, deleteExercise } from "./thoughtstore"
+import { Header, Row, Container, IconButton, Label, Paragraph } from "./ui"
+import theme from "./theme"
+import { Screen, ScreenProps } from "./screens"
+import { SavedThought, ThoughtGroup, groupThoughtsByDay } from "./thoughts"
+import universalHaptic from "./haptic"
+import Constants from "expo-constants"
+import * as Haptic from "expo-haptics"
+import { validThoughtGroup } from "./sanitize"
+import Alerter from "./alerter"
+import alerts from "./alerts"
 import {
   HistoryButtonLabelSetting,
   getHistoryButtonLabel,
-} from "./SettingsScreen";
-import i18n from "./i18n";
-import { emojiForSlug } from "./distortions";
-import { take } from "lodash";
-import { FadesIn } from "./animations";
+} from "./SettingsScreen"
+import i18n from "./i18n"
+import { emojiForSlug } from "./distortions"
+import { take } from "lodash"
+import { FadesIn } from "./animations"
 
 const ThoughtItem = ({
   thought,
@@ -32,10 +32,10 @@ const ThoughtItem = ({
   onPress,
   onDelete,
 }: {
-  thought: SavedThought;
-  historyButtonLabel: HistoryButtonLabelSetting;
-  onPress: (thought: SavedThought | boolean) => void;
-  onDelete: (thought: SavedThought) => void;
+  thought: SavedThought
+  historyButtonLabel: HistoryButtonLabelSetting
+  onPress: (thought: SavedThought | boolean) => void
+  onDelete: (thought: SavedThought) => void
 }) => (
   <Row style={{ marginBottom: 18 }}>
     <TouchableOpacity
@@ -102,7 +102,7 @@ const ThoughtItem = ({
       onPress={() => onDelete(thought)}
     />
   </Row>
-);
+)
 
 const EmptyThoughtIllustration = () => (
   <View
@@ -124,13 +124,13 @@ const EmptyThoughtIllustration = () => (
       {i18n.t("cbt_list.empty")}
     </Label>
   </View>
-);
+)
 
 interface ThoughtListProps {
-  groups: ThoughtGroup[];
-  historyButtonLabel: HistoryButtonLabelSetting;
-  navigateToViewer: (thought: SavedThought) => void;
-  onItemDelete: (thought: SavedThought) => void;
+  groups: ThoughtGroup[]
+  historyButtonLabel: HistoryButtonLabelSetting
+  navigateToViewer: (thought: SavedThought) => void
+  onItemDelete: (thought: SavedThought) => void
 }
 
 const ThoughtItemList = ({
@@ -140,7 +140,7 @@ const ThoughtItemList = ({
   historyButtonLabel,
 }: ThoughtListProps) => {
   if (!groups || groups.length === 0) {
-    return <EmptyThoughtIllustration />;
+    return <EmptyThoughtIllustration />
   }
 
   const items = groups.map((group) => {
@@ -152,118 +152,117 @@ const ThoughtItemList = ({
         onDelete={onItemDelete}
         historyButtonLabel={historyButtonLabel}
       />
-    ));
+    ))
 
     const isToday =
-      new Date(group.date).toDateString() === new Date().toDateString();
+      new Date(group.date).toDateString() === new Date().toDateString()
 
     return (
       <View key={group.date} style={{ marginBottom: 18 }}>
         <Label>{isToday ? i18n.t("cbt_list.today") : group.date}</Label>
         {thoughts}
       </View>
-    );
-  });
+    )
+  })
 
-  return <>{items}</>;
-};
+  return <>{items}</>
+}
 
 type Props = ScreenProps<Screen.CBT_LIST>
 
 interface State {
-  groups: ThoughtGroup[];
-  historyButtonLabel: HistoryButtonLabelSetting;
-  isReady: boolean;
+  groups: ThoughtGroup[]
+  historyButtonLabel: HistoryButtonLabelSetting
+  isReady: boolean
 }
 
 class CBTListScreen extends React.Component<Props, State> {
   static navigationOptions = {
     header: null,
-  };
+  }
 
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       groups: [],
       historyButtonLabel: "alternative-thought",
       isReady: false,
-    };
+    }
 
     this.props.navigation.addListener("willFocus", () => {
-      this.loadSettings();
-    });
+      this.loadSettings()
+    })
   }
 
   loadExercises = (): void => {
     const fixTimestamps = (json): SavedThought => {
-      const createdAt: Date = new Date(json.createdAt);
-      const updatedAt: Date = new Date(json.updatedAt);
+      const createdAt: Date = new Date(json.createdAt)
+      const updatedAt: Date = new Date(json.updatedAt)
       return {
         createdAt,
         updatedAt,
         ...json,
-      };
-    };
+      }
+    }
 
     getExercises()
       .then((data) => {
         const thoughts: SavedThought[] = data
           .map(([_, value]) => JSON.parse(value))
           .filter((n) => n) // Worst case scenario, if bad data gets in we don't show it.
-          .map(fixTimestamps);
+          .map(fixTimestamps)
 
-        const groups: ThoughtGroup[] = groupThoughtsByDay(thoughts).filter(
-          validThoughtGroup
-        );
+        const groups: ThoughtGroup[] =
+          groupThoughtsByDay(thoughts).filter(validThoughtGroup)
 
-        this.setState({ groups });
+        this.setState({ groups })
       })
       .catch(console.error)
       .finally(() => {
         this.setState({
           isReady: true,
-        });
-      });
-  };
+        })
+      })
+  }
 
   loadSettings = (): void => {
     getHistoryButtonLabel().then((historyButtonLabel) => {
-      this.setState({ historyButtonLabel });
-    });
-  };
+      this.setState({ historyButtonLabel })
+    })
+  }
 
   componentDidMount = () => {
-    this.loadExercises();
-    this.loadSettings();
-  };
+    this.loadExercises()
+    this.loadSettings()
+  }
 
   navigateToSettings = () => {
-    this.props.navigation.push(Screen.SETTING);
-  };
+    this.props.navigation.push(Screen.SETTING)
+  }
 
   navigateToForm = () => {
-    universalHaptic.impact(Haptic.ImpactFeedbackStyle.Light);
+    universalHaptic.impact(Haptic.ImpactFeedbackStyle.Light)
     this.props.navigation.navigate(Screen.CBT_FORM, {
       clear: true,
-    });
-  };
+    })
+  }
 
   navigateToViewerWithThought = (thought: SavedThought) => {
     this.props.navigation.push(Screen.FINISHED_THOUGHT, {
       thought,
-    });
-  };
+    })
+  }
 
   onItemDelete = (thought: SavedThought) => {
     // Ignore the typescript error here, Expo's v31 has a bug
     // Upgrade to 32 when it's released to fix
-    universalHaptic.notification(Haptic.NotificationFeedbackType.Success);
+    universalHaptic.notification(Haptic.NotificationFeedbackType.Success)
 
-    deleteExercise(thought.uuid).then(() => this.loadExercises());
-  };
+    deleteExercise(thought.uuid).then(() => this.loadExercises())
+  }
 
   render() {
-    const { groups, historyButtonLabel, isReady } = this.state;
+    const { groups, historyButtonLabel, isReady } = this.state
 
     return (
       <View style={{ backgroundColor: theme.lightOffwhite }}>
@@ -311,8 +310,8 @@ class CBTListScreen extends React.Component<Props, State> {
         </ScrollView>
         <Alerter alerts={alerts} />
       </View>
-    );
+    )
   }
 }
 
-export default CBTListScreen;
+export default CBTListScreen

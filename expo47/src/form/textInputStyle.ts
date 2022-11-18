@@ -1,4 +1,4 @@
-import theme from "../theme";
+import theme from "../theme"
 
 export const textInputStyle = {
   height: 156,
@@ -10,5 +10,5 @@ export const textInputStyle = {
   borderColor: theme.lightGray,
   borderWidth: 1,
   color: theme.darkText,
-};
-export const textInputPlaceholderColor = theme.veryLightText;
+}
+export const textInputPlaceholderColor = theme.veryLightText

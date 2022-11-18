@@ -1,27 +1,27 @@
-import i18n from "./i18n";
-import { Platform } from "react-native";
+import i18n from "./i18n"
+import { Platform } from "react-native"
 
 export interface CognitiveDistortion {
-  emoji?: string;
-  label: string;
-  slug: string;
-  selected?: boolean;
-  description: string;
+  emoji?: string
+  label: string
+  slug: string
+  selected?: boolean
+  description: string
 }
 
 const emj = (first: string, fallback: string) => {
   // I'm not saying iOS is better, but wider support for emojis is reaaallll nice
   if (Platform.OS === "ios") {
-    return first;
+    return first
   }
 
   // update your phones people
   if ((Platform.Version as number) <= 23) {
-    return fallback;
+    return fallback
   }
 
-  return first;
-};
+  return first
+}
 
 const distortions: () => CognitiveDistortion[] = () =>
   [
@@ -102,23 +102,23 @@ const distortions: () => CognitiveDistortion[] = () =>
       description: i18n.t("other_blaming_one_liner"),
     },
   ].sort((first, second) => {
-    const firstLabel = first.label.toUpperCase();
-    const secondLabel = second.label.toUpperCase();
+    const firstLabel = first.label.toUpperCase()
+    const secondLabel = second.label.toUpperCase()
 
     if (firstLabel < secondLabel) {
-      return -1;
+      return -1
     }
 
     if (firstLabel > secondLabel) {
-      return 1;
+      return 1
     }
 
-    return 0;
-  }); // Alphabetical sorting
+    return 0
+  }) // Alphabetical sorting
 
 export const emojiForSlug = (slug: string): string => {
-  const distortion = distortions().find((dist) => dist.slug === slug);
-  return distortion ? distortion.emoji : "🤷‍";
-};
+  const distortion = distortions().find((dist) => dist.slug === slug)
+  return distortion ? distortion.emoji : "🤷‍"
+}
 
-export default distortions;
+export default distortions

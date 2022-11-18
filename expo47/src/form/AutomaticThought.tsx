@@ -1,15 +1,15 @@
-import React from "react";
-import { SubHeader } from "../ui";
-import { View, TextInput } from "react-native";
-import i18n from "../i18n";
-import { textInputStyle, textInputPlaceholderColor } from "./textInputStyle";
+import React from "react"
+import { SubHeader } from "../ui"
+import { View, TextInput } from "react-native"
+import i18n from "../i18n"
+import { textInputStyle, textInputPlaceholderColor } from "./textInputStyle"
 
 export default ({
   value,
   onChange,
 }: {
-  value: string;
-  onChange: (v: string) => void;
+  value: string
+  onChange: (v: string) => void
 }) => (
   <>
     <View
@@ -35,4 +35,4 @@ export default ({
       />
     </View>
   </>
-);
+)

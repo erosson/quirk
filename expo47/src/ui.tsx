@@ -1,24 +1,24 @@
-import React from "react";
+import React from "react"
 import {
   Text,
   View,
   TouchableOpacity,
   ImageSourcePropType,
   Image,
-} from "react-native";
-import PropTypes from "prop-types";
-import theme from "./theme";
-import { Feather } from "@expo/vector-icons";
-import distortions, { CognitiveDistortion } from "./distortions";
-import { find } from "lodash";
+} from "react-native"
+import PropTypes from "prop-types"
+import theme from "./theme"
+import { Feather } from "@expo/vector-icons"
+import distortions, { CognitiveDistortion } from "./distortions"
+import { find } from "lodash"
 
 export interface ParentComponent {
-  children: any;
-  style?: object;
+  children: any
+  style?: object
 }
 
 export interface Component {
-  style?: object;
+  style?: object
 }
 
 export const Row = ({ children, style }: { children: any; style?: any }) => (
@@ -31,12 +31,12 @@ export const Row = ({ children, style }: { children: any; style?: any }) => (
   >
     {children}
   </View>
-);
+)
 
 Row.propTypes = {
   children: PropTypes.any.isRequired,
   style: PropTypes.object,
-};
+}
 
 export const FormContainer = ({ children, ...style }) => (
   <View
@@ -47,12 +47,12 @@ export const FormContainer = ({ children, ...style }) => (
   >
     {children}
   </View>
-);
+)
 
 FormContainer.propTypes = {
   children: PropTypes.any.isRequired,
   style: PropTypes.object,
-};
+}
 
 export const Header = ({
   children,
@@ -72,12 +72,12 @@ export const Header = ({
   >
     {children}
   </Text>
-);
+)
 
 Header.propTypes = {
   children: PropTypes.any.isRequired,
   style: PropTypes.object,
-};
+}
 
 export const SubHeader = ({ children, style }: ParentComponent) => (
   <Text
@@ -91,7 +91,7 @@ export const SubHeader = ({ children, style }: ParentComponent) => (
   >
     {children}
   </Text>
-);
+)
 
 export const SelectorTextItem = ({
   text,
@@ -171,20 +171,20 @@ export const SelectorTextItem = ({
       </View>
     </View>
   </TouchableOpacity>
-);
+)
 
 SelectorTextItem.propTypes = {
   text: PropTypes.string.isRequired,
   selected: PropTypes.bool,
   onPress: PropTypes.func.isRequired,
-};
+}
 
 export const RoundedSelector = ({
   items,
   onPress,
   style,
 }: {
-  onPress: (slug: string) => void;
+  onPress: (slug: string) => void
 } & any) => (
   <View
     style={{
@@ -193,12 +193,12 @@ export const RoundedSelector = ({
     }}
   >
     {items.map(({ slug, selected }) => {
-      const item = find(distortions(), { slug });
+      const item = find(distortions(), { slug })
       if (!item) {
-        return null;
+        return null
       }
 
-      const cogDistortion = item as CognitiveDistortion;
+      const cogDistortion = item as CognitiveDistortion
 
       return (
         <SelectorTextItem
@@ -209,25 +209,25 @@ export const RoundedSelector = ({
           selected={selected}
           onPress={() => onPress(slug)}
         />
-      );
+      )
     })}
   </View>
-);
+)
 
 RoundedSelector.propTypes = {
   items: PropTypes.array.isRequired,
   onPress: PropTypes.func.isRequired,
   style: PropTypes.object,
-};
+}
 
 export const RoundedSelectorButton = ({
   title,
   selected = false,
   onPress,
 }: {
-  title: string;
-  selected?: boolean;
-  onPress: () => void;
+  title: string
+  selected?: boolean
+  onPress: () => void
 }) => (
   <TouchableOpacity
     onPress={onPress}
@@ -261,14 +261,14 @@ export const RoundedSelectorButton = ({
 
     {selected && <Feather name={"check"} size={16} color={"white"} />}
   </TouchableOpacity>
-);
+)
 
 export const FloatingCard = ({
   children,
   style,
 }: {
-  children: any;
-  style?: any;
+  children: any
+  style?: any
 }) => (
   <View
     style={{
@@ -288,7 +288,7 @@ export const FloatingCard = ({
   >
     {children}
   </View>
-);
+)
 
 export const GhostButtonWithGuts = ({
   onPress,
@@ -298,12 +298,12 @@ export const GhostButtonWithGuts = ({
   children,
   style,
 }: {
-  onPress: () => void;
-  borderColor: string;
-  disabled?: boolean;
-  flex?: number;
-  children: any;
-  style?: any;
+  onPress: () => void
+  borderColor: string
+  disabled?: boolean
+  flex?: number
+  children: any
+  style?: any
 }) => (
   <TouchableOpacity
     style={{
@@ -320,7 +320,7 @@ export const GhostButtonWithGuts = ({
   >
     {children}
   </TouchableOpacity>
-);
+)
 
 export const GhostButton = ({
   title,
@@ -334,16 +334,16 @@ export const GhostButton = ({
   fontSize,
   style,
 }: {
-  title: string;
-  onPress: () => void;
-  borderColor: string;
-  textColor: string;
-  width?: number | string;
-  height?: number;
-  disabled?: boolean;
-  flex?: number;
-  fontSize?: number;
-  style?: any;
+  title: string
+  onPress: () => void
+  borderColor: string
+  textColor: string
+  width?: number | string
+  height?: number
+  disabled?: boolean
+  flex?: number
+  fontSize?: number
+  style?: any
 }) => (
   <TouchableOpacity
     style={{
@@ -374,7 +374,7 @@ export const GhostButton = ({
       {title}
     </Text>
   </TouchableOpacity>
-);
+)
 
 export const ActionButton = ({
   title,
@@ -387,15 +387,15 @@ export const ActionButton = ({
   flex,
   opacity,
 }: {
-  title: string;
-  onPress: () => void;
-  fillColor?: string;
-  textColor?: string;
-  width?: number | string;
-  height?: number;
-  disabled?: boolean;
-  flex?: number;
-  opacity?: number;
+  title: string
+  onPress: () => void
+  fillColor?: string
+  textColor?: string
+  width?: number | string
+  height?: number
+  disabled?: boolean
+  flex?: number
+  opacity?: number
 }) => (
   <TouchableOpacity
     style={{
@@ -426,13 +426,13 @@ export const ActionButton = ({
       {title}
     </Text>
   </TouchableOpacity>
-);
+)
 
 ActionButton.defaultProps = {
   fillColor: theme.blue,
   textColor: "white",
   width: 120,
-};
+}
 
 export const IconButton = ({
   featherIconName,
@@ -441,11 +441,11 @@ export const IconButton = ({
   style,
   hasBadge,
 }: {
-  featherIconName: any;
-  accessibilityLabel: string;
-  onPress: () => void;
-  style?: object;
-  hasBadge?: boolean;
+  featherIconName: any
+  accessibilityLabel: string
+  onPress: () => void
+  style?: object
+  hasBadge?: boolean
 }) => (
   <TouchableOpacity
     style={{
@@ -477,13 +477,13 @@ export const IconButton = ({
     )}
     <Feather name={featherIconName} size={24} color={theme.veryLightText} />
   </TouchableOpacity>
-);
+)
 
 IconButton.propTypes = {
   featherIconName: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,
   style: PropTypes.any,
-};
+}
 
 export const Paragraph = ({ children, style }: ParentComponent) => (
   <Text
@@ -496,11 +496,11 @@ export const Paragraph = ({ children, style }: ParentComponent) => (
   >
     {children}
   </Text>
-);
+)
 
 Paragraph.propTypes = {
   children: PropTypes.any.isRequired,
-};
+}
 
 export const Container = ({ children, style }: ParentComponent) => (
   <View
@@ -515,11 +515,11 @@ export const Container = ({ children, style }: ParentComponent) => (
   >
     {children}
   </View>
-);
+)
 
 Container.propTypes = {
   children: PropTypes.any,
-};
+}
 
 export const Label = ({ children, ...style }) => (
   <Text
@@ -533,11 +533,11 @@ export const Label = ({ children, ...style }) => (
   >
     {children}
   </Text>
-);
+)
 
 export interface IllustrationComponent {
-  style?: object;
-  source: ImageSourcePropType;
+  style?: object
+  source: ImageSourcePropType
 }
 
 export const Illustration = ({ style, source }: IllustrationComponent) => (
@@ -545,19 +545,19 @@ export const Illustration = ({ style, source }: IllustrationComponent) => (
     source={source}
     style={{ width: 200, height: 150, alignSelf: "center", ...style }}
   />
-);
+)
 
 export const ThoughtDook = ({ style, source }: IllustrationComponent) => (
   <Image
     source={source}
     style={{ width: 48, height: 48, alignSelf: "center", ...style }}
   />
-);
+)
 
 export const I = ({ children }) => (
   <Text style={{ fontStyle: "italic" }}>{children}</Text>
-);
+)
 
 export const B = ({ children }) => (
   <Text style={{ fontWeight: "bold" }}>{children}</Text>
-);
+)

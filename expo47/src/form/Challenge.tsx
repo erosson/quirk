@@ -1,30 +1,30 @@
-import React from "react";
-import { SubHeader } from "../ui";
-import { View, TextInput } from "react-native";
-import i18n from "../i18n";
-import { textInputStyle, textInputPlaceholderColor } from "./textInputStyle";
-import theme from "../theme";
+import React from "react"
+import { SubHeader } from "../ui"
+import { View, TextInput } from "react-native"
+import i18n from "../i18n"
+import { textInputStyle, textInputPlaceholderColor } from "./textInputStyle"
+import theme from "../theme"
 
-const CHALLENGE = `George might be busy. I can't expect to have immediate access to his time.`;
+const CHALLENGE = `George might be busy. I can't expect to have immediate access to his time.`
 
 export default class extends React.Component<
   {
-    value: string;
-    onChange: (v: string) => void;
+    value: string
+    onChange: (v: string) => void
   },
   {
-    showExample: boolean;
+    showExample: boolean
   }
 > {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       showExample: false,
-    };
+    }
   }
 
   render() {
-    const { value, onChange } = this.props;
+    const { value, onChange } = this.props
 
     return (
       <>
@@ -57,6 +57,6 @@ export default class extends React.Component<
           />
         </View>
       </>
-    );
+    )
   }
 }
