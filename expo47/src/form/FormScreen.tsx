@@ -226,8 +226,7 @@ export default class extends React.Component<Props, FormScreenState> {
               accessibilityLabel={i18n.t("accessibility.list_button")}
               featherIconName={"list"}
               onPress={() => {
-                // this.props.navigation.push(Screen.CBT_LIST);
-                this.props.navigation.push(Screen.DEBUG);
+                this.props.navigation.push(Screen.CBT_LIST);
               }}
             />
           </Row>
