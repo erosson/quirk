@@ -229,10 +229,9 @@ export default class extends React.Component<ScreenProps> {
 
   stopOnBoarding = () => {
     haptic.notification(Haptic.NotificationFeedbackType.Success);
-    // this.props.navigation.replace(CBT_FORM_SCREEN, {
-    //   fromOnboarding: true,
-    // });
-    this.props.navigation.replace(Screen.DEBUG)
+    this.props.navigation.replace(Screen.CBT_FORM, {
+      fromOnboarding: true,
+    });
   };
 
   _renderItem = ({ item, index }) => {

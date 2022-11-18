@@ -22,16 +22,18 @@ export type ParamList = {
         thought?: SavedThought
         slide?: Slides,
     } | undefined,
-    // [Screen.CBT_LIST]: undefined,
+    [Screen.CBT_LIST]: undefined,
     [Screen.ONBOARDING]: undefined,
     [Screen.EXPLANATION]: undefined,
-    // [Screen.SETTING]: undefined,
-    // [Screen.INIT]: undefined,
+    [Screen.SETTING]: undefined,
+    [Screen.INIT]: undefined,
     [Screen.FINISHED_THOUGHT]: {
         // TODO replace with thought-id
         thought: SavedThought,
     },
-    // [Screen.LOCK]: undefined,
+    [Screen.LOCK]: {
+        isSettingCode: boolean,
+    },
     [Screen.DEBUG]: undefined,
 }
 
