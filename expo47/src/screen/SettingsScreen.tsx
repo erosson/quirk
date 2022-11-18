@@ -1,10 +1,10 @@
 import React from "react"
 import { ScrollView, StatusBar, Platform } from "react-native"
 import * as Notifications from "expo-notifications"
-import theme from "./theme"
+import theme from "../theme"
 import Constants from "expo-constants"
 import * as Linking from "expo-linking"
-import * as Feature from "./feature"
+import * as Feature from "../feature"
 import {
   Header,
   Row,
@@ -14,15 +14,15 @@ import {
   Paragraph,
   RoundedSelectorButton,
   ActionButton,
-} from "./ui"
-import { Screen, ScreenProps } from "./screens"
+} from "../ui"
+import { Screen, ScreenProps } from "../screens"
 import {
   setSetting,
   removeSetting,
   getSetting,
   getSettingOrSetDefault,
-} from "./setting/settingstore"
-import { hasPincode, clearPincode } from "./lock/lockstore"
+} from "../setting/settingstore"
+import { hasPincode, clearPincode } from "../lockstore"
 import {
   HISTORY_BUTTON_LABEL_KEY,
   HISTORY_BUTTON_LABEL_DEFAULT,
@@ -30,9 +30,9 @@ import {
   LOCALE_KEY,
   HistoryButtonLabelSetting,
   isHistoryButtonLabelSetting,
-} from "./setting"
-import i18n from "./i18n"
-import { FadesIn } from "./animations"
+} from "../setting"
+import i18n from "../i18n"
+import { FadesIn } from "../animations"
 import * as Localization from "expo-localization"
 import { Picker } from "@react-native-picker/picker"
 
@@ -107,8 +107,8 @@ export async function setNotifications(
       trigger: feature.remindersEachMinute
         ? { channelId: "default", repeats: true, seconds: 60 } // ridiculously often, for debugging
         : // TODO use dailynotificationtrigger/calendarnotificationtrigger
-          // https://docs.expo.dev/versions/latest/sdk/notifications/#notificationcontentinput
-          { channelId: "default", repeats: true, seconds: 86400 },
+        // https://docs.expo.dev/versions/latest/sdk/notifications/#notificationcontentinput
+        { channelId: "default", repeats: true, seconds: 86400 },
     })
   }
   setSetting(NOTIFICATIONS_KEY, JSON.stringify(enabled))

@@ -5,11 +5,11 @@ import theme from "../theme"
 import Constants from "expo-constants"
 import * as Haptic from "expo-haptics"
 import i18n from "../i18n"
-import FinishedThoughtView from "./FinishedThoughtView"
+import FinishedThoughtView from "../form/FinishedThoughtView"
 import { SavedThought } from "../thoughts"
 import haptic from "../haptic"
 import { Screen, ScreenProps } from "../screens"
-import { Slides } from "./FormView"
+import { Slides } from "../form/FormView"
 
 type Props = ScreenProps<Screen.FINISHED_THOUGHT>
 

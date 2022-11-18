@@ -1,7 +1,7 @@
 import React from "react"
 import { View } from "react-native"
-import { hasPincode } from "./lock/lockstore"
-import { Screen, ScreenProps } from "./screens"
+import { hasPincode } from "../lockstore"
+import { Screen, ScreenProps } from "../screens"
 
 type Props = ScreenProps<Screen.INIT>
 
