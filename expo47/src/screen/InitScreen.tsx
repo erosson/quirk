@@ -1,31 +1,29 @@
 import React from "react"
 import { View } from "react-native"
 import { hasPincode } from "../lockstore"
-import { Screen, ScreenProps } from "../screens"
+import { Screen, ScreenProps, NavigationProp } from "../screens"
 
 type Props = ScreenProps<Screen.INIT>
 
-export default class InitScreen extends React.Component<Props, {}> {
-  async componentDidMount() {
-    this.redirectToFormScreen()
+async function redirectToFormScreen(navigation: NavigationProp): Promise<void> {
+  // If we're locked, go to the lock instead
+  // Check if we should show a pincode
+  const isLocked = await hasPincode()
+  if (isLocked) {
+    navigation.replace(Screen.LOCK, { isSettingCode: false })
+    return
   }
 
-  async redirectToFormScreen() {
-    // If we're locked, go to the lock instead
-    // Check if we should show a pincode
-    const isLocked = await hasPincode()
-    if (isLocked) {
-      this.props.navigation.replace(Screen.LOCK, { isSettingCode: false })
-      return
-    }
+  // We replace here because you shouldn't be able to go "back" to this screen
+  navigation.replace(Screen.CBT_FORM, {
+    clear: true,
+  })
+}
 
-    // We replace here because you shouldn't be able to go "back" to this screen
-    this.props.navigation.replace(Screen.CBT_FORM, {
-      clear: true,
-    })
-  }
+export default function InitScreen(props: Props): JSX.Element {
+  React.useEffect(() => {
+    redirectToFormScreen(props.navigation)
+  })
 
-  render() {
-    return <View />
-  }
+  return <View />
 }

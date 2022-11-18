@@ -26,7 +26,7 @@ const RecordStep = () => (
     }}
   >
     <Image
-      source={require("../assets/looker/Looker.png")}
+      source={require("../../assets/looker/Looker.png")}
       style={{
         width: 156,
         height: 156,
@@ -73,7 +73,7 @@ const ChallengeStep = () => (
     }}
   >
     <Image
-      source={require("../assets/eater/eater.png")}
+      source={require("../../assets/eater/eater.png")}
       style={{
         width: 156,
         height: 156,
@@ -108,7 +108,7 @@ const ChangeStep = () => (
     }}
   >
     <Image
-      source={require("../assets/logo/logo.png")}
+      source={require("../../assets/logo/logo.png")}
       style={{
         width: 156,
         height: 156,
@@ -145,7 +145,7 @@ const RemindersStep = ({ onContinue }) => {
       }}
     >
       <Image
-        source={require("../assets/notifications/notifications.png")}
+        source={require("../../assets/notifications/notifications.png")}
         style={{
           width: 256,
           height: 196,
