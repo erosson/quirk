@@ -9,6 +9,7 @@ import { isCorrectPincode, setPincode } from "../lockstore"
 import { Screen, ScreenProps } from "../screens"
 import { get } from "lodash"
 import haptic from "../haptic"
+import * as AsyncState from "../async-state"
 
 type Props = ScreenProps<Screen.LOCK>
 
@@ -62,200 +63,159 @@ const Notifier = ({ isActive }) => (
 
 const BUTTON_SIZE = 96
 
-export default class extends React.Component<
-  Props,
-  {
-    isReady: boolean
-    isSettingCode: boolean
-    code: string
-  }
-> {
-  static navigationOptions = {
-    header: null,
-  }
+export default function LockScreen(props: Props) {
+  const { navigation } = props
+  const { isSettingCode } = props.route.params ?? {}
+  const [code, setCode] = React.useState<string>("")
+  const isComplete = code.length >= 4
 
-  state = {
-    isReady: false,
-    isSettingCode: false,
-    code: "",
-  }
-
-  async componentDidMount() {
-    this.props.navigation.addListener("willFocus", async (payload) => {
-      const isSettingCode = get(payload, "state.params.isSettingCode", false)
-      this.setState({
-        isSettingCode,
-      })
-    })
-
-    // Purely just for a smooth fade in
-    setTimeout(() => {
-      this.setState({ isReady: true })
-    }, 100)
-  }
-
-  onEnterCode = async (key: string) => {
+  async function onEnterCode(key: string) {
     haptic.impact(Haptic.ImpactFeedbackStyle.Light)
+    if (!isComplete) {
+      setCode(code + key)
+    }
+  }
 
-    await this.setState((prevState) => {
-      if (prevState.code.length === 4) {
-        return prevState
-      }
-      return {
-        ...prevState,
-        code: prevState.code + key,
-      }
-    })
+  async function onBackspace() {
+    haptic.impact(Haptic.ImpactFeedbackStyle.Medium)
+    setCode(code.substring(0, code.length - 1))
+  }
 
-    if (this.state.code.length !== 4) {
+  // run when a code is complete
+  AsyncState.useAsyncEffect(async () => {
+    if (!isComplete) {
       return
     }
-
-    if (this.state.isSettingCode) {
-      await setPincode(this.state.code)
+    // settings: set a new code
+    if (isSettingCode) {
+      await setPincode(code)
       haptic.notification(Haptic.NotificationFeedbackType.Success)
-      this.props.navigation.replace(Screen.CBT_FORM)
+      props.navigation.replace(Screen.CBT_FORM)
     }
-
-    const isGood = await isCorrectPincode(this.state.code)
-    if (isGood) {
-      haptic.notification(Haptic.NotificationFeedbackType.Success)
-      this.props.navigation.replace(Screen.CBT_FORM)
-    } else {
-      this.setState({
-        code: "",
-      })
-      haptic.notification(Haptic.NotificationFeedbackType.Error)
+    // try unlocking the screen
+    else {
+      const isGood = await isCorrectPincode(code)
+      if (isGood) {
+        haptic.notification(Haptic.NotificationFeedbackType.Success)
+        props.navigation.replace(Screen.CBT_FORM)
+      } else {
+        setCode("")
+        haptic.notification(Haptic.NotificationFeedbackType.Error)
+      }
     }
-  }
+  }, [isComplete])
 
-  onBackspace = () => {
-    haptic.impact(Haptic.ImpactFeedbackStyle.Medium)
-    this.setState((prevState) => {
-      if (prevState.code.length === 0) {
-        return prevState
-      }
-      return {
-        ...prevState,
-        code: prevState.code.substring(0, prevState.code.length - 1),
-      }
-    })
-  }
-
-  render() {
-    const { code, isSettingCode } = this.state
-    return (
-      <FadesIn
+  return (
+    <FadesIn
+      style={{
+        backgroundColor: theme.pink,
+        height: "100%",
+      }}
+      pose="visible"
+    >
+      <StatusBar barStyle="dark-content" />
+      <Container
         style={{
+          flex: 1,
+          paddingLeft: 12,
+          paddingRight: 12,
+          paddingTop: 24,
+          marginTop: Constants.statusBarHeight,
           backgroundColor: theme.pink,
-          height: "100%",
+          justifyContent: "center",
         }}
-        pose={this.state.isReady ? "visible" : "hidden"}
       >
-        <StatusBar barStyle="dark-content" />
-        <Container
+        <Row
           style={{
-            flex: 1,
-            paddingLeft: 12,
-            paddingRight: 12,
-            paddingTop: 24,
-            marginTop: Constants.statusBarHeight,
-            backgroundColor: theme.pink,
-            justifyContent: "center",
+            alignSelf: "center",
           }}
         >
-          <Row
+          <Header
             style={{
-              alignSelf: "center",
+              fontSize: 32,
+              color: "white",
+              marginHorizontal: 24,
+              textAlign: "center",
             }}
           >
-            <Header
-              style={{
-                fontSize: 32,
-                color: "white",
-                marginHorizontal: 24,
-                textAlign: "center",
-              }}
-            >
-              {isSettingCode
-                ? "Please set a passcode"
-                : "Please enter your passcode."}
-            </Header>
-          </Row>
-        </Container>
+            {isSettingCode
+              ? "Please set a passcode"
+              : "Please enter your passcode."}
+          </Header>
+        </Row>
+      </Container>
 
-        <Container
+      <Container
+        style={{
+          flex: 2,
+          paddingLeft: 12,
+          paddingRight: 12,
+          paddingTop: 24,
+          backgroundColor: "white",
+          borderTopWidth: 2,
+          borderColor: theme.darkPink,
+        }}
+      >
+        <Row
           style={{
-            flex: 2,
-            paddingLeft: 12,
-            paddingRight: 12,
-            paddingTop: 24,
-            backgroundColor: "white",
-            borderTopWidth: 2,
-            borderColor: theme.darkPink,
+            marginTop: 32,
+            marginLeft: 48,
+            marginRight: 48,
+            marginBottom: 32,
           }}
         >
-          <Row
-            style={{
-              marginTop: 32,
-              marginLeft: 48,
-              marginRight: 48,
-              marginBottom: 32,
-            }}
-          >
-            <Notifier isActive={code.length >= 1} />
-            <Notifier isActive={code.length >= 2} />
-            <Notifier isActive={code.length >= 3} />
-            <Notifier isActive={code.length >= 4} />
-          </Row>
-          <Row
-            style={{
-              justifyContent: "space-evenly",
-              marginBottom: 12,
-            }}
-          >
-            <KeypadButton title="1" onPress={() => this.onEnterCode("1")} />
-            <KeypadButton title="2" onPress={() => this.onEnterCode("2")} />
-            <KeypadButton title="3" onPress={() => this.onEnterCode("3")} />
-          </Row>
+          <Notifier isActive={code.length >= 1} />
+          <Notifier isActive={code.length >= 2} />
+          <Notifier isActive={code.length >= 3} />
+          <Notifier isActive={code.length >= 4} />
+        </Row>
+        <Row
+          style={{
+            justifyContent: "space-evenly",
+            marginBottom: 12,
+          }}
+        >
+          <KeypadButton title="1" onPress={() => onEnterCode("1")} />
+          <KeypadButton title="2" onPress={() => onEnterCode("2")} />
+          <KeypadButton title="3" onPress={() => onEnterCode("3")} />
+        </Row>
 
-          <Row
-            style={{
-              justifyContent: "space-evenly",
-              marginBottom: 12,
-            }}
-          >
-            <KeypadButton title="4" onPress={() => this.onEnterCode("4")} />
-            <KeypadButton title="5" onPress={() => this.onEnterCode("5")} />
-            <KeypadButton title="6" onPress={() => this.onEnterCode("6")} />
-          </Row>
+        <Row
+          style={{
+            justifyContent: "space-evenly",
+            marginBottom: 12,
+          }}
+        >
+          <KeypadButton title="4" onPress={() => onEnterCode("4")} />
+          <KeypadButton title="5" onPress={() => onEnterCode("5")} />
+          <KeypadButton title="6" onPress={() => onEnterCode("6")} />
+        </Row>
 
-          <Row
-            style={{
-              justifyContent: "space-evenly",
-              marginBottom: 12,
-            }}
-          >
-            <KeypadButton title="7" onPress={() => this.onEnterCode("7")} />
-            <KeypadButton title="8" onPress={() => this.onEnterCode("8")} />
-            <KeypadButton title="9" onPress={() => this.onEnterCode("9")} />
-          </Row>
+        <Row
+          style={{
+            justifyContent: "space-evenly",
+            marginBottom: 12,
+          }}
+        >
+          <KeypadButton title="7" onPress={() => onEnterCode("7")} />
+          <KeypadButton title="8" onPress={() => onEnterCode("8")} />
+          <KeypadButton title="9" onPress={() => onEnterCode("9")} />
+        </Row>
 
-          <Row
-            style={{
-              justifyContent: "space-evenly",
-            }}
-          >
-            <KeypadButton title="" onPress={() => null} />
-            <KeypadButton title="0" onPress={() => this.onEnterCode("0")} />
-            <KeypadSideButton
-              icon="delete"
-              accessibilityLabel="back"
-              onPress={this.onBackspace}
-            />
-          </Row>
-        </Container>
-      </FadesIn>
-    )
-  }
+        <Row
+          style={{
+            justifyContent: "space-evenly",
+          }}
+        >
+          <KeypadButton title="" onPress={() => null} />
+          <KeypadButton title="0" onPress={() => onEnterCode("0")} />
+          <KeypadSideButton
+            icon="delete"
+            accessibilityLabel="back"
+            onPress={onBackspace}
+          />
+        </Row>
+      </Container>
+    </FadesIn>
+  )
 }
