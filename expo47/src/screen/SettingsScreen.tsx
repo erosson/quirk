@@ -107,8 +107,8 @@ export async function setNotifications(
       trigger: feature.remindersEachMinute
         ? { channelId: "default", repeats: true, seconds: 60 } // ridiculously often, for debugging
         : // TODO use dailynotificationtrigger/calendarnotificationtrigger
-        // https://docs.expo.dev/versions/latest/sdk/notifications/#notificationcontentinput
-        { channelId: "default", repeats: true, seconds: 86400 },
+          // https://docs.expo.dev/versions/latest/sdk/notifications/#notificationcontentinput
+          { channelId: "default", repeats: true, seconds: 86400 },
     })
   }
   setSetting(NOTIFICATIONS_KEY, JSON.stringify(enabled))

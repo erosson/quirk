@@ -186,13 +186,16 @@ export default function CBTListScreen({ navigation }: Props): JSX.Element {
   const [reload, setReload] = React.useState(0)
   const historyButtonLabel = AsyncState.useAsyncState(getHistoryButtonLabel)
   const exercises = AsyncState.useAsyncState(getExercises, [reload])
-  const groups: AsyncState.RemoteData<ThoughtGroup[]> = AsyncState.map(exercises, pairs => {
-    const thoughts = pairs
-      .map(([_, value]) => JSON.parse(value))
-      .filter(n => n) // Worst case scenario, if bad data gets in we don't show it.
-      .map(fixTimestamps)
-    return groupThoughtsByDay(thoughts).filter(validThoughtGroup)
-  })
+  const groups: AsyncState.RemoteData<ThoughtGroup[]> = AsyncState.map(
+    exercises,
+    (pairs) => {
+      const thoughts = pairs
+        .map(([_, value]) => JSON.parse(value))
+        .filter((n) => n) // Worst case scenario, if bad data gets in we don't show it.
+        .map(fixTimestamps)
+      return groupThoughtsByDay(thoughts).filter(validThoughtGroup)
+    }
+  )
 
   return (
     <View style={{ backgroundColor: theme.lightOffwhite }}>
@@ -224,19 +227,20 @@ export default function CBTListScreen({ navigation }: Props): JSX.Element {
                   universalHaptic.impact(Haptic.ImpactFeedbackStyle.Light)
                   navigation.push(Screen.CBT_FORM, {})
                 }}
-                accessibilityLabel={i18n.t(
-                  "accessibility.new_thought_button"
-                )}
+                accessibilityLabel={i18n.t("accessibility.new_thought_button")}
               />
             </View>
           </Row>
 
           <FadesIn pose={AsyncState.isResult(groups) ? "visible" : "hidden"}>
-            {AsyncState.fold(groups,
+            {AsyncState.fold(
+              groups,
               () => null,
               () => null,
-              error => <Paragraph>{JSON.stringify(error)}</Paragraph>,
-              gs => (
+              (error) => (
+                <Paragraph>{JSON.stringify(error)}</Paragraph>
+              ),
+              (gs) => (
                 <ThoughtItemList
                   groups={gs}
                   navigateToViewer={(thought: SavedThought) => {
@@ -245,11 +249,16 @@ export default function CBTListScreen({ navigation }: Props): JSX.Element {
                     })
                   }}
                   onItemDelete={async (thought: SavedThought) => {
-                    universalHaptic.notification(Haptic.NotificationFeedbackType.Success)
+                    universalHaptic.notification(
+                      Haptic.NotificationFeedbackType.Success
+                    )
                     await deleteExercise(thought.uuid)
                     setReload(reload + 1)
                   }}
-                  historyButtonLabel={AsyncState.withDefault(historyButtonLabel, "alternative-thought")}
+                  historyButtonLabel={AsyncState.withDefault(
+                    historyButtonLabel,
+                    "alternative-thought"
+                  )}
                 />
               )
             )}
