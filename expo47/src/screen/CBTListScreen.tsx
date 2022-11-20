@@ -26,7 +26,6 @@ import { emojiForSlug } from "../distortions"
 import { take } from "lodash"
 import { FadesIn } from "../animations"
 import * as AsyncState from "../async-state"
-import { KeyValuePair } from "@react-native-async-storage/async-storage/lib/typescript/types"
 
 const ThoughtItem = ({
   thought,
