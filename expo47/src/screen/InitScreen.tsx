@@ -16,9 +16,7 @@ export default function InitScreen(props: Props): JSX.Element {
     }
     else {
       // We replace here because you shouldn't be able to go "back" to this screen
-      props.navigation.replace(Screen.CBT_FORM, {
-        clear: true,
-      })
+      props.navigation.replace(Screen.CBT_FORM, {})
     }
   })
 

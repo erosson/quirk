@@ -21,7 +21,6 @@ export type ParamList = {
   [Screen.CBT_FORM]:
   | {
     fromOnboarding?: boolean
-    clear?: boolean
     // TODO replace with thought-id
     thought?: SavedThought
     slide?: Slides
