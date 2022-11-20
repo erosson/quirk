@@ -1,21 +1,18 @@
 import React from "react"
 import Carousel from "react-native-reanimated-carousel"
-import { sliderWidth, itemWidth } from "../form/sizes"
 import { View, Image, Linking, Alert, Dimensions } from "react-native"
 import { Header, Container, Paragraph, ActionButton, Row } from "../ui"
 import Constants from "expo-constants"
 import * as Haptic from "expo-haptics"
 import theme from "../theme"
 import haptic from "../haptic"
-import { Screen, NavigationProp } from "../screens"
+import { Screen, ScreenProps } from "../screens"
 import { FadesIn } from "../animations"
 import i18n from "../i18n"
-// import { setNotifications } from "./SettingsScreen";
+import { setNotifications } from "./SettingsScreen";
 import * as Feature from "../feature"
 
-interface ScreenProps {
-  navigation: NavigationProp
-}
+type Props = ScreenProps<Screen.ONBOARDING>
 
 const RecordStep = () => (
   <View
@@ -176,8 +173,7 @@ const RemindersStep = ({ onContinue }) => {
               width="100%"
               title={i18n.t("onboarding_screen.reminders.button.yes")}
               onPress={async () => {
-                // await DEBUGsetNotifications(feature, true);
-                onContinue()
+                await setNotifications(feature, true);
               }}
             />
           </Row>
@@ -208,7 +204,7 @@ const RemindersStep = ({ onContinue }) => {
   )
 }
 
-export default class extends React.Component<ScreenProps> {
+export default class extends React.Component<Props> {
   static navigationOptions = {
     header: null,
   }

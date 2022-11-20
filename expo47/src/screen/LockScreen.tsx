@@ -7,7 +7,6 @@ import * as Haptic from "expo-haptics"
 import { FadesIn, BouncyBigOnActive } from "../animations"
 import { isCorrectPincode, setPincode } from "../lockstore"
 import { Screen, ScreenProps } from "../screens"
-import { get } from "lodash"
 import haptic from "../haptic"
 import * as AsyncState from "../async-state"
 
