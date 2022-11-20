@@ -3,7 +3,7 @@ import { ScrollView, View, Text, Switch, Platform, Button } from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import Constants from "expo-constants"
 import * as Feature from "../feature"
-import { useAsyncEffect } from "../util"
+import { useAsyncState, withDefault } from "../async-state"
 import { Screen, ScreenProps } from "../screens"
 import { KeyValuePair } from "@react-native-async-storage/async-storage/lib/typescript/types"
 // TODO json imports seem to be broken
@@ -49,17 +49,12 @@ const constItems = [
   ["OS", Platform.OS],
 ]
 export default function DebugScreen(props: Props): JSX.Element {
-  const [storage, setStorage] = React.useState<readonly KeyValuePair[] | null>(null)
+  const storage = useAsyncState<readonly KeyValuePair[]>(async () => {
+    const keys = await AsyncStorage.getAllKeys()
+    return await AsyncStorage.multiGet(keys)
+  })
   const [dump, setDump] = React.useState<boolean>(false)
   const { feature, updateFeature } = React.useContext(Feature.Context)
-
-  useAsyncEffect(async () => {
-    if (dump && storage === null) {
-      const keys = await AsyncStorage.getAllKeys()
-      const state = await AsyncStorage.multiGet(keys)
-      setStorage(state)
-    }
-  })
 
   const items = [
     ...constItems,
@@ -77,7 +72,7 @@ export default function DebugScreen(props: Props): JSX.Element {
       "Dump AsyncStorage?",
       <Switch value={dump} onValueChange={() => setDump(!dump)} />,
     ],
-    ...(dump ? storage || [] : []).map(([key, val]: [string, string]) => [
+    ...(dump ? withDefault(storage, []) : []).map(([key, val]: [string, string]) => [
       'AsyncStorage["' + key + '"]: \n' + val,
     ]),
   ]

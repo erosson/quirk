@@ -25,7 +25,8 @@ import i18n from "../i18n"
 import { emojiForSlug } from "../distortions"
 import { take } from "lodash"
 import { FadesIn } from "../animations"
-import { useAsyncEffect } from "../util"
+import * as AsyncState from "../async-state"
+import { KeyValuePair } from "@react-native-async-storage/async-storage/lib/typescript/types"
 
 const ThoughtItem = ({
   thought,
@@ -171,12 +172,6 @@ const ThoughtItemList = ({
 
 type Props = ScreenProps<Screen.CBT_LIST>
 
-interface State {
-  groups: ThoughtGroup[]
-  historyButtonLabel: HistoryButtonLabelSetting
-  isReady: boolean
-}
-
 function fixTimestamps(json): SavedThought {
   const createdAt: Date = new Date(json.createdAt)
   const updatedAt: Date = new Date(json.updatedAt)
@@ -188,28 +183,15 @@ function fixTimestamps(json): SavedThought {
 }
 
 export default function CBTListScreen({ navigation }: Props): JSX.Element {
-  const [groups, setGroups] = React.useState<ThoughtGroup[]>([])
-  const [historyButtonLabel, setHistoryButtonLabel] = React.useState<HistoryButtonLabelSetting>("alternative-thought")
-  const [isReady, setIsReady] = React.useState<boolean>(false)
-
-  useAsyncEffect(async () => {
-    try {
-      const [label, exercises] = await Promise.all([getHistoryButtonLabel(), getExercises()])
-      setHistoryButtonLabel(label)
-      const thoughts: SavedThought[] = exercises
-        .map(([_, value]) => JSON.parse(value))
-        .filter((n) => n) // Worst case scenario, if bad data gets in we don't show it.
-        .map(fixTimestamps)
-      const groups: ThoughtGroup[] =
-        groupThoughtsByDay(thoughts).filter(validThoughtGroup)
-      setGroups(groups)
-    }
-    catch (e) {
-      console.error(e)
-    }
-    finally {
-      setIsReady(true)
-    }
+  const [reload, setReload] = React.useState(0)
+  const historyButtonLabel = AsyncState.useAsyncState(getHistoryButtonLabel)
+  const exercises = AsyncState.useAsyncState(getExercises, [reload])
+  const groups: AsyncState.RemoteData<ThoughtGroup[]> = AsyncState.map(exercises, pairs => {
+    const thoughts = pairs
+      .map(([_, value]) => JSON.parse(value))
+      .filter(n => n) // Worst case scenario, if bad data gets in we don't show it.
+      .map(fixTimestamps)
+    return groupThoughtsByDay(thoughts).filter(validThoughtGroup)
   })
 
   return (
@@ -249,22 +231,28 @@ export default function CBTListScreen({ navigation }: Props): JSX.Element {
             </View>
           </Row>
 
-          <FadesIn pose={isReady ? "visible" : "hidden"}>
-            <ThoughtItemList
-              groups={groups}
-              navigateToViewer={(thought: SavedThought) => {
-                navigation.push(Screen.FINISHED_THOUGHT, {
-                  thought,
-                })
-              }}
-              onItemDelete={async (thought: SavedThought) => {
-                universalHaptic.notification(Haptic.NotificationFeedbackType.Success)
-                await deleteExercise(thought.uuid)
-                // triggers reload
-                setIsReady(false)
-              }}
-              historyButtonLabel={historyButtonLabel}
-            />
+          <FadesIn pose={AsyncState.isResult(groups) ? "visible" : "hidden"}>
+            {AsyncState.fold(groups,
+              () => null,
+              () => null,
+              error => <Paragraph>{JSON.stringify(error)}</Paragraph>,
+              gs => (
+                <ThoughtItemList
+                  groups={gs}
+                  navigateToViewer={(thought: SavedThought) => {
+                    navigation.push(Screen.FINISHED_THOUGHT, {
+                      thought,
+                    })
+                  }}
+                  onItemDelete={async (thought: SavedThought) => {
+                    universalHaptic.notification(Haptic.NotificationFeedbackType.Success)
+                    await deleteExercise(thought.uuid)
+                    setReload(reload + 1)
+                  }}
+                  historyButtonLabel={AsyncState.withDefault(historyButtonLabel, "alternative-thought")}
+                />
+              )
+            )}
           </FadesIn>
         </Container>
       </ScrollView>
