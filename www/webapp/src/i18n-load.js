@@ -1,21 +1,21 @@
 import i18n from "i18n-js"
 
-import en from "../../../src/locals/en.json";
-import it from "../../../src/locals/it.json";
-import fr from "../../../src/locals/fr.json";
-import ko from "../../../src/locals/ko.json";
-import es from "../../../src/locals/es.json";
-import de from "../../../src/locals/de.json";
-import pl from "../../../src/locals/pl.json";
-import nl from "../../../src/locals/nl_NL.json";
-import fi from "../../../src/locals/fi.json";
-import ru from "../../../src/locals/ru.json";
-import zhHans from "../../../src/locals/zh-Hans.json";
-import ptPT from "../../../src/locals/pt-pt.json";
-import ptBR from "../../../src/locals/pt-br.json";
-import nb from "../../../src/locals/nb.json";
-import sv from "../../../src/locals/sv.json";
-import ro from "../../../src/locals/ro.json";
+import en from "../../../expo47/src/locals/en.json";
+import it from "../../../expo47/src/locals/it.json";
+import fr from "../../../expo47/src/locals/fr.json";
+import ko from "../../../expo47/src/locals/ko.json";
+import es from "../../../expo47/src/locals/es.json";
+import de from "../../../expo47/src/locals/de.json";
+import pl from "../../../expo47/src/locals/pl.json";
+import nl from "../../../expo47/src/locals/nl_NL.json";
+import fi from "../../../expo47/src/locals/fi.json";
+import ru from "../../../expo47/src/locals/ru.json";
+import zhHans from "../../../expo47/src/locals/zh-Hans.json";
+import ptPT from "../../../expo47/src/locals/pt-pt.json";
+import ptBR from "../../../expo47/src/locals/pt-br.json";
+import nb from "../../../expo47/src/locals/nb.json";
+import sv from "../../../expo47/src/locals/sv.json";
+import ro from "../../../expo47/src/locals/ro.json";
 
 function walkReverse(obj) {
   return Object.fromEntries(
@@ -50,4 +50,4 @@ i18n.translations = {
 }
 i18n.defaultLocale = "en"
 i18n.fallbacks = true
-export default {translations: Object.keys(i18n.translations)}
+export default { translations: Object.keys(i18n.translations) }
