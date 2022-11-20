@@ -2,7 +2,7 @@ import React from "react"
 import { View } from "react-native"
 import { hasPincode } from "../lockstore"
 import { Screen, ScreenProps, NavigationProp } from "../screens"
-import { useAsyncEffect } from "../util"
+import { useAsyncEffect } from "../async-state"
 
 type Props = ScreenProps<Screen.INIT>
 
