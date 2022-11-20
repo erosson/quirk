@@ -11,14 +11,12 @@ import { ScrollView, View, Linking } from "react-native"
 import Constants from "expo-constants"
 import * as Haptic from "expo-haptics"
 import theme from "../theme"
-import { Screen, NavigationProp } from "../screens"
+import { Screen, ScreenProps } from "../screens"
 import i18n from "../i18n"
 import { BubbleThought } from "../imgs/Bubbles"
 import haptic from "../haptic"
 
-interface Props {
-  navigation: NavigationProp
-}
+type Props = ScreenProps<Screen.EXPLANATION>
 
 const Distortion = ({ children }) => (
   <View
