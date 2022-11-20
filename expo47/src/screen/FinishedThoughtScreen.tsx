@@ -69,9 +69,7 @@ export default class extends React.Component<Props, ScreenState> {
               featherIconName={"x"}
               onPress={() => {
                 haptic.impact(Haptic.ImpactFeedbackStyle.Light)
-                this.props.navigation.push(Screen.CBT_FORM, {
-                  clear: true,
-                })
+                this.props.navigation.push(Screen.CBT_FORM, {})
               }}
             />
           </Row>
@@ -81,9 +79,7 @@ export default class extends React.Component<Props, ScreenState> {
             onEdit={this.onEdit}
             onNew={() => {
               haptic.impact(Haptic.ImpactFeedbackStyle.Light)
-              this.props.navigation.push(Screen.CBT_FORM, {
-                clear: true,
-              })
+              this.props.navigation.push(Screen.CBT_FORM, {})
             }}
           />
         </Container>

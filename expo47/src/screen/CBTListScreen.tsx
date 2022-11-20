@@ -222,7 +222,7 @@ export default function CBTListScreen({ navigation }: Props): JSX.Element {
                 featherIconName={"x"}
                 onPress={() => {
                   universalHaptic.impact(Haptic.ImpactFeedbackStyle.Light)
-                  navigation.push(Screen.CBT_FORM, { clear: true })
+                  navigation.push(Screen.CBT_FORM, {})
                 }}
                 accessibilityLabel={i18n.t(
                   "accessibility.new_thought_button"
