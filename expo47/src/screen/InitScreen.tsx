@@ -13,8 +13,7 @@ export default function InitScreen(props: Props): JSX.Element {
     const isLocked = await hasPincode()
     if (isLocked) {
       props.navigation.replace(Screen.LOCK, { isSettingCode: false })
-    }
-    else {
+    } else {
       // We replace here because you shouldn't be able to go "back" to this screen
       props.navigation.replace(Screen.CBT_FORM, {})
     }

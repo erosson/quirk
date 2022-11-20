@@ -72,9 +72,11 @@ export default function DebugScreen(props: Props): JSX.Element {
       "Dump AsyncStorage?",
       <Switch value={dump} onValueChange={() => setDump(!dump)} />,
     ],
-    ...(dump ? withDefault(storage, []) : []).map(([key, val]: [string, string]) => [
-      'AsyncStorage["' + key + '"]: \n' + val,
-    ]),
+    ...(dump ? withDefault(storage, []) : []).map(
+      ([key, val]: [string, string]) => [
+        'AsyncStorage["' + key + '"]: \n' + val,
+      ]
+    ),
   ]
   return (
     <ScrollView>

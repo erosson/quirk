@@ -9,7 +9,7 @@ import haptic from "../haptic"
 import { Screen, ScreenProps } from "../screens"
 import { FadesIn } from "../animations"
 import i18n from "../i18n"
-import { setNotifications } from "./SettingsScreen";
+import { setNotifications } from "./SettingsScreen"
 import * as Feature from "../feature"
 
 type Props = ScreenProps<Screen.ONBOARDING>
@@ -173,7 +173,7 @@ const RemindersStep = ({ onContinue }) => {
               width="100%"
               title={i18n.t("onboarding_screen.reminders.button.yes")}
               onPress={async () => {
-                await setNotifications(feature, true);
+                await setNotifications(feature, true)
               }}
             />
           </Row>

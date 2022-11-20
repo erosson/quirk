@@ -17,8 +17,12 @@ type Props = ScreenProps<Screen.CBT_FORM>
 
 export default function FormScreen(props: Props): JSX.Element {
   const { fromOnboarding } = props.route.params ?? {}
-  const showHelpBadge = AsyncState.useAsyncState(() => flagstore.get("start-help-badge", "true"))
-  const [thought, setThought] = React.useState<Thought | SavedThought>(props.route.params?.thought ?? newThought())
+  const showHelpBadge = AsyncState.useAsyncState(() =>
+    flagstore.get("start-help-badge", "true")
+  )
+  const [thought, setThought] = React.useState<Thought | SavedThought>(
+    props.route.params?.thought ?? newThought()
+  )
 
   // `slide` is set from props on init, props on update, or setSlide in this file
   const slideProp = props.route.params?.slide
@@ -31,7 +35,7 @@ export default function FormScreen(props: Props): JSX.Element {
 
   // redirect to onboarding if this is the first time opening the app
   AsyncState.useAsyncEffect(async () => {
-    if (!await getIsExistingUser()) {
+    if (!(await getIsExistingUser())) {
       await setIsExistingUser()
       props.navigation.replace(Screen.ONBOARDING)
     }
@@ -97,9 +101,7 @@ export default function FormScreen(props: Props): JSX.Element {
             }}
             hasBadge={AsyncState.withDefault(showHelpBadge, false)}
           />
-          <Header allowFontScaling={false}>
-            {i18n.t("cbt_form.header")}
-          </Header>
+          <Header allowFontScaling={false}>{i18n.t("cbt_form.header")}</Header>
           <IconButton
             accessibilityLabel={i18n.t("accessibility.list_button")}
             featherIconName={"list"}
