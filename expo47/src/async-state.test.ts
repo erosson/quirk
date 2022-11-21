@@ -45,7 +45,7 @@ test("useAsyncEffect simple success", async () => {
   expect(state["value"]).toBeUndefined()
 })
 
-test.only("useAsyncEffect simple failure", async () => {
+test("useAsyncEffect simple failure", async () => {
   let state: RemoteData<void> = { status: "init" }
   renderHook(() => {
     state = useAsyncEffect(async () => {
@@ -60,7 +60,7 @@ test.only("useAsyncEffect simple failure", async () => {
   expect(state["error"]).toBeInstanceOf(Error)
 })
 
-test.only("useAsyncState simple success", async () => {
+test("useAsyncState simple success", async () => {
   let state: RemoteData<number> = { status: "init" }
   renderHook(() => {
     state = useAsyncState(async () => 3)
@@ -73,7 +73,7 @@ test.only("useAsyncState simple success", async () => {
   expect(state["value"]).toBe(3)
 })
 
-test.only("useAsyncState simple failure", async () => {
+test("useAsyncState simple failure", async () => {
   let state: RemoteData<number> = { status: "init" }
   renderHook(() => {
     state = useAsyncState(async () => {
