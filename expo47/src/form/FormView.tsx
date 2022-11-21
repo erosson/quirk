@@ -83,7 +83,7 @@ export default function FormView(props: FormViewProps): JSX.Element {
       )
     }
 
-    return null
+    return <View />
   }
 
   return (

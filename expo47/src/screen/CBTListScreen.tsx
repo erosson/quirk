@@ -33,7 +33,7 @@ const ThoughtItem = ({
 }: {
   thought: Thought.T
   historyButtonLabel: HistoryButtonLabelSetting
-  onPress: (thought: Thought.T | boolean) => void
+  onPress: (thought: Thought.T) => void
   onDelete: (thought: Thought.T) => void
 }) => (
   <Row style={{ marginBottom: 18 }}>
@@ -174,16 +174,15 @@ export default function CBTListScreen({ navigation }: Props): JSX.Element {
   const groups: AsyncState.RemoteData<Thought.ThoughtGroup[]> = AsyncState.map(
     thoughtRes,
     (rs) => {
-      // remove invalid thoughts (bad data). TODO: display with a different UI
       const ts: Thought.T[] = rs
-        .map((r) => AsyncState.withDefault(r, null))
-        .filter((t) => t)
+        .filter(AsyncState.isSuccess)
+        .map((r) => r.value)
       return Thought.groupThoughtsByDay(ts)
     }
   )
   const errors: AsyncState.RemoteData<ThoughtStore.ParseError[]> =
     AsyncState.map(thoughtRes, (rs) =>
-      rs.map((r) => (AsyncState.isFailure(r) ? r.error : null)).filter((e) => e)
+      rs.filter(AsyncState.isFailure).map((f) => f.error)
     )
 
   return (
