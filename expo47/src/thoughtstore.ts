@@ -39,12 +39,12 @@ export async function write(t: T.Thought): Promise<void> {
 }
 
 export async function read(id: T.ThoughtID): Promise<T.Thought> {
-  return parseOrThrow(await AsyncStorage.getItem(id))
+  return parseOrThrow((await AsyncStorage.getItem(id)) ?? "")
 }
 export async function readResult(
   id: T.ThoughtID
 ): Promise<AsyncState.Result<T.Thought, ParseError>> {
-  return parseResult(await AsyncStorage.getItem(id))
+  return parseResult((await AsyncStorage.getItem(id)) ?? "")
 }
 
 export type ParseError = { error: any; raw: string }
@@ -75,7 +75,9 @@ export async function getExercises(): Promise<
   )
 
   let rows = await AsyncStorage.multiGet(keys)
-  return rows.map(([key, raw]: [string, string]) => parseResult(raw))
+  return rows.map(([key, raw]: [string, string | null]) =>
+    parseResult(raw ?? "")
+  )
 }
 
 export const countThoughts = async (): Promise<number> => {

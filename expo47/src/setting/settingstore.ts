@@ -6,7 +6,7 @@ function getKey(slug: string) {
   return PREFIX + slug
 }
 
-export async function getSetting(slug: string): Promise<string> {
+export async function getSetting(slug: string): Promise<string | null> {
   return await AsyncStorage.getItem(getKey(slug))
 }
 export async function getSettingOrDefault(
@@ -32,7 +32,8 @@ export async function getSettingOrSetDefault(
       // We don't use the wrapped version of setSetting here
       // so we correctly attribute the error
       await AsyncStorage.setItem(getKey(slug), defaultValue)
-      return await AsyncStorage.getItem(getKey(slug))
+      // we'll never use the `?? defaultValue` below, but typescript insists
+      return (await AsyncStorage.getItem(getKey(slug))) ?? defaultValue
     }
 
     return result

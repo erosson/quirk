@@ -54,10 +54,10 @@ export const defaults: Feature = {
 
 export const Context = React.createContext({
   feature: defaults,
-  updateFeature: (action: object) => undefined,
+  updateFeature: (action: object) => {},
 })
 
-export const State = ({ children }: React.PropsWithChildren<{}>) => {
+export function State({ children }: React.PropsWithChildren<{}>): JSX.Element {
   const [feature, updateFeature] = React.useReducer(
     (state, newState) => ({ ...state, ...newState }),
     defaults

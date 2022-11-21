@@ -213,7 +213,7 @@ export default function OnboardingScreen(props: Props): JSX.Element {
     })
   }
 
-  function renderItem({ item }) {
+  function renderItem({ item }): JSX.Element {
     switch (item) {
       case "record":
         return <RecordStep />
@@ -224,7 +224,7 @@ export default function OnboardingScreen(props: Props): JSX.Element {
       case "reminders-or-continue":
         return <RemindersStep onContinue={stopOnBoarding} />
       default:
-        return null
+        return <View />
     }
   }
 

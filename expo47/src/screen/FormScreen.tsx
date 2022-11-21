@@ -19,7 +19,8 @@ import * as AsyncState from "../async-state"
 type Props = ScreenProps<Screen.CBT_FORM>
 
 export default function FormScreen(props: Props): JSX.Element {
-  const { fromOnboarding, thoughtID } = props.route.params ?? {}
+  const { thoughtID } = props.route.params ?? {}
+  const fromOnboarding = props.route.params?.fromOnboarding ?? false
   const showHelpBadge = AsyncState.useAsyncState(() =>
     flagstore.get("start-help-badge", "true")
   )

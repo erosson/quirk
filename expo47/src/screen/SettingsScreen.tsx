@@ -56,7 +56,7 @@ export async function getHistoryButtonLabel(): Promise<HistoryButtonLabelSetting
   return value
 }
 
-export async function getLocaleSetting(): Promise<string> {
+export async function getLocaleSetting(): Promise<string | null> {
   return await getSetting(LOCALE_KEY)
 }
 export async function setLocaleSetting(
@@ -432,8 +432,8 @@ export default function SettingScreen(props: Props): JSX.Element {
                 <ActionButton
                   flex={1}
                   opacity={feature.debugVisible ? 1 : 0}
-                  fillColor={feature.debugVisible ? null : "#ffffff"}
-                  textColor={feature.debugVisible ? null : "#ffffff"}
+                  fillColor={feature.debugVisible ? undefined : "#ffffff"}
+                  textColor={feature.debugVisible ? undefined : "#ffffff"}
                   title={"Debug"}
                   onPress={() => {
                     const clicks = debugClicks + 1

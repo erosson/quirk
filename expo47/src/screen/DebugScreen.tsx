@@ -43,11 +43,11 @@ const writeThoughts: { [name: string]: () => Promise<void> } = {
   },
 }
 
-const constItems = [
-  ["Release channel", Constants.manifest.releaseChannel || "(dev)"],
-  ["Expo version", Constants.expoVersion],
-  ["App version", Constants.manifest.version],
-  ["Revision", Constants.manifest.revisionId || "(dev)"],
+const constItems: [string, string | JSX.Element][] = [
+  ["Release channel", Constants.manifest?.releaseChannel ?? "(dev)"],
+  ["Expo version", Constants.expoVersion ?? "(unknown)"],
+  ["App version", Constants.manifest?.version ?? "(unknown)"],
+  ["Revision", Constants.manifest?.revisionId ?? "(dev)"],
   // ["Revision Git", version.hash],
   // ["Revision Date", version.date],
   // ["Revision Timestamp", version.timestamp + ""],
@@ -100,12 +100,12 @@ export default function DebugScreen(props: Props): JSX.Element {
   const [dump, setDump] = React.useState<boolean>(false)
   const { feature, updateFeature } = React.useContext(Feature.Context)
 
-  const items = [
+  const items: [string, string | JSX.Element][] = [
     ...constItems,
     ...Object.entries(feature)
       // @ts-ignore: sort features by name. I promise key in [key, value] is a string
       .sort((a, b) => a[0] > b[0])
-      .map(([key, val]: [string, boolean]) => [
+      .map(([key, val]: [string, boolean]): [string, JSX.Element] => [
         key,
         <Switch
           value={val}
@@ -117,8 +117,9 @@ export default function DebugScreen(props: Props): JSX.Element {
       <Switch value={dump} onValueChange={() => setDump(!dump)} />,
     ],
     ...(dump ? withDefault(storage, []) : []).map(
-      ([key, val]: [string, string]) => [
-        'AsyncStorage["' + key + '"]: \n' + val,
+      ([key, val]: KeyValuePair): [string, string] => [
+        key,
+        `AsyncStorage["${key}"]: \n${val ?? ""}`,
       ]
     ),
   ]
