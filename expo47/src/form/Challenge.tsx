@@ -7,56 +7,39 @@ import theme from "../theme"
 
 const CHALLENGE = `George might be busy. I can't expect to have immediate access to his time.`
 
-export default class extends React.Component<
-  {
-    value: string
-    onChange: (v: string) => void
-  },
-  {
-    showExample: boolean
-  }
-> {
-  constructor(props) {
-    super(props)
-    this.state = {
-      showExample: false,
-    }
-  }
+export default function Challenge(props: {
+  value: string
+  onChange: (v: string) => void
+}) {
+  const { value, onChange } = props
 
-  render() {
-    const { value, onChange } = this.props
-
-    return (
-      <>
-        <View
+  return (
+    <>
+      <View
+        style={{
+          display: "flex",
+        }}
+      >
+        <SubHeader
           style={{
-            display: "flex",
+            marginBottom: 6,
           }}
         >
-          <SubHeader
-            style={{
-              marginBottom: 6,
-            }}
-          >
-            {i18n.t("challenge")}
-          </SubHeader>
-          <TextInput
-            style={{
-              ...textInputStyle,
-              backgroundColor: this.state.showExample
-                ? theme.lightGray
-                : "white",
-            }}
-            placeholderTextColor={textInputPlaceholderColor}
-            placeholder={i18n.t("cbt_form.changed_placeholder")}
-            value={this.state.showExample ? CHALLENGE : value}
-            multiline={true}
-            numberOfLines={6}
-            onChangeText={onChange}
-            editable={!this.state.showExample}
-          />
-        </View>
-      </>
-    )
-  }
+          {i18n.t("challenge")}
+        </SubHeader>
+        <TextInput
+          style={{
+            ...textInputStyle,
+            backgroundColor: "white",
+          }}
+          placeholderTextColor={textInputPlaceholderColor}
+          placeholder={i18n.t("cbt_form.changed_placeholder")}
+          value={value}
+          multiline={true}
+          numberOfLines={6}
+          onChangeText={onChange}
+        />
+      </View>
+    </>
+  )
 }

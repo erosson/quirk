@@ -1,3 +1,17 @@
+/**
+ * Given some JSON with an expected format, parse the JSON into correctly-typed Typescript objects, validating as we go.
+ *
+ * JSON decoding should always throw an error if the Typescript value would be invalid (ie. not match its type).
+ * That way, we can trust Typescript types throughout the rest of our program.
+ *
+ * Based on Elm's JSON encoders and decoders. (An encoding module didn't feel necessary for Typescript.)
+ *
+ * TODO: there must be some existing library for this...
+ */
+
+/**
+ * Decode a string
+ */
 export function string(v: any): string {
   if (typeof v === "string") {
     return v

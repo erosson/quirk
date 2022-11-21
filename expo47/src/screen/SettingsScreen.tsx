@@ -1,10 +1,11 @@
 import React from "react"
-import { ScrollView, StatusBar, Platform } from "react-native"
+import { ScrollView, StatusBar, Platform, Text } from "react-native"
 import * as Notifications from "expo-notifications"
 import theme from "../theme"
 import Constants from "expo-constants"
 import * as Linking from "expo-linking"
 import * as Feature from "../feature"
+import * as AsyncState from "../async-state"
 import {
   Header,
   Row,
@@ -138,115 +139,173 @@ async function registerForLocalNotificationsAsync() {
 
 type Props = ScreenProps<Screen.SETTING>
 
-interface State {
-  isReady: boolean
-  historyButtonLabel?: HistoryButtonLabelSetting
-  areNotificationsOn: boolean
-  hasPincode: boolean
-  localeSetting: string | null
-  // click the invisible button at the bottom 5 times to go to the secret debug screen
-  debugClicks: number
-}
-
-class SettingScreen extends React.Component<Props, State> {
-  static navigationOptions = {
-    header: null,
-  }
-
-  constructor(props) {
-    super(props)
-    this.state = {
-      isReady: false,
-      areNotificationsOn: false,
-      hasPincode: false,
-      localeSetting: null,
-      debugClicks: 0,
-    }
-  }
-
-  async componentDidMount() {
-    await this.refresh()
-  }
-
-  refresh = async () => {
-    const [h, n, p, l] = await Promise.all([
-      getHistoryButtonLabel(),
-      getNotifications(),
-      hasPincode(),
-      getLocaleSetting(),
+export default function SettingScreen(props: Props): JSX.Element {
+  const [refresh, setRefresh] = React.useState(0)
+  const historyButtonLabel =
+    AsyncState.useAsyncState<HistoryButtonLabelSetting>(getHistoryButtonLabel, [
+      refresh,
     ])
-    this.setState({
-      historyButtonLabel: h,
-      areNotificationsOn: n,
-      hasPincode: p,
-      localeSetting: l,
-      isReady: true,
-    })
-  }
+  const areNotificationsOn = AsyncState.useAsyncState<boolean>(getNotifications)
+  const hasPincode_ = AsyncState.useAsyncState<boolean>(hasPincode, [refresh])
+  const localeSetting = AsyncState.useAsyncState<string | null>(
+    getLocaleSetting,
+    [refresh]
+  )
+  const [debugClicks, setDebugClicks] = React.useState(0)
 
-  navigateToList = () => {
-    this.props.navigation.pop()
-  }
-
-  navigateToOnboardingScreen = () => {
-    this.props.navigation.navigate(Screen.ONBOARDING)
-  }
-
-  toggleHistoryButtonLabels = () => {
-    if (!this.state.isReady) {
-      this.refresh()
-      return
-    }
-
-    if (this.state.historyButtonLabel === "alternative-thought") {
-      setSetting<HistoryButtonLabelSetting>(
+  async function toggleHistoryButtonLabels() {
+    if (AsyncState.isSuccess(historyButtonLabel)) {
+      await setSetting<HistoryButtonLabelSetting>(
         HISTORY_BUTTON_LABEL_KEY,
-        "automatic-thought"
+        historyButtonLabel.value === "alternative-thought"
+          ? "automatic-thought"
+          : "alternative-thought"
       )
-      this.refresh()
-    } else {
-      setSetting<HistoryButtonLabelSetting>(
-        HISTORY_BUTTON_LABEL_KEY,
-        "alternative-thought"
-      )
-      this.refresh()
+      setRefresh(refresh + 1)
     }
   }
 
-  render() {
-    const { historyButtonLabel, isReady } = this.state
-
-    return (
-      <Feature.Context.Consumer>
-        {({ feature }) => (
-          <FadesIn
-            style={{ backgroundColor: theme.lightOffwhite }}
-            pose={isReady ? "visible" : "hidden"}
+  return (
+    <Feature.Context.Consumer>
+      {({ feature }) => (
+        <FadesIn
+          style={{ backgroundColor: theme.lightOffwhite }}
+          pose="visible"
+        >
+          <ScrollView
+            style={{
+              backgroundColor: theme.lightOffwhite,
+              marginTop: Constants.statusBarHeight,
+              paddingTop: 24,
+              height: "100%",
+            }}
           >
-            <ScrollView
+            <Container
               style={{
-                backgroundColor: theme.lightOffwhite,
-                marginTop: Constants.statusBarHeight,
-                paddingTop: 24,
-                height: "100%",
+                paddingBottom: 128,
               }}
             >
-              <Container
+              <StatusBar barStyle="dark-content" />
+              <Row style={{ marginBottom: 18 }}>
+                <Header>{i18n.t("settings.header")}</Header>
+                <IconButton
+                  featherIconName={"list"}
+                  accessibilityLabel={i18n.t("accessibility.list_button")}
+                  onPress={() => {
+                    props.navigation.pop()
+                  }}
+                />
+              </Row>
+
+              {feature.reminders &&
+                AsyncState.fold(
+                  areNotificationsOn,
+                  () => null,
+                  () => null,
+                  (error) => <Text>{error}</Text>,
+                  (notify) => (
+                    <Row
+                      style={{
+                        marginBottom: 18,
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <SubHeader>
+                        {i18n.t("settings.reminders.header")}
+                      </SubHeader>
+                      <Paragraph
+                        style={{
+                          marginBottom: 9,
+                        }}
+                      >
+                        {i18n.t("settings.reminders.description")}
+                      </Paragraph>
+                      <RoundedSelectorButton
+                        title={i18n.t("settings.reminders.button.yes")}
+                        selected={notify}
+                        onPress={async () => {
+                          await setNotifications(feature, true)
+                          setRefresh(refresh + 1)
+                        }}
+                      />
+
+                      <RoundedSelectorButton
+                        title={i18n.t("settings.reminders.button.no")}
+                        selected={!notify}
+                        onPress={async () => {
+                          await setNotifications(feature, false)
+                          setRefresh(refresh + 1)
+                        }}
+                      />
+                    </Row>
+                  )
+                )}
+              <Row
                 style={{
-                  paddingBottom: 128,
+                  marginBottom: 18,
+                  display: "flex",
+                  flexDirection: "column",
                 }}
               >
-                <StatusBar barStyle="dark-content" />
-                <Row style={{ marginBottom: 18 }}>
-                  <Header>{i18n.t("settings.header")}</Header>
-                  <IconButton
-                    featherIconName={"list"}
-                    accessibilityLabel={i18n.t("accessibility.list_button")}
-                    onPress={() => this.navigateToList()}
+                <SubHeader>{i18n.t("settings.pincode.header")}</SubHeader>
+                <Paragraph
+                  style={{
+                    marginBottom: 9,
+                  }}
+                >
+                  {i18n.t("settings.pincode.description")}
+                </Paragraph>
+                {hasPincode_ ? (
+                  <>
+                    <ActionButton
+                      flex={1}
+                      title={i18n.t("settings.pincode.button.update")}
+                      width={"100%"}
+                      fillColor="#EDF0FC"
+                      textColor={theme.darkBlue}
+                      onPress={() => {
+                        props.navigation.push(Screen.LOCK, {
+                          isSettingCode: true,
+                        })
+                      }}
+                    />
+                    <ActionButton
+                      flex={1}
+                      title={i18n.t("settings.pincode.button.clear")}
+                      width={"100%"}
+                      fillColor="#EDF0FC"
+                      textColor={theme.darkBlue}
+                      onPress={async () => {
+                        await clearPincode()
+                        setRefresh(refresh + 1)
+                      }}
+                    />
+                  </>
+                ) : (
+                  <ActionButton
+                    flex={1}
+                    title={i18n.t("settings.pincode.button.set")}
+                    width={"100%"}
+                    fillColor="#EDF0FC"
+                    textColor={theme.darkBlue}
+                    onPress={() => {
+                      props.navigation.push(Screen.LOCK, {
+                        isSettingCode: true,
+                      })
+                    }}
                   />
-                </Row>
+                )}
+              </Row>
 
-                {feature.reminders && (
+              {AsyncState.fold(
+                historyButtonLabel,
+                () => null,
+                () => null,
+                (error) => (
+                  <Text>{error}</Text>
+                ),
+                (label) => (
                   <Row
                     style={{
                       marginBottom: 18,
@@ -254,132 +313,48 @@ class SettingScreen extends React.Component<Props, State> {
                       flexDirection: "column",
                     }}
                   >
-                    <SubHeader>{i18n.t("settings.reminders.header")}</SubHeader>
+                    <SubHeader>{i18n.t("settings.history.header")}</SubHeader>
                     <Paragraph
                       style={{
                         marginBottom: 9,
                       }}
                     >
-                      {i18n.t("settings.reminders.description")}
+                      {i18n.t("settings.history.description")}
                     </Paragraph>
                     <RoundedSelectorButton
-                      title={i18n.t("settings.reminders.button.yes")}
-                      selected={this.state.areNotificationsOn}
-                      onPress={async () => {
-                        await setNotifications(feature, true)
-                        this.refresh()
-                      }}
+                      title={i18n.t("settings.history.button.alternative")}
+                      selected={label === "alternative-thought"}
+                      onPress={toggleHistoryButtonLabels}
                     />
-
                     <RoundedSelectorButton
-                      title={i18n.t("settings.reminders.button.no")}
-                      selected={!this.state.areNotificationsOn}
-                      onPress={async () => {
-                        await setNotifications(feature, false)
-                        this.refresh()
-                      }}
+                      title={i18n.t("settings.history.button.automatic")}
+                      selected={label === "automatic-thought"}
+                      onPress={toggleHistoryButtonLabels}
                     />
                   </Row>
-                )}
-                <Row
-                  style={{
-                    marginBottom: 18,
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <SubHeader>{i18n.t("settings.pincode.header")}</SubHeader>
-                  <Paragraph
-                    style={{
-                      marginBottom: 9,
-                    }}
-                  >
-                    {i18n.t("settings.pincode.description")}
-                  </Paragraph>
-                  {this.state.hasPincode ? (
-                    <>
-                      <ActionButton
-                        flex={1}
-                        title={i18n.t("settings.pincode.button.update")}
-                        width={"100%"}
-                        fillColor="#EDF0FC"
-                        textColor={theme.darkBlue}
-                        onPress={() => {
-                          this.props.navigation.push(Screen.LOCK, {
-                            isSettingCode: true,
-                          })
-                        }}
-                      />
-                      <ActionButton
-                        flex={1}
-                        title={i18n.t("settings.pincode.button.clear")}
-                        width={"100%"}
-                        fillColor="#EDF0FC"
-                        textColor={theme.darkBlue}
-                        onPress={async () => {
-                          await clearPincode()
-                          this.refresh()
-                        }}
-                      />
-                    </>
-                  ) : (
-                    <ActionButton
-                      flex={1}
-                      title={i18n.t("settings.pincode.button.set")}
-                      width={"100%"}
-                      fillColor="#EDF0FC"
-                      textColor={theme.darkBlue}
-                      onPress={() => {
-                        this.props.navigation.push(Screen.LOCK, {
-                          isSettingCode: true,
-                        })
+                )
+              )}
+
+              {feature.localeSetting &&
+                AsyncState.fold(
+                  localeSetting,
+                  () => null,
+                  () => null,
+                  (error) => <Text>{error}</Text>,
+                  (locale) => (
+                    <Row
+                      style={{
+                        marginBottom: 18,
+                        display: "flex",
+                        flexDirection: "column",
                       }}
-                    />
-                  )}
-                </Row>
-
-                <Row
-                  style={{
-                    marginBottom: 18,
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <SubHeader>{i18n.t("settings.history.header")}</SubHeader>
-                  <Paragraph
-                    style={{
-                      marginBottom: 9,
-                    }}
-                  >
-                    {i18n.t("settings.history.description")}
-                  </Paragraph>
-                  <RoundedSelectorButton
-                    title={i18n.t("settings.history.button.alternative")}
-                    selected={historyButtonLabel === "alternative-thought"}
-                    onPress={() => this.toggleHistoryButtonLabels()}
-                  />
-                  <RoundedSelectorButton
-                    title={i18n.t("settings.history.button.automatic")}
-                    selected={historyButtonLabel === "automatic-thought"}
-                    onPress={() => this.toggleHistoryButtonLabels()}
-                  />
-                </Row>
-
-                {feature.localeSetting && (
-                  <Row
-                    style={{
-                      marginBottom: 18,
-                      display: "flex",
-                      flexDirection: "column",
-                    }}
-                  >
-                    <SubHeader>{i18n.t("settings.locale.header")}</SubHeader>
-                    {this.state.isReady && (
+                    >
+                      <SubHeader>{i18n.t("settings.locale.header")}</SubHeader>
                       <Picker
-                        selectedValue={this.state.localeSetting}
+                        selectedValue={locale}
                         onValueChange={async (val) => {
-                          this.setState({ localeSetting: val })
                           await setLocaleSetting(val)
+                          setRefresh(refresh + 1)
                         }}
                       >
                         <Picker.Item
@@ -400,29 +375,11 @@ class SettingScreen extends React.Component<Props, State> {
                             />
                           ))}
                       </Picker>
-                    )}
-                  </Row>
+                    </Row>
+                  )
                 )}
 
-                {feature.localeSetting && (
-                  <Row
-                    style={{
-                      marginBottom: 9,
-                    }}
-                  >
-                    <ActionButton
-                      flex={1}
-                      title={i18n.t("settings.locale.contribute")}
-                      fillColor="#EDF0FC"
-                      textColor={theme.darkBlue}
-                      onPress={() => {
-                        const url =
-                          "https://github.com/erosson/freecbt/blob/master/TRANSLATIONS.md"
-                        Linking.canOpenURL(url).then(() => Linking.openURL(url))
-                      }}
-                    />
-                  </Row>
-                )}
+              {feature.localeSetting && (
                 <Row
                   style={{
                     marginBottom: 9,
@@ -430,53 +387,69 @@ class SettingScreen extends React.Component<Props, State> {
                 >
                   <ActionButton
                     flex={1}
-                    title={i18n.t("settings.privacy")}
+                    title={i18n.t("settings.locale.contribute")}
                     fillColor="#EDF0FC"
                     textColor={theme.darkBlue}
                     onPress={() => {
                       const url =
-                        "https://github.com/erosson/freecbt/blob/master/PRIVACY.md"
+                        "https://github.com/erosson/freecbt/blob/master/TRANSLATIONS.md"
                       Linking.canOpenURL(url).then(() => Linking.openURL(url))
                     }}
                   />
                 </Row>
-                <Row>
-                  <ActionButton
-                    flex={1}
-                    title={i18n.t("settings.terms")}
-                    fillColor="#EDF0FC"
-                    textColor={theme.darkBlue}
-                    onPress={() => {
-                      const url =
-                        "https://github.com/erosson/freecbt/blob/master/TOS.md"
-                      Linking.canOpenURL(url).then(() => Linking.openURL(url))
-                    }}
-                  />
-                </Row>
-                <Row>
-                  <ActionButton
-                    flex={1}
-                    opacity={feature.debugVisible ? 1 : 0}
-                    fillColor={feature.debugVisible ? null : "#ffffff"}
-                    textColor={feature.debugVisible ? null : "#ffffff"}
-                    title={"Debug"}
-                    onPress={() => {
-                      const debugClicks = this.state.debugClicks + 1
-                      this.setState({ debugClicks })
-                      if (debugClicks >= 5) {
-                        this.setState({ debugClicks: 0 })
-                        this.props.navigation.push(Screen.DEBUG)
-                      }
-                    }}
-                  />
-                </Row>
-              </Container>
-            </ScrollView>
-          </FadesIn>
-        )}
-      </Feature.Context.Consumer>
-    )
-  }
+              )}
+              <Row
+                style={{
+                  marginBottom: 9,
+                }}
+              >
+                <ActionButton
+                  flex={1}
+                  title={i18n.t("settings.privacy")}
+                  fillColor="#EDF0FC"
+                  textColor={theme.darkBlue}
+                  onPress={() => {
+                    const url =
+                      "https://github.com/erosson/freecbt/blob/master/PRIVACY.md"
+                    Linking.canOpenURL(url).then(() => Linking.openURL(url))
+                  }}
+                />
+              </Row>
+              <Row>
+                <ActionButton
+                  flex={1}
+                  title={i18n.t("settings.terms")}
+                  fillColor="#EDF0FC"
+                  textColor={theme.darkBlue}
+                  onPress={() => {
+                    const url =
+                      "https://github.com/erosson/freecbt/blob/master/TOS.md"
+                    Linking.canOpenURL(url).then(() => Linking.openURL(url))
+                  }}
+                />
+              </Row>
+              <Row>
+                <ActionButton
+                  flex={1}
+                  opacity={feature.debugVisible ? 1 : 0}
+                  fillColor={feature.debugVisible ? null : "#ffffff"}
+                  textColor={feature.debugVisible ? null : "#ffffff"}
+                  title={"Debug"}
+                  onPress={() => {
+                    const clicks = debugClicks + 1
+                    if (clicks >= 5) {
+                      setDebugClicks(0)
+                      props.navigation.push(Screen.DEBUG)
+                    } else {
+                      setDebugClicks(clicks)
+                    }
+                  }}
+                />
+              </Row>
+            </Container>
+          </ScrollView>
+        </FadesIn>
+      )}
+    </Feature.Context.Consumer>
+  )
 }
-
-export default SettingScreen

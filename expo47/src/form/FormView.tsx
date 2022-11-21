@@ -11,20 +11,14 @@ import Challenge from "./Challenge"
 import Distortions from "./Distortions"
 import i18n from "../i18n"
 
-export type Slides = "automatic" | "distortions" | "challenge" | "alternative"
-
-const slideToIndex = (slide: Slides): number => {
-  switch (slide) {
-    case "automatic":
-      return 0
-    case "distortions":
-      return 1
-    case "challenge":
-      return 2
-    case "alternative":
-      return 3
-  }
+const slideToIndex = {
+  automatic: 0,
+  distortions: 1,
+  challenge: 2,
+  alternative: 3,
 }
+
+export type Slides = keyof typeof slideToIndex
 
 interface FormViewProps {
   onSave: () => void
@@ -40,25 +34,13 @@ interface FormViewProps {
   onChangeDistortion: (selected: string) => void
 }
 
-interface FormViewState {
-  activeSlide: number
-}
-
-export default class extends React.Component<FormViewProps, FormViewState> {
-  static navigationOptions = {
-    header: null,
-  }
-
-  state = {
-    activeSlide: 0,
-  }
-
-  _renderItem = ({ item, index }) => {
+export default function FormView(props: FormViewProps): JSX.Element {
+  function _renderItem({ item }) {
     if (item.slug === "automatic-thought") {
       return (
         <AutomaticThought
-          value={this.props.automatic}
-          onChange={this.props.onChangeAutomaticThought}
+          value={props.automatic}
+          onChange={props.onChangeAutomaticThought}
         />
       )
     }
@@ -66,18 +48,15 @@ export default class extends React.Component<FormViewProps, FormViewState> {
     if (item.slug === "distortions") {
       return (
         <Distortions
-          selected={this.props.distortions}
-          onChange={this.props.onChangeDistortion}
+          selected={props.distortions}
+          onChange={props.onChangeDistortion}
         />
       )
     }
 
     if (item.slug === "challenge") {
       return (
-        <Challenge
-          value={this.props.challenge}
-          onChange={this.props.onChangeChallenge}
-        />
+        <Challenge value={props.challenge} onChange={props.onChangeChallenge} />
       )
     }
 
@@ -85,8 +64,8 @@ export default class extends React.Component<FormViewProps, FormViewState> {
       return (
         <>
           <AlternativeThought
-            value={this.props.alternative}
-            onChange={this.props.onChangeAlternativeThought}
+            value={props.alternative}
+            onChange={props.onChangeAlternativeThought}
           />
 
           <View
@@ -97,7 +76,7 @@ export default class extends React.Component<FormViewProps, FormViewState> {
             <ActionButton
               title={i18n.t("cbt_form.submit")}
               width="100%"
-              onPress={this.props.onSave}
+              onPress={props.onSave}
             />
           </View>
         </>
@@ -107,33 +86,30 @@ export default class extends React.Component<FormViewProps, FormViewState> {
     return null
   }
 
-  render() {
-    return (
-      <Carousel
-        data={[
-          { slug: "automatic-thought" },
-          { slug: "distortions" },
-          { slug: "challenge" },
-          { slug: "alternative-thought" },
-        ]}
-        renderItem={this._renderItem}
-        width={sliderWidth}
-        onSnapToItem={(index) => {
-          this.setState({ activeSlide: index })
-          Keyboard.dismiss()
-        }}
-        loop={false}
-        defaultIndex={slideToIndex(this.props.slideToShow)}
-        mode="parallax"
-        modeConfig={{
-          parallaxScrollingScale: 0.9,
-          parallaxScrollingOffset: Math.round(sliderWidth * 0.15),
-        }}
-        // fix vertical scrolling for distortions
-        panGestureHandlerProps={{
-          activeOffsetX: [-10, 10],
-        }}
-      />
-    )
-  }
+  return (
+    <Carousel
+      data={[
+        { slug: "automatic-thought" },
+        { slug: "distortions" },
+        { slug: "challenge" },
+        { slug: "alternative-thought" },
+      ]}
+      renderItem={_renderItem}
+      width={sliderWidth}
+      onSnapToItem={(index) => {
+        Keyboard.dismiss()
+      }}
+      loop={false}
+      defaultIndex={slideToIndex[props.slideToShow]}
+      mode="parallax"
+      modeConfig={{
+        parallaxScrollingScale: 0.9,
+        parallaxScrollingOffset: Math.round(sliderWidth * 0.15),
+      }}
+      // fix vertical scrolling for distortions
+      panGestureHandlerProps={{
+        activeOffsetX: [-10, 10],
+      }}
+    />
+  )
 }
