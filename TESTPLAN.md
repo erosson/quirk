@@ -1,6 +1,6 @@
 # Manual test plan
 
-After big changes, test these things manually:
+After big changes, test these things manually, in both ios and android:
 
 * [ ] is saved data persisted from the old version?
 * From the create-thought form:
