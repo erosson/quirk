@@ -19,13 +19,13 @@ export const enum Screen {
 
 export type ParamList = {
   [Screen.CBT_FORM]:
-  | {
-    fromOnboarding?: boolean
-    // TODO replace with thought-id
-    thought?: SavedThought
-    slide?: Slides
-  }
-  | undefined
+    | {
+        fromOnboarding?: boolean
+        // TODO replace with thought-id
+        thought?: SavedThought
+        slide?: Slides
+      }
+    | undefined
   [Screen.CBT_LIST]: undefined
   [Screen.ONBOARDING]: undefined
   [Screen.EXPLANATION]: undefined
