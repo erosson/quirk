@@ -5,13 +5,13 @@ import theme from "../theme"
 import Constants from "expo-constants"
 import * as Haptic from "expo-haptics"
 import i18n from "../i18n"
-import FinishedThoughtView from "../form/FinishedThoughtView"
+import CBTView from "../form/CBTView"
 import { SavedThought } from "../thoughts"
 import haptic from "../haptic"
 import { Screen, ScreenProps } from "../screens"
 import { Slides } from "../form/FormView"
 
-type Props = ScreenProps<Screen.FINISHED_THOUGHT>
+type Props = ScreenProps<Screen.CBT_VIEW>
 
 interface ScreenState {
   thought: SavedThought
@@ -74,7 +74,7 @@ export default class extends React.Component<Props, ScreenState> {
             />
           </Row>
 
-          <FinishedThoughtView
+          <CBTView
             thought={this.state.thought}
             onEdit={this.onEdit}
             onNew={() => {
