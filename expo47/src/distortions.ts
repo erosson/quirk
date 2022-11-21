@@ -11,6 +11,7 @@ export interface Distortion {
   slug: string
   description: () => string
 }
+export type T = Distortion
 
 // old-style distortions. These are persisted in user data, so we must maintain decode support forever
 export interface LegacyDistortionV0 {

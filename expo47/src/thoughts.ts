@@ -1,7 +1,6 @@
 import * as Distortion from "./distortions"
 import * as D from "./json-decode"
 import uuidv4 from "uuid/v4"
-import { QueryArgs } from "@testing-library/react"
 
 const CURRENT_VERSION = 1
 export interface Thought {
@@ -14,6 +13,7 @@ export interface Thought {
   updatedAt: Date
   uuid: ThoughtID
 }
+export type T = Thought
 export type ThoughtID = string
 
 // old-style thoughts. These are persisted in user data, so we must maintain decode support forever
@@ -30,7 +30,9 @@ export interface LegacyThoughtV0 {
 export interface CreateArgs {
   automaticThought: string
   alternativeThought: string
-  cognitiveDistortions: Distortion.Distortion[] | Set<Distortion.Distortion>
+  cognitiveDistortions: Iterable<
+    Distortion.Distortion | keyof typeof Distortion.bySlug
+  >
   challenge: string
 }
 export const THOUGHTS_KEY_PREFIX = `@Quirk:thoughts:`
@@ -39,9 +41,14 @@ export function getThoughtKey(info): string {
 }
 
 export function create(args: CreateArgs): Thought {
+  const cognitiveDistortions = new Set(
+    Array.from(args.cognitiveDistortions).map((d) =>
+      typeof d === "string" ? Distortion.bySlug[d] : d
+    ) as Distortion.Distortion[]
+  )
   return {
     ...args,
-    cognitiveDistortions: new Set(args.cognitiveDistortions),
+    cognitiveDistortions,
     uuid: getThoughtKey(uuidv4()),
     createdAt: new Date(),
     updatedAt: new Date(),

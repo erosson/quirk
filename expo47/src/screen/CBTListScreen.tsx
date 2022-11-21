@@ -10,7 +10,7 @@ import * as ThoughtStore from "../thoughtstore"
 import { Header, Row, Container, IconButton, Label, Paragraph } from "../ui"
 import theme from "../theme"
 import { Screen, ScreenProps } from "../screens"
-import { Thought, ThoughtGroup, groupThoughtsByDay } from "../thoughts"
+import * as Thought from "../thoughts"
 import universalHaptic from "../haptic"
 import Constants from "expo-constants"
 import * as Haptic from "expo-haptics"
@@ -31,10 +31,10 @@ const ThoughtItem = ({
   onPress,
   onDelete,
 }: {
-  thought: Thought
+  thought: Thought.T
   historyButtonLabel: HistoryButtonLabelSetting
-  onPress: (thought: Thought | boolean) => void
-  onDelete: (thought: Thought) => void
+  onPress: (thought: Thought.T | boolean) => void
+  onDelete: (thought: Thought.T) => void
 }) => (
   <Row style={{ marginBottom: 18 }}>
     <TouchableOpacity
@@ -122,10 +122,10 @@ const EmptyThoughtIllustration = () => (
 )
 
 interface ThoughtListProps {
-  groups: ThoughtGroup[]
+  groups: Thought.ThoughtGroup[]
   historyButtonLabel: HistoryButtonLabelSetting
-  navigateToViewer: (thought: Thought) => void
-  onItemDelete: (thought: Thought) => void
+  navigateToViewer: (thought: Thought.T) => void
+  onItemDelete: (thought: Thought.T) => void
 }
 
 const ThoughtItemList = ({
@@ -168,19 +168,23 @@ type Props = ScreenProps<Screen.CBT_LIST>
 export default function CBTListScreen({ navigation }: Props): JSX.Element {
   const [reload, setReload] = React.useState(0)
   const historyButtonLabel = AsyncState.useAsyncState(getHistoryButtonLabel)
-  const thoughtRes = AsyncState.useAsyncState<AsyncState.Result<Thought>[]>(
-    ThoughtStore.getExercises,
-    [reload]
-  )
-  const groups: AsyncState.RemoteData<ThoughtGroup[]> = AsyncState.map(
+  const thoughtRes = AsyncState.useAsyncState<
+    AsyncState.Result<Thought.T, ThoughtStore.ParseError>[]
+  >(ThoughtStore.getExercises, [reload])
+  const groups: AsyncState.RemoteData<Thought.ThoughtGroup[]> = AsyncState.map(
     thoughtRes,
     (rs) => {
-      const ts: Thought[] = rs
+      // remove invalid thoughts (bad data). TODO: display with a different UI
+      const ts: Thought.T[] = rs
         .map((r) => AsyncState.withDefault(r, null))
         .filter((t) => t)
-      return groupThoughtsByDay(ts)
+      return Thought.groupThoughtsByDay(ts)
     }
   )
+  const errors: AsyncState.RemoteData<ThoughtStore.ParseError[]> =
+    AsyncState.map(thoughtRes, (rs) =>
+      rs.map((r) => (AsyncState.isFailure(r) ? r.error : null)).filter((e) => e)
+    )
 
   return (
     <View style={{ backgroundColor: theme.lightOffwhite }}>
@@ -228,12 +232,12 @@ export default function CBTListScreen({ navigation }: Props): JSX.Element {
               (gs) => (
                 <ThoughtItemList
                   groups={gs}
-                  navigateToViewer={(thought: Thought) => {
+                  navigateToViewer={(thought: Thought.T) => {
                     navigation.push(Screen.CBT_VIEW, {
                       thoughtID: thought.uuid,
                     })
                   }}
-                  onItemDelete={async (thought: Thought) => {
+                  onItemDelete={async (thought: Thought.T) => {
                     universalHaptic.notification(
                       Haptic.NotificationFeedbackType.Success
                     )
