@@ -1,5 +1,4 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import stringify from "json-stringify-safe"
 
 const HIDDEN_KEY = `@AlertStore:hidden`
 const NEW_USER_KEY = `@AlertStore:new-user`
@@ -19,7 +18,7 @@ export async function hide(slug: string): Promise<boolean> {
     const current = await hiddenAlerts()
     current.push(slug)
 
-    await AsyncStorage.setItem(HIDDEN_KEY, stringify(current))
+    await AsyncStorage.setItem(HIDDEN_KEY, JSON.stringify(current))
     return true
   } catch (err) {
     console.error(err)
@@ -32,7 +31,7 @@ export async function hideMultipleAlerts(slugs: string[]): Promise<boolean> {
     const current = await hiddenAlerts()
     current.push(...slugs)
 
-    await AsyncStorage.setItem(HIDDEN_KEY, stringify(current))
+    await AsyncStorage.setItem(HIDDEN_KEY, JSON.stringify(current))
     return true
   } catch (err) {
     console.error(err)
