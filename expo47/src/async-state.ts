@@ -11,9 +11,21 @@ export type AsyncResultState<V, E> = AsyncState<Result<V, E>>
 export type AsyncResultStateOpts<V, E> = AsyncStateOpts<Result<V, E>>
 
 export type Init = { status: "init" }
-export type Pending = { status: "pending"; promise: Promise<void> }
-export type Failure<E = any> = { status: "failure"; error: E }
-export type Success<V> = { status: "success"; value: V }
+export type Pending = {
+  status: "pending"
+  promise: Promise<void>
+}
+export type Failure<E = any> = {
+  status: "failure"
+  error: E
+}
+export type Success<V> = {
+  status: "success"
+  value: V
+  // when transitioning success -> pending, we almost always want to skip any loading indicator.
+  // Instead, keep the success state, and indicate pending with this property.
+  pending?: Promise<void>
+}
 
 /**
  * Asynchronously loaded data. Based on the Elm version:
@@ -174,27 +186,29 @@ export function useAsyncState<V>(
     status: "init",
   })
   React.useEffect(() => {
-    setState({
-      status: "pending",
-      // There are two different promises here!
-      // * opts.effect() returns a `Promise<V>`, which might `reject()`.
-      // * The promise below, exposed by useAsyncState, returns a `Promise<void>`
-      // that returns at the same time as the original, but will never reject.
-      // It returns no data. Useful for unit tests, but React components
-      // shouldn't rely on it.
-      promise: new Promise<void>((resolve) => {
-        opts
-          .effect()
-          .then((value) => {
-            setState({ status: "success", value })
-            resolve()
-          })
-          .catch((error) => {
-            setState({ status: "failure", error })
-            resolve()
-          })
-      }),
+    // There are two different promises here!
+    // * opts.effect() returns a `Promise<V>`, which might `reject()`.
+    // * The promise below, exposed by useAsyncState, returns a `Promise<void>`
+    // that returns at the same time as the original, but will never reject.
+    // It returns no data. Useful for unit tests, but React components
+    // shouldn't rely on it.
+    const promise = new Promise<void>((resolve) => {
+      opts
+        .effect()
+        .then((value) => {
+          setState({ status: "success", value })
+          resolve()
+        })
+        .catch((error) => {
+          setState({ status: "failure", error })
+          resolve()
+        })
     })
+    setState(
+      isSuccess(state)
+        ? { ...state, pending: promise }
+        : { status: "pending", promise }
+    )
     return opts.cleanup
   }, opts.deps ?? [])
   return state
