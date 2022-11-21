@@ -202,9 +202,9 @@ test("legacy decode", () => {
 })
 
 test("decode failure", () => {
-  expect(() => T.decode(3 as any)).toThrow("not an object")
-  expect(() => T.decode(null as any)).toThrow("not an object")
-  expect(() => T.decode("LOL" as any)).toThrow("not an object")
+  expect(() => T.decode(3 as any)).toThrow("couldn't decode thought")
+  expect(() => T.decode(null as any)).toThrow("couldn't decode thought")
+  expect(() => T.decode("LOL" as any)).toThrow("couldn't decode thought")
 
   const t: T.Thought = T.create({
     automaticThought: "auto",
@@ -220,14 +220,21 @@ test("decode failure", () => {
     description: "blah",
   }
   expect(T.decode(enc)).toBeTruthy()
-  expect(() => T.decode({ ...enc, uuid: 3 })).toThrow("not a string")
-  expect(() => T.decode({ ...enc, automaticThought: 3 })).toThrow(
-    "not a string"
-  )
-  expect(() => T.decode({ ...enc, createdAt: "no" })).toThrow("not a number")
-  expect(() => T.decode(_.omit(enc, "uuid"))).toThrow("not a string")
-  expect(() => T.decode(_.omit(enc, "automaticThought"))).toThrow(
-    "not a string"
-  )
-  expect(() => T.decode(_.omit(enc, "createdAt"))).toThrow("not a number")
+  expect(() => T.decode({ ...enc, uuid: 3 })).toThrow()
+  expect(() => T.decode({ ...enc, automaticThought: 3 })).toThrow()
+  expect(() => T.decode({ ...enc, createdAt: "no" })).toThrow()
+  expect(() => T.decode(_.omit(enc, "uuid"))).toThrow()
+  expect(() => T.decode(_.omit(enc, "automaticThought"))).toThrow()
+  expect(() => T.decode(_.omit(enc, "createdAt"))).toThrow()
+})
+
+test("create from distortion-slugs", () => {
+  const t: T.Thought = T.create({
+    alternativeThought: "",
+    automaticThought: "",
+    challenge: "",
+    cognitiveDistortions: ["all-or-nothing"],
+  })
+  expect(t).toBeTruthy()
+  expect(Array.from(t.cognitiveDistortions)[0]).toBe(D.bySlug["all-or-nothing"])
 })

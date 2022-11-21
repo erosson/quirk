@@ -6,10 +6,42 @@ import * as Feature from "../feature"
 import { useAsyncState, withDefault } from "../async-state"
 import { Screen, ScreenProps } from "../screens"
 import { KeyValuePair } from "@react-native-async-storage/async-storage/lib/typescript/types"
+import * as Thought from "../thoughts"
+import * as ThoughtStore from "../thoughtstore"
 // TODO json imports seem to be broken
 // import versionJson from "../.version.json"
 
 type Props = ScreenProps<Screen.DEBUG>
+
+function exampleThought(): Thought.Thought {
+  return Thought.create({
+    automaticThought: "A simple automatic thought",
+    alternativeThought: "A simple alternative thought",
+    challenge: "A simple challenge",
+    cognitiveDistortions: ["all-or-nothing"],
+  })
+}
+const writeThoughts: { [name: string]: () => Promise<void> } = {
+  example: async () => {
+    await ThoughtStore.write(exampleThought())
+    console.log("write example")
+  },
+  legacy: async () => {
+    const t = exampleThought()
+    const enc = Thought.encode(t, "legacy")
+    const raw = JSON.stringify(enc)
+    await AsyncStorage.setItem(t.uuid, raw)
+    console.log("write legacy")
+  },
+  invalid: async () => {
+    const t = exampleThought()
+    const enc = Thought.encode(t)
+    enc["automaticThought"] = false
+    const raw = JSON.stringify(enc)
+    await AsyncStorage.setItem(t.uuid, raw)
+    console.log("write invalid")
+  },
+}
 
 const constItems = [
   ["Release channel", Constants.manifest.releaseChannel || "(dev)"],
@@ -47,6 +79,18 @@ const constItems = [
     />,
   ],
   ["OS", Platform.OS],
+  [
+    "Test: create a simple thought",
+    <Button title="Simple" onPress={() => writeThoughts.example()} />,
+  ],
+  [
+    "Test: create a legacy thought",
+    <Button title="Legacy" onPress={() => writeThoughts.legacy()} />,
+  ],
+  [
+    "Test: create an invalid thought",
+    <Button title="Invalid" onPress={() => writeThoughts.invalid()} />,
+  ],
 ]
 export default function DebugScreen(props: Props): JSX.Element {
   const storage = useAsyncState<readonly KeyValuePair[]>(async () => {
