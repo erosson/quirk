@@ -27,3 +27,7 @@ After big changes, test these things manually, in both ios and android:
   * [ ] change + verify the language
   * [ ] change + verify the history button labels
   * [ ] open the debug screen
+
+last updated 2022/11/20
+
+last run 2022/11/20
