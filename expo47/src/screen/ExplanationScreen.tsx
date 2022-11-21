@@ -197,108 +197,100 @@ const ShouldStatements = () => (
   </Distortion>
 )
 
-class ExplanationScreen extends React.Component<Props> {
-  static navigationOptions = {
-    header: null,
+export default function ExplanationScreen(props: Props): JSX.Element {
+  function navigateToOnboardingScreen() {
+    props.navigation.navigate(Screen.ONBOARDING)
   }
 
-  navigateToOnboardingScreen = () => {
-    this.props.navigation.navigate(Screen.ONBOARDING)
-  }
-
-  render() {
-    return (
-      <ScrollView
+  return (
+    <ScrollView
+      style={{
+        marginTop: Constants.statusBarHeight,
+        paddingTop: 24,
+        paddingLeft: 24,
+        paddingRight: 24,
+        backgroundColor: "white",
+      }}
+    >
+      <View
         style={{
-          marginTop: Constants.statusBarHeight,
-          paddingTop: 24,
-          paddingLeft: 24,
-          paddingRight: 24,
-          backgroundColor: "white",
+          marginBottom: Constants.statusBarHeight + 24,
         }}
       >
         <View
           style={{
-            marginBottom: Constants.statusBarHeight + 24,
+            marginBottom: 24,
+            flexDirection: "row",
+            justifyContent: "space-between",
           }}
         >
+          <Header allowFontScaling={false}>
+            {i18n.t("explanation_screen.header")}
+          </Header>
           <View
             style={{
-              marginBottom: 24,
+              display: "flex",
               flexDirection: "row",
-              justifyContent: "space-between",
+              alignItems: "center",
             }}
           >
-            <Header allowFontScaling={false}>
-              {i18n.t("explanation_screen.header")}
-            </Header>
             <View
               style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
+                marginRight: 8,
               }}
             >
-              <View
-                style={{
-                  marginRight: 8,
-                }}
-              >
-                <GhostButton
-                  title={i18n.t("explanation_screen.intro")}
-                  width={80}
-                  height={48}
-                  borderColor={theme.lightGray}
-                  textColor={theme.veryLightText}
-                  onPress={this.navigateToOnboardingScreen}
-                />
-              </View>
-              <IconButton
-                featherIconName={"x"}
-                accessibilityLabel={i18n.t("accessibility.new_thought_button")}
-                onPress={() => {
-                  haptic.impact(Haptic.ImpactFeedbackStyle.Light)
-                  this.props.navigation.pop()
-                }}
+              <GhostButton
+                title={i18n.t("explanation_screen.intro")}
+                width={80}
+                height={48}
+                borderColor={theme.lightGray}
+                textColor={theme.veryLightText}
+                onPress={navigateToOnboardingScreen}
               />
             </View>
-          </View>
-
-          <View
-            style={{
-              marginBottom: 24,
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <ActionButton
-              flex={1}
-              title={i18n.t("onboarding_screen.header")}
-              fillColor="#EDF0FC"
-              textColor={theme.darkBlue}
+            <IconButton
+              featherIconName={"x"}
+              accessibilityLabel={i18n.t("accessibility.new_thought_button")}
               onPress={() => {
-                const url = "https://freecbt.erosson.org/explanation?ref=quirk"
-                Linking.canOpenURL(url).then(() => Linking.openURL(url))
+                haptic.impact(Haptic.ImpactFeedbackStyle.Light)
+                props.navigation.pop()
               }}
             />
           </View>
-
-          <AllOrNothingThinking />
-          <Catastrophizing />
-          <EmotionalReasoning />
-          <FortuneTelling />
-          <Labeling />
-          <MagnificationOfTheNegative />
-          <MindReading />
-          <MimizationOfThePositive />
-          <OtherBlaming />
-          <OverGeneralization />
-          <SelfBlaming />
-          <ShouldStatements />
         </View>
-      </ScrollView>
-    )
-  }
-}
 
-export default ExplanationScreen
+        <View
+          style={{
+            marginBottom: 24,
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <ActionButton
+            flex={1}
+            title={i18n.t("onboarding_screen.header")}
+            fillColor="#EDF0FC"
+            textColor={theme.darkBlue}
+            onPress={() => {
+              const url = "https://freecbt.erosson.org/explanation?ref=quirk"
+              Linking.canOpenURL(url).then(() => Linking.openURL(url))
+            }}
+          />
+        </View>
+
+        <AllOrNothingThinking />
+        <Catastrophizing />
+        <EmotionalReasoning />
+        <FortuneTelling />
+        <Labeling />
+        <MagnificationOfTheNegative />
+        <MindReading />
+        <MimizationOfThePositive />
+        <OtherBlaming />
+        <OverGeneralization />
+        <SelfBlaming />
+        <ShouldStatements />
+      </View>
+    </ScrollView>
+  )
+}

@@ -204,91 +204,67 @@ const RemindersStep = ({ onContinue }) => {
   )
 }
 
-export default class extends React.Component<Props> {
-  static navigationOptions = {
-    header: null,
-  }
-
-  state = {
-    activeSlide: 0,
-    isReady: false,
-  }
-
-  componentDidMount() {
-    // Triggers a fade in for fancy reasons
-    setTimeout(() => {
-      this.setState({
-        isReady: true,
-      })
-    }, 60)
-  }
-
-  stopOnBoarding = () => {
+export default function OnboardingScreen(props: Props): JSX.Element {
+  const [slide, setSlide] = React.useState<number>(0)
+  function stopOnBoarding() {
     haptic.notification(Haptic.NotificationFeedbackType.Success)
-    this.props.navigation.replace(Screen.CBT_FORM, {
+    props.navigation.replace(Screen.CBT_FORM, {
       fromOnboarding: true,
     })
   }
 
-  _renderItem = ({ item, index }) => {
-    if (item.slug === "record") {
-      return <RecordStep />
+  function renderItem({ item }) {
+    switch (item) {
+      case "record":
+        return <RecordStep />
+      case "challenge":
+        return <ChallengeStep />
+      case "change":
+        return <ChangeStep />
+      case "reminders-or-continue":
+        return <RemindersStep onContinue={stopOnBoarding} />
+      default:
+        return null
     }
-
-    if (item.slug === "challenge") {
-      return <ChallengeStep />
-    }
-
-    if (item.slug === "change") {
-      return <ChangeStep />
-    }
-
-    if (item.slug === "reminders-or-continue") {
-      return <RemindersStep onContinue={this.stopOnBoarding} />
-    }
-
-    return null
   }
 
-  render() {
-    const { width, height } = Dimensions.get("window")
-    return (
-      <Container
-        style={{
-          height: "100%",
-          paddingLeft: 0,
-          paddingRight: 0,
-          paddingTop: Constants.statusBarHeight + 12,
-          justifyContent: "center",
-          alignItems: "center",
-          flex: 1,
-          paddingBottom: 0,
-        }}
-      >
-        <FadesIn pose={this.state.isReady ? "visible" : "hidden"}>
-          <Carousel
-            width={width}
-            // width={sliderWidth}
-            // height={Dimensions.get('window').width / 2}
-            height={height}
-            data={[
-              { slug: "record" },
-              { slug: "challenge" },
-              { slug: "change" },
-              { slug: "reminders-or-continue" },
-            ]}
-            renderItem={this._renderItem}
-            onSnapToItem={(index) => this.setState({ activeSlide: index })}
-            loop={false}
-            pagingEnabled={true}
-            mode="parallax"
-            modeConfig={{
-              parallaxScrollingScale: 0.9,
-              parallaxScrollingOffset: Math.round(width * 0.15),
-            }}
-          />
-        </FadesIn>
-      </Container>
-    )
-  }
+  const { width, height } = Dimensions.get("window")
+  return (
+    <Container
+      style={{
+        height: "100%",
+        paddingLeft: 0,
+        paddingRight: 0,
+        paddingTop: Constants.statusBarHeight + 12,
+        justifyContent: "center",
+        alignItems: "center",
+        flex: 1,
+        paddingBottom: 0,
+      }}
+    >
+      <FadesIn pose="visible">
+        <Carousel
+          // width={sliderWidth}
+          // height={Dimensions.get('window').width / 2}
+          width={width}
+          height={height}
+          data={[
+            "record",
+            "challenge",
+            "change",
+            "reminders-or-continue",
+          ]}
+          renderItem={renderItem}
+          onSnapToItem={setSlide}
+          loop={false}
+          pagingEnabled={true}
+          mode="parallax"
+          modeConfig={{
+            parallaxScrollingScale: 0.9,
+            parallaxScrollingOffset: Math.round(width * 0.15),
+          }}
+        />
+      </FadesIn>
+    </Container>
+  )
 }
