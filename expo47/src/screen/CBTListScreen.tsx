@@ -6,15 +6,14 @@ import {
   View,
   Image,
 } from "react-native"
-import { getExercises, deleteExercise } from "../thoughtstore"
+import * as ThoughtStore from "../thoughtstore"
 import { Header, Row, Container, IconButton, Label, Paragraph } from "../ui"
 import theme from "../theme"
 import { Screen, ScreenProps } from "../screens"
-import { SavedThought, ThoughtGroup, groupThoughtsByDay } from "../thoughts"
+import { Thought, ThoughtGroup, groupThoughtsByDay } from "../thoughts"
 import universalHaptic from "../haptic"
 import Constants from "expo-constants"
 import * as Haptic from "expo-haptics"
-import { validThoughtGroup } from "../sanitize"
 import Alerter from "../alerter"
 import alerts from "../alerts"
 import {
@@ -22,7 +21,6 @@ import {
   getHistoryButtonLabel,
 } from "./SettingsScreen"
 import i18n from "../i18n"
-import { emojiForSlug } from "../distortions"
 import { take } from "lodash"
 import { FadesIn } from "../animations"
 import * as AsyncState from "../async-state"
@@ -33,10 +31,10 @@ const ThoughtItem = ({
   onPress,
   onDelete,
 }: {
-  thought: SavedThought
+  thought: Thought
   historyButtonLabel: HistoryButtonLabelSetting
-  onPress: (thought: SavedThought | boolean) => void
-  onDelete: (thought: SavedThought) => void
+  onPress: (thought: Thought | boolean) => void
+  onDelete: (thought: Thought) => void
 }) => (
   <Row style={{ marginBottom: 18 }}>
     <TouchableOpacity
@@ -81,13 +79,9 @@ const ThoughtItem = ({
       >
         <Paragraph>
           {take(
-            thought.cognitiveDistortions
-              .filter((n) => n) // Filters out any nulls or undefineds which can crop up
-              .filter((distortion) => distortion.selected)
-              .map((dist) => emojiForSlug(dist.slug)),
-            8 // only take a max of 8
+            Array.from(thought.cognitiveDistortions).map((d) => d.emoji()),
+            8
           )
-            .filter((n) => n)
             .join(" ")
             .trim()}
         </Paragraph>
@@ -130,8 +124,8 @@ const EmptyThoughtIllustration = () => (
 interface ThoughtListProps {
   groups: ThoughtGroup[]
   historyButtonLabel: HistoryButtonLabelSetting
-  navigateToViewer: (thought: SavedThought) => void
-  onItemDelete: (thought: SavedThought) => void
+  navigateToViewer: (thought: Thought) => void
+  onItemDelete: (thought: Thought) => void
 }
 
 const ThoughtItemList = ({
@@ -171,28 +165,20 @@ const ThoughtItemList = ({
 
 type Props = ScreenProps<Screen.CBT_LIST>
 
-function fixTimestamps(json): SavedThought {
-  const createdAt: Date = new Date(json.createdAt)
-  const updatedAt: Date = new Date(json.updatedAt)
-  return {
-    createdAt,
-    updatedAt,
-    ...json,
-  }
-}
-
 export default function CBTListScreen({ navigation }: Props): JSX.Element {
   const [reload, setReload] = React.useState(0)
   const historyButtonLabel = AsyncState.useAsyncState(getHistoryButtonLabel)
-  const exercises = AsyncState.useAsyncState(getExercises, [reload])
+  const thoughtRes = AsyncState.useAsyncState<AsyncState.Result<Thought>[]>(
+    ThoughtStore.getExercises,
+    [reload]
+  )
   const groups: AsyncState.RemoteData<ThoughtGroup[]> = AsyncState.map(
-    exercises,
-    (pairs) => {
-      const thoughts = pairs
-        .map(([_, value]) => JSON.parse(value))
-        .filter((n) => n) // Worst case scenario, if bad data gets in we don't show it.
-        .map(fixTimestamps)
-      return groupThoughtsByDay(thoughts).filter(validThoughtGroup)
+    thoughtRes,
+    (rs) => {
+      const ts: Thought[] = rs
+        .map((r) => AsyncState.withDefault(r, null))
+        .filter((t) => t)
+      return groupThoughtsByDay(ts)
     }
   )
 
@@ -242,16 +228,16 @@ export default function CBTListScreen({ navigation }: Props): JSX.Element {
               (gs) => (
                 <ThoughtItemList
                   groups={gs}
-                  navigateToViewer={(thought: SavedThought) => {
+                  navigateToViewer={(thought: Thought) => {
                     navigation.push(Screen.CBT_VIEW, {
-                      thought,
+                      thoughtID: thought.uuid,
                     })
                   }}
-                  onItemDelete={async (thought: SavedThought) => {
+                  onItemDelete={async (thought: Thought) => {
                     universalHaptic.notification(
                       Haptic.NotificationFeedbackType.Success
                     )
-                    await deleteExercise(thought.uuid)
+                    await ThoughtStore.remove(thought.uuid)
                     setReload(reload + 1)
                   }}
                   historyButtonLabel={AsyncState.withDefault(

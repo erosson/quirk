@@ -2,15 +2,13 @@ import { ActionButton } from "../ui"
 import React from "react"
 import Carousel from "react-native-reanimated-carousel"
 import { View, Keyboard } from "react-native"
-import * as Haptic from "expo-haptics"
 import { sliderWidth, itemWidth } from "./sizes"
 import { Thought } from "../thoughts"
-import universalHaptic from "../haptic"
+import * as Distortion from "../distortions"
 import AutomaticThought from "./AutomaticThought"
 import AlternativeThought from "./AlternativeThought"
 import Challenge from "./Challenge"
 import Distortions from "./Distortions"
-import { saveExercise } from "../thoughtstore"
 import i18n from "../i18n"
 
 export type Slides = "automatic" | "distortions" | "challenge" | "alternative"
@@ -29,8 +27,11 @@ const slideToIndex = (slide: Slides): number => {
 }
 
 interface FormViewProps {
-  onSave: (thought: Thought) => void
-  thought: Thought
+  onSave: () => void
+  automatic: string
+  alternative: string
+  challenge: string
+  distortions: Set<Distortion.Distortion>
   slideToShow: Slides
   shouldShowInFlowOnboarding: boolean
   onChangeAutomaticThought: (val: string) => void
@@ -52,21 +53,11 @@ export default class extends React.Component<FormViewProps, FormViewState> {
     activeSlide: 0,
   }
 
-  onSave = () => {
-    universalHaptic.notification(Haptic.NotificationFeedbackType.Success)
-
-    saveExercise(this.props.thought).then((thought) => {
-      this.props.onSave(thought)
-    })
-  }
-
   _renderItem = ({ item, index }) => {
-    const { thought } = this.props
-
     if (item.slug === "automatic-thought") {
       return (
         <AutomaticThought
-          value={thought.automaticThought}
+          value={this.props.automatic}
           onChange={this.props.onChangeAutomaticThought}
         />
       )
@@ -75,7 +66,7 @@ export default class extends React.Component<FormViewProps, FormViewState> {
     if (item.slug === "distortions") {
       return (
         <Distortions
-          distortions={thought.cognitiveDistortions}
+          selected={this.props.distortions}
           onChange={this.props.onChangeDistortion}
         />
       )
@@ -84,7 +75,7 @@ export default class extends React.Component<FormViewProps, FormViewState> {
     if (item.slug === "challenge") {
       return (
         <Challenge
-          value={thought.challenge}
+          value={this.props.challenge}
           onChange={this.props.onChangeChallenge}
         />
       )
@@ -94,7 +85,7 @@ export default class extends React.Component<FormViewProps, FormViewState> {
       return (
         <>
           <AlternativeThought
-            value={thought.alternativeThought}
+            value={this.props.alternative}
             onChange={this.props.onChangeAlternativeThought}
           />
 
@@ -106,7 +97,7 @@ export default class extends React.Component<FormViewProps, FormViewState> {
             <ActionButton
               title={i18n.t("cbt_form.submit")}
               width="100%"
-              onPress={this.onSave}
+              onPress={this.props.onSave}
             />
           </View>
         </>
