@@ -243,7 +243,7 @@ export default function CBTListScreen({ navigation }: Props): JSX.Element {
                 <ThoughtItemList
                   groups={gs}
                   navigateToViewer={(thought: SavedThought) => {
-                    navigation.push(Screen.FINISHED_THOUGHT, {
+                    navigation.push(Screen.CBT_VIEW, {
                       thought,
                     })
                   }}

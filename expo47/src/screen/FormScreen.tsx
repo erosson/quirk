@@ -42,7 +42,7 @@ export default function FormScreen(props: Props): JSX.Element {
   })
 
   function onSave(t) {
-    props.navigation.push(Screen.FINISHED_THOUGHT, { thought: t })
+    props.navigation.push(Screen.CBT_VIEW, { thought: t })
     setSlide("automatic")
   }
 
