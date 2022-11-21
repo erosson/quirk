@@ -1,5 +1,0 @@
-app_identifier("org.erosson.freecbt") # The bundle identifier of your app
-apple_id("apple@erosson.org") # Your Apple email address
-
-# For more information about the Appfile, see:
-#     https://docs.fastlane.tools/advanced/#appfile
