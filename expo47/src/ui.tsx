@@ -9,8 +9,6 @@ import {
 import PropTypes from "prop-types"
 import theme from "./theme"
 import { Feather } from "@expo/vector-icons"
-import distortions, { CognitiveDistortion } from "./distortions"
-import { find } from "lodash"
 
 export interface ParentComponent {
   children: any
@@ -177,47 +175,6 @@ SelectorTextItem.propTypes = {
   text: PropTypes.string.isRequired,
   selected: PropTypes.bool,
   onPress: PropTypes.func.isRequired,
-}
-
-export const RoundedSelector = ({
-  items,
-  onPress,
-  style,
-}: {
-  onPress: (slug: string) => void
-} & any) => (
-  <View
-    style={{
-      backgroundColor: theme.lightOffwhite,
-      ...style,
-    }}
-  >
-    {items.map(({ slug, selected }) => {
-      const item = find(distortions(), { slug })
-      if (!item) {
-        return null
-      }
-
-      const cogDistortion = item as CognitiveDistortion
-
-      return (
-        <SelectorTextItem
-          key={slug}
-          emoji={cogDistortion.emoji || "🍎"}
-          text={cogDistortion.label}
-          description={cogDistortion.description}
-          selected={selected}
-          onPress={() => onPress(slug)}
-        />
-      )
-    })}
-  </View>
-)
-
-RoundedSelector.propTypes = {
-  items: PropTypes.array.isRequired,
-  onPress: PropTypes.func.isRequired,
-  style: PropTypes.object,
 }
 
 export const RoundedSelectorButton = ({

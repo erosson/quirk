@@ -1,14 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import stringify from "json-stringify-safe"
-import uuidv4 from "uuid/v4"
-import { Thought, SavedThought } from "./thoughts"
+import * as AsyncState from "./async-state"
+import * as T from "./thoughts"
 
 const EXISTING_USER_KEY = "@Quirk:existing-user"
-const THOUGHTS_KEY_PREFIX = `@Quirk:thoughts:`
-
-export function getThoughtKey(info): string {
-  return THOUGHTS_KEY_PREFIX + info
-}
 
 export async function exists(key: string): Promise<boolean> {
   try {
@@ -38,42 +32,19 @@ export async function setIsExistingUser() {
   }
 }
 
-export const saveExercise = async (
-  thought: SavedThought | Thought
-): Promise<Thought> => {
-  let saveableThought: SavedThought
-
-  const isSavedThought = (thought as SavedThought).uuid === undefined
-  if (isSavedThought) {
-    saveableThought = {
-      uuid: getThoughtKey(uuidv4()),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      ...thought,
-    }
-  } else {
-    saveableThought = thought as SavedThought
-    saveableThought.updatedAt = new Date()
-  }
-
-  try {
-    const thoughtString = stringify(saveableThought)
-
-    // No matter what, we NEVER save bad data.
-    if (!thoughtString || thoughtString.length <= 0) {
-      console.warn("something went very wrong stringifying this data")
-      return saveableThought
-    }
-
-    await AsyncStorage.setItem(saveableThought.uuid, thoughtString)
-    return saveableThought
-  } catch (error) {
-    console.error(error)
-    return saveableThought
-  }
+export async function write(t: T.Thought): Promise<void> {
+  const enc = T.encode(t)
+  const raw = JSON.stringify(enc)
+  await AsyncStorage.setItem(t.uuid, raw)
 }
 
-export const deleteExercise = async (uuid: string) => {
+export async function read(id: T.ThoughtID): Promise<T.Thought> {
+  const raw = await AsyncStorage.getItem(id)
+  const enc = JSON.parse(raw)
+  return T.decode(enc)
+}
+
+export async function remove(uuid: string) {
   try {
     await AsyncStorage.removeItem(uuid)
   } catch (error) {
@@ -81,28 +52,18 @@ export const deleteExercise = async (uuid: string) => {
   }
 }
 
-export const getExercises = async () => {
-  try {
-    const keys = (await AsyncStorage.getAllKeys()).filter((key) =>
-      key.startsWith(THOUGHTS_KEY_PREFIX)
-    )
+export async function getExercises(): Promise<AsyncState.Result<T.Thought>[]> {
+  const keys = (await AsyncStorage.getAllKeys()).filter((key) =>
+    key.startsWith(T.THOUGHTS_KEY_PREFIX)
+  )
 
-    let rows = await AsyncStorage.multiGet(keys)
-
-    // It's better to lose data than to brick the app
-    // (though losing data is really bad too)
-    if (!rows) {
-      rows = []
-    }
-
-    // This filter removes "null", "undefined"
-    // which we should _never_ ever ever ever let
-    // get back to the user since it'll brick their app
-    return rows.filter((n) => n)
-  } catch (error) {
-    console.error(error)
-    return []
-  }
+  let rows = await AsyncStorage.multiGet(keys)
+  return rows.map(([key, raw]: [string, string]) => {
+    return AsyncState.tryResult(() => {
+      const enc = JSON.parse(raw)
+      return T.decode(enc)
+    })
+  })
 }
 
 export const countThoughts = async (): Promise<number> => {

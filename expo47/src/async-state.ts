@@ -161,3 +161,11 @@ export function useAsyncEffect(
     ? useAsyncState(arg1, arg2)
     : useAsyncState(arg1)
 }
+
+export function tryResult<T>(fn: () => T): Result<T> {
+  try {
+    return { status: "success", value: fn() }
+  } catch (error) {
+    return { status: "failure", error }
+  }
+}

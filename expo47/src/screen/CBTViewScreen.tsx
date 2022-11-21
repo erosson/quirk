@@ -1,26 +1,32 @@
 import React from "react"
 import { Container, Row, Header, IconButton } from "../ui"
-import { View, StatusBar } from "react-native"
+import { View, StatusBar, Text } from "react-native"
 import theme from "../theme"
 import Constants from "expo-constants"
 import * as Haptic from "expo-haptics"
 import i18n from "../i18n"
 import CBTView from "../form/CBTView"
-import { SavedThought } from "../thoughts"
+import { Thought } from "../thoughts"
+import * as ThoughtStore from "../thoughtstore"
 import haptic from "../haptic"
 import { Screen, ScreenProps } from "../screens"
 import { Slides } from "../form/FormView"
+import * as AsyncState from "../async-state"
 
 type Props = ScreenProps<Screen.CBT_VIEW>
 
 export default function CBTViewScreen(props: Props): JSX.Element {
-  const thought: SavedThought = props.route.params.thought
+  const thought: AsyncState.RemoteData<Thought> = AsyncState.useAsyncState(() =>
+    ThoughtStore.read(props.route.params.thoughtID)
+  )
 
   function onEdit(_: string, slide: Slides) {
-    this.props.navigation.push(Screen.CBT_FORM, {
-      thought: this.state.thought,
-      slide,
-    })
+    if (AsyncState.isSuccess(thought)) {
+      props.navigation.push(Screen.CBT_FORM, {
+        thoughtID: thought.value.uuid,
+        slide,
+      })
+    }
   }
 
   return (
@@ -59,14 +65,24 @@ export default function CBTViewScreen(props: Props): JSX.Element {
           />
         </Row>
 
-        <CBTView
-          thought={thought}
-          onEdit={onEdit}
-          onNew={() => {
-            haptic.impact(Haptic.ImpactFeedbackStyle.Light)
-            props.navigation.push(Screen.CBT_FORM, {})
-          }}
-        />
+        {AsyncState.fold(
+          thought,
+          () => null,
+          () => null,
+          (error) => (
+            <Text>{JSON.stringify(error)}</Text>
+          ),
+          (t) => (
+            <CBTView
+              thought={t}
+              onEdit={onEdit}
+              onNew={() => {
+                haptic.impact(Haptic.ImpactFeedbackStyle.Light)
+                props.navigation.push(Screen.CBT_FORM, {})
+              }}
+            />
+          )
+        )}
       </Container>
     </View>
   )

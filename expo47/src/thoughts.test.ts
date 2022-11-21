@@ -1,21 +1,31 @@
-import { groupThoughtsByDay, newThought, SavedThought } from "./thoughts"
+import * as T from "./thoughts"
+import * as D from "./distortions"
+import * as _ from "lodash"
 
-function newSavedThought(date: string): SavedThought {
+function empty(): T.Thought {
+  return T.create({
+    automaticThought: "",
+    alternativeThought: "",
+    challenge: "",
+    cognitiveDistortions: [],
+  })
+}
+function newSavedThought(date: string): T.Thought {
   return {
-    uuid: "foo",
+    ...empty(),
     createdAt: new Date(date),
     updatedAt: new Date(date),
-    ...newThought(),
+    uuid: "foo",
   }
 }
 
 test("groupThoughtsByDay when given an empty array, returns an empty array", () => {
-  const groups = groupThoughtsByDay([])
+  const groups = T.groupThoughtsByDay([])
   expect(groups.length).toBe(0)
 })
 
 test("groupThoughtsByDay returns at least one thought", () => {
-  const groups = groupThoughtsByDay([newSavedThought("Dec 24, 2018")])
+  const groups = T.groupThoughtsByDay([newSavedThought("Dec 24, 2018")])
   expect(groups.length).toBe(1)
 })
 
@@ -23,7 +33,7 @@ test("groupThoughtsByDay puts different days thoughts in different places", () =
   const mondayThought = newSavedThought("Dec 24, 2018")
   const tuesdayThought = newSavedThought("Dec 25, 2018") // 🎄 is a tuesday this year
 
-  const groups = groupThoughtsByDay([mondayThought, tuesdayThought])
+  const groups = T.groupThoughtsByDay([mondayThought, tuesdayThought])
 
   expect(groups.length).toBe(2)
   expect(groups[1].thoughts[0]).toBe(mondayThought)
@@ -31,7 +41,7 @@ test("groupThoughtsByDay puts different days thoughts in different places", () =
 })
 
 test("groupThoughtsByDay puts multiple thoughts in one day", () => {
-  const groups = groupThoughtsByDay([
+  const groups = T.groupThoughtsByDay([
     // Christmas ones
     newSavedThought("Dec 25, 2018"),
     newSavedThought("Dec 25, 2018"),
@@ -59,14 +69,14 @@ test("groupThoughtsByDay doesn't copy thoughts", () => {
   const secondThought = newSavedThought("Dec 24, 2018")
   secondThought.automaticThought = "second"
 
-  const groups = groupThoughtsByDay([firstThought, secondThought])
+  const groups = T.groupThoughtsByDay([firstThought, secondThought])
   expect(groups.length).toBe(1)
   expect(groups[0].thoughts).toEqual([firstThought, secondThought])
   expect(groups[0].date).toBe(new Date("Dec 24, 2018").toDateString())
 })
 
 test("groupThoughtsByDay displays the groups in order", () => {
-  const groups = groupThoughtsByDay([
+  const groups = T.groupThoughtsByDay([
     // New Years
     newSavedThought("Jan 1, 2019"),
 
@@ -101,6 +111,123 @@ test("groupThoughtsByDay displays the thoughts in order", () => {
     newSavedThought(first.toDateString()),
   ]
 
-  const groups = groupThoughtsByDay(unordered)
+  const groups = T.groupThoughtsByDay(unordered)
   expect(groups[0].thoughts).toEqual(ordered)
+})
+
+test("encode and decode: empty", () => {
+  const t: T.Thought = empty()
+  const enc: object = T.encode(t)
+  const t2: T.Thought = T.decode(enc)
+  expect({ ...t2, createdAt: t.createdAt, updatedAt: t.updatedAt }).toEqual(t)
+  expect(t2.createdAt.getTime()).toBe(t.createdAt.getTime())
+  expect(t2.updatedAt.getTime()).toBe(t.updatedAt.getTime())
+  expect(t2).not.toEqual(enc)
+})
+
+test("encode and decode: nonempty", () => {
+  const t: T.Thought = T.create({
+    automaticThought: "auto",
+    alternativeThought: "alt",
+    challenge: "challenge",
+    cognitiveDistortions: [D.bySlug["all-or-nothing"]],
+  })
+  const enc: object = T.encode(t)
+  const t2: T.Thought = T.decode(enc)
+  expect({ ...t2, createdAt: t.createdAt, updatedAt: t.updatedAt }).toEqual(t)
+  expect(t2.createdAt.getTime()).toBe(t.createdAt.getTime())
+  expect(t2.updatedAt.getTime()).toBe(t.updatedAt.getTime())
+  expect(t2).not.toEqual(enc)
+  expect(typeof enc["cognitiveDistortions"][0]).toBe("string")
+})
+
+test("legacy encode and decode", () => {
+  const t: T.Thought = T.create({
+    automaticThought: "auto",
+    alternativeThought: "alt",
+    challenge: "challenge",
+    cognitiveDistortions: [D.bySlug["all-or-nothing"]],
+  })
+  const enc: object = T.encode(t, "legacy")
+  const t2: T.Thought = T.decode(enc)
+  expect(typeof enc).toBe("object")
+  expect({ ...t2, createdAt: t.createdAt, updatedAt: t.updatedAt }).toEqual(t)
+  expect(t2.createdAt.getTime()).toBe(t.createdAt.getTime())
+  expect(t2.updatedAt.getTime()).toBe(t.updatedAt.getTime())
+  expect(t2).toEqual(t)
+})
+
+test("non-legacy decode", () => {
+  const enc: any = {
+    automaticThought: "auto",
+    alternativeThought: "alt",
+    challenge: "challenge",
+    uuid: "what",
+    createdAt: 3,
+    updatedAt: 3,
+    cognitiveDistortions: ["all-or-nothing", "all-or-nothing"],
+    v: 1,
+  }
+  const t2: T.Thought = T.decode(enc)
+  expect(t2).toBeTruthy()
+  expect(Array.from(t2.cognitiveDistortions)).toHaveLength(1)
+  expect(Array.from(t2.cognitiveDistortions)[0]).toBe(
+    D.bySlug["all-or-nothing"]
+  )
+})
+
+test("legacy decode", () => {
+  const enc: any = {
+    automaticThought: "auto",
+    alternativeThought: "alt",
+    challenge: "challenge",
+    uuid: "what",
+    createdAt: 3,
+    updatedAt: 3,
+    cognitiveDistortions: [
+      {
+        slug: "all-or-nothing",
+        emoji: "💩",
+        label: "whatever",
+        description: "blah",
+      },
+    ],
+  }
+  const t2: T.Thought = T.decode(enc)
+  expect(t2).toBeTruthy()
+  expect(Array.from(t2.cognitiveDistortions)).toHaveLength(1)
+  expect(Array.from(t2.cognitiveDistortions)[0]).toBe(
+    D.bySlug["all-or-nothing"]
+  )
+})
+
+test("decode failure", () => {
+  expect(() => T.decode(3 as any)).toThrow("not an object")
+  expect(() => T.decode(null as any)).toThrow("not an object")
+  expect(() => T.decode("LOL" as any)).toThrow("not an object")
+
+  const t: T.Thought = T.create({
+    automaticThought: "auto",
+    alternativeThought: "alt",
+    challenge: "challenge",
+    cognitiveDistortions: [D.bySlug["all-or-nothing"]],
+  })
+  const enc: any = T.encode(t)
+  const encD: D.LegacyDistortionV0 = {
+    slug: "all-or-nothing",
+    emoji: "💩",
+    label: "whatever",
+    description: "blah",
+  }
+  expect(T.decode(enc)).toBeTruthy()
+  expect(() => T.decode({ ...enc, uuid: 3 })).toThrow("not a string")
+  expect(() => T.decode({ ...enc, automaticThought: 3 })).toThrow(
+    "not a string"
+  )
+  expect(() => T.decode({ ...enc, createdAt: "no" })).toThrow("not a number")
+  expect(() => T.decode(_.omit(enc, "uuid"))).toThrow("not a string")
+  expect(() => T.decode(_.omit(enc, "automaticThought"))).toThrow(
+    "not a string"
+  )
+  expect(() => T.decode(_.omit(enc, "createdAt"))).toThrow("not a number")
 })

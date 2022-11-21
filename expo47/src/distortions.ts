@@ -1,12 +1,77 @@
 import i18n from "./i18n"
 import { Platform } from "react-native"
+import * as _ from "lodash"
+import * as D from "./json-decode"
 
-export interface CognitiveDistortion {
+type DistortionID = string
+
+export interface Distortion {
+  emoji: () => string
+  label: () => string
+  slug: string
+  description: () => string
+}
+
+// old-style distortions. These are persisted in user data, so we must maintain decode support forever
+export interface LegacyDistortionV0 {
   emoji?: string
   label: string
   slug: string
   selected?: boolean
   description: string
+}
+
+/**
+ * Transform a `Thought` to JSON.
+ *
+ * Based on Elm's `JSON.Encode` and `JSON.Decode`.
+ */
+export function encode(d: Distortion): DistortionID
+export function encode(d: Distortion, mode: "default"): DistortionID
+export function encode(d: Distortion, mode: "legacy"): LegacyDistortionV0
+export function encode(
+  d: Distortion,
+  // we must maintain legacy decode support forever, because such data already exists.
+  // let's support legacy encodes as well, for testing and debugging tools
+  mode: "legacy" | "default" = "default"
+): DistortionID | LegacyDistortionV0 {
+  switch (mode) {
+    case "legacy":
+      return toLegacyV0(d)
+    default:
+      return d.slug
+  }
+}
+
+/**
+ * Parse and validate a `Distortion` from JSON.
+ *
+ * All invalid input will throw an error; output will always be a valid `Distortion`.
+ *
+ * Based on Elm's `JSON.Encode` and `JSON.Decode`.
+ */
+export function decode(encoded: DistortionID | LegacyDistortionV0): Distortion {
+  // we must maintain legacy decode support forever.
+  const id: DistortionID = D.string(
+    typeof encoded === "object" && encoded != null
+      ? // legacy encoded distortion-object
+        encoded["slug"]
+      : // modern encoded distortion-id
+        encoded
+  )
+  if (bySlug[id]) {
+    return bySlug[id]
+  }
+  throw new Error(`no such distortion id: ${id}`)
+}
+
+export function toLegacyV0(d: Distortion): LegacyDistortionV0 {
+  return {
+    slug: d.slug,
+    emoji: d.emoji(),
+    label: d.label(),
+    description: d.description(),
+  }
 }
 
 const emj = (first: string, fallback: string) => {
@@ -23,102 +88,96 @@ const emj = (first: string, fallback: string) => {
   return first
 }
 
-const distortions: () => CognitiveDistortion[] = () =>
-  [
-    {
-      emoji: "🌓",
-      label: i18n.t("all_or_nothing_thinking"),
-      slug: "all-or-nothing",
-      description: i18n.t("all_or_nothing_thinking_one_liner"),
-    },
-    {
-      emoji: "👯‍",
-      label: i18n.t("over_generalization"),
-      slug: "overgeneralization",
-      description: i18n.t("overgeneralization_one_liner"),
-    },
-    {
-      emoji: emj("🧠", "💭"),
-      label: i18n.t("mind_reading"),
-      slug: "mind-reading",
-      description: i18n.t("mind_reading_one_liner"),
-    },
-    {
-      emoji: "🔮",
-      label: i18n.t("fortune_telling"),
-      slug: "fortune-telling",
-      description: i18n.t("fortune_telling_one_liner"),
-    },
-    {
-      emoji: "👎",
-      label: i18n.t("magnification_of_the_negative"),
-      slug: "magnification-of-the-negative",
-      description: i18n.t("magnification_of_the_negative_one_liner"),
-    },
-    {
-      emoji: "👍",
-      label: i18n.t("minimization_of_the_positive"),
-      slug: "minimization-of-the-positive",
-      description: i18n.t("minimization_of_the_positive_one_liner"),
-    },
-    {
-      emoji: emj("🤯", "💥"),
-      label: i18n.t("catastrophizing"),
-      slug: "catastrophizing",
-      description: i18n.t("catastrophizing_one_liner"),
-    },
-    {
-      emoji: "🎭",
-      label: i18n.t("emotional_reasoning"),
-      slug: "emotional-reasoning",
-      description: i18n.t("emotional_reasoning_one_liner"),
-    },
-    {
-      emoji: "✨",
-      label: i18n.t("should_statements"),
-      slug: "should-statements",
-      description: i18n.t("should_statements_one_liner"),
-    },
-    {
-      // ya know, because onigiri has like a little seaweed label.
-      // Trust me it makese sense
-      emoji: emj("🏷", "🍙"),
-      label: i18n.t("labeling"),
-      slug: "labeling",
-      description: i18n.t("labeling_one_liner"),
-    },
-    {
-      // look man don't ask me why it's a no-pedestrian as a fallback
-      // update your phones people
-      emoji: emj("👁", "🚷"),
-      label: i18n.t("self_blaming"),
-      slug: "self-blaming",
-      description: i18n.t("self_blaming_one_liner"),
-    },
-    {
-      emoji: emj("🧛‍", "👺"),
-      label: i18n.t("other_blaming"),
-      slug: "other-blaming",
-      description: i18n.t("other_blaming_one_liner"),
-    },
-  ].sort((first, second) => {
-    const firstLabel = first.label.toUpperCase()
-    const secondLabel = second.label.toUpperCase()
+export const list: Distortion[] = [
+  {
+    slug: "all-or-nothing",
+    emoji: () => "🌓",
+    label: () => i18n.t("all_or_nothing_thinking"),
+    description: () => i18n.t("all_or_nothing_thinking_one_liner"),
+  },
+  {
+    slug: "overgeneralization",
+    emoji: () => "👯‍",
+    label: () => i18n.t("over_generalization"),
+    description: () => i18n.t("overgeneralization_one_liner"),
+  },
+  {
+    slug: "mind-reading",
+    emoji: () => emj("🧠", "💭"),
+    label: () => i18n.t("mind_reading"),
+    description: () => i18n.t("mind_reading_one_liner"),
+  },
+  {
+    slug: "fortune-telling",
+    emoji: () => "🔮",
+    label: () => i18n.t("fortune_telling"),
+    description: () => i18n.t("fortune_telling_one_liner"),
+  },
+  {
+    slug: "magnification-of-the-negative",
+    emoji: () => "👎",
+    label: () => i18n.t("magnification_of_the_negative"),
+    description: () => i18n.t("magnification_of_the_negative_one_liner"),
+  },
+  {
+    slug: "minimization-of-the-positive",
+    emoji: () => "👍",
+    label: () => i18n.t("minimization_of_the_positive"),
+    description: () => i18n.t("minimization_of_the_positive_one_liner"),
+  },
+  {
+    slug: "catastrophizing",
+    emoji: () => emj("🤯", "💥"),
+    label: () => i18n.t("catastrophizing"),
+    description: () => i18n.t("catastrophizing_one_liner"),
+  },
+  {
+    slug: "emotional-reasoning",
+    emoji: () => "🎭",
+    label: () => i18n.t("emotional_reasoning"),
+    description: () => i18n.t("emotional_reasoning_one_liner"),
+  },
+  {
+    slug: "should-statements",
+    emoji: () => "✨",
+    label: () => i18n.t("should_statements"),
+    description: () => i18n.t("should_statements_one_liner"),
+  },
+  {
+    slug: "labeling",
+    // ya know, because onigiri has like a little seaweed label.
+    // Trust me it makese sense
+    emoji: () => emj("🏷", "🍙"),
+    label: () => i18n.t("labeling"),
+    description: () => i18n.t("labeling_one_liner"),
+  },
+  {
+    slug: "self-blaming",
+    // look man don't ask me why it's a no-pedestrian as a fallback
+    // update your phones people
+    emoji: () => emj("👁", "🚷"),
+    label: () => i18n.t("self_blaming"),
+    description: () => i18n.t("self_blaming_one_liner"),
+  },
+  {
+    slug: "other-blaming",
+    emoji: () => emj("🧛‍", "👺"),
+    label: () => i18n.t("other_blaming"),
+    description: () => i18n.t("other_blaming_one_liner"),
+  },
+]
+export function sortedList(): Distortion[] {
+  return _.sortBy(list, (d) => d.label().toUpperCase())
+}
+export const bySlug: { [slug: string]: Distortion } = _.keyBy(
+  list,
+  (d) => d.slug
+)
 
-    if (firstLabel < secondLabel) {
-      return -1
-    }
-
-    if (firstLabel > secondLabel) {
-      return 1
-    }
-
-    return 0
-  }) // Alphabetical sorting
-
-export const emojiForSlug = (slug: string): string => {
-  const distortion = distortions().find((dist) => dist.slug === slug)
-  return distortion ? distortion.emoji : "🤷‍"
+export function legacyDistortions(): LegacyDistortionV0[] {
+  return sortedList().map(toLegacyV0)
 }
 
-export default distortions
+export const emojiForSlug = (slug: string): string => {
+  return bySlug[slug] ? bySlug[slug].emoji() : "🤷‍"
+}

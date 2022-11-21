@@ -3,7 +3,7 @@ import {
   NativeStackScreenProps,
 } from "@react-navigation/native-stack"
 import { Slides } from "./form/FormView"
-import { SavedThought } from "./thoughts"
+import { ThoughtID } from "./thoughts"
 
 export const enum Screen {
   CBT_FORM = "CBT_FORM_SCREEN",
@@ -21,8 +21,7 @@ export type ParamList = {
   [Screen.CBT_FORM]:
     | {
         fromOnboarding?: boolean
-        // TODO replace with thought-id
-        thought?: SavedThought
+        thoughtID?: ThoughtID
         slide?: Slides
       }
     | undefined
@@ -33,7 +32,7 @@ export type ParamList = {
   [Screen.INIT]: undefined
   [Screen.CBT_VIEW]: {
     // TODO replace with thought-id
-    thought: SavedThought
+    thoughtID: ThoughtID
   }
   [Screen.LOCK]: {
     isSettingCode: boolean

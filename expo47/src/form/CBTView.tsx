@@ -1,27 +1,27 @@
 import React from "react"
-import { SavedThought } from "../thoughts"
+import * as Thought from "../thoughts"
 import { ScrollView } from "react-native"
 import { SubHeader, Paragraph, FormContainer, GhostButtonWithGuts } from "../ui"
 import i18n from "../i18n"
 import { BubbleThought } from "../imgs/Bubbles"
-import { emojiForSlug } from "../distortions"
+import * as Distortion from "../distortions"
 import theme from "../theme"
 import { Slides } from "./FormView"
 import Feedback from "../feedback"
 
-const cognitiveDistortionsToText = (cognitiveDistortions) => {
-  const paragraphs = cognitiveDistortions
-    .filter((distortion) => distortion.selected) // Only take selected items
-    .map(({ label, slug }) => (
-      <Paragraph
-        key={slug}
-        style={{
-          marginBottom: 8,
-        }}
-      >
-        {emojiForSlug(slug)} {label}
-      </Paragraph>
-    ))
+const cognitiveDistortionsToText = (
+  cognitiveDistortions: Set<Distortion.Distortion>
+) => {
+  const paragraphs = Array.from(cognitiveDistortions).map((d) => (
+    <Paragraph
+      key={d.slug}
+      style={{
+        marginBottom: 8,
+      }}
+    >
+      {d.emoji()} {d.label()}
+    </Paragraph>
+  ))
 
   if (!paragraphs || paragraphs.length === 0) {
     return <Paragraph>🤷‍</Paragraph>
@@ -34,7 +34,7 @@ const CBTView = ({
   thought,
   onEdit,
 }: {
-  thought: SavedThought
+  thought: Thought.Thought
   onEdit: (uuid: string, slide: Slides) => void
 }) => (
   <>
@@ -119,7 +119,7 @@ export default ({
   onEdit,
   onNew,
 }: {
-  thought: SavedThought
+  thought: Thought.Thought
   onEdit: (uuid: string, slide: Slides) => void
   onNew: () => void
 }) => {
