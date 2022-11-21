@@ -15,6 +15,28 @@ export type Pending = {
   status: "pending"
   promise: Promise<void>
 }
+/**
+ * Represent program errors as a plain old value, as functional-style programs do.
+ *
+ * As opposed to the more common JS/object-oriented throwable exceptions.
+ *
+ * Use alongside `Success`, and either `Result` or `RemoteData`, to represent a
+ * possibly-failed thing.
+ *
+ * In most JS/TS code, exceptions are the more common approach to error handling.
+ * Stick to that, when you can. Exceptions have some real limitations though. Here
+ * are a few examples of times where I'd rather treat errors as plain old values,
+ * instead of exceptions:
+ *
+ * - When parsing a list of values (like JSON thought data), I'd like to know not
+ *   only which values parsed successfully, but which values parsed unsuccessfully.
+ *   I'd also like to hang on to both the thrown exception and the JSON that
+ *   caused it.
+ * - Exceptions are really awkward with asynchronous code. `async` functions turn
+ *   exceptions into promises, which sort of turns errors into values with
+ *   `.catch()`, but promises have all sorts of weird state. `Failure` values are
+ *   stateless.
+ */
 export type Failure<E = any> = {
   status: "failure"
   error: E
