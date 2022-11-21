@@ -1,15 +1,16 @@
 import React from "react"
 import * as StoreReview from "react-native-store-review"
-import { View, Linking, Platform } from "react-native"
+import { View, Linking, Platform, Text } from "react-native"
 import { SubHeader, Row, ActionButton } from "./ui"
 import theme from "./theme"
 import * as flagstore from "./flagstore"
+import * as AsyncState from "./async-state"
 import { countThoughts } from "./thoughtstore"
 
 const PLAY_STORE_URL =
   "http://play.google.com/store/apps/details?id=org.erosson.freecbt"
 
-async function shouldShowRatingComponent() {
+async function shouldShowRatingComponent(): Promise<boolean> {
   if (
     Platform.OS === "android" &&
     !(await Linking.canOpenURL(PLAY_STORE_URL))
@@ -33,19 +34,12 @@ async function shouldShowRatingComponent() {
   return true
 }
 
-export default class extends React.Component<
-  {},
-  {
-    shouldShowRate: boolean
-    isReady: boolean
-  }
-> {
-  state = {
-    isReady: false,
-    shouldShowRate: false,
-  }
+export default function Feedback(): JSX.Element {
+  const shouldShowRate = AsyncState.useAsyncState<boolean>(
+    shouldShowRatingComponent
+  )
 
-  onRate = async () => {
+  async function onRate() {
     if (Platform.OS === "ios") {
       StoreReview.requestReview()
     } else if (Platform.OS === "android") {
@@ -54,28 +48,15 @@ export default class extends React.Component<
       )
     }
 
-    flagstore.setTrue("has-rated")
-    this.setState({
-      shouldShowRate: false,
-    })
+    await flagstore.setTrue("has-rated")
   }
 
-  async componentDidMount() {
-    const shouldShowRate = await shouldShowRatingComponent()
-
-    this.setState({
-      shouldShowRate,
-      isReady: true,
-    })
-  }
-
-  render() {
-    const { isReady, shouldShowRate } = this.state
-    if (!isReady) {
-      return null
-    }
-
-    return (
+  return AsyncState.fold(
+    shouldShowRate,
+    () => null,
+    () => null,
+    (error) => <Text>{error}</Text>,
+    (visible) => (
       <View
         style={{
           marginTop: 18,
@@ -90,7 +71,7 @@ export default class extends React.Component<
             marginBottom: 18,
           }}
         >
-          {this.state.shouldShowRate ? "Something Wrong?" : "Got Feedback?"}
+          {visible ? "Something Wrong?" : "Got Feedback?"}
         </SubHeader>
         <Row
           style={{
@@ -109,7 +90,7 @@ export default class extends React.Component<
           />
         </Row>
 
-        {shouldShowRate && (
+        {visible && (
           <>
             <SubHeader
               style={{
@@ -118,7 +99,7 @@ export default class extends React.Component<
                 marginTop: 18,
               }}
             >
-              Love Quirk?
+              Love FreeCBT?
             </SubHeader>
             <Row
               style={{
@@ -131,14 +112,12 @@ export default class extends React.Component<
                 textColor={theme.blue}
                 title={"Give it a review 🙏"}
                 width={"100%"}
-                onPress={() => {
-                  this.onRate()
-                }}
+                onPress={onRate}
               />
             </Row>
           </>
         )}
       </View>
     )
-  }
+  )
 }
