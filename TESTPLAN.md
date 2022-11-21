@@ -2,6 +2,7 @@
 
 After big changes, test these things manually:
 
+* [ ] is saved data persisted from the old version?
 * From the create-thought form:
   * [ ] create an empty thought
   * [ ] create a non-empty thought
