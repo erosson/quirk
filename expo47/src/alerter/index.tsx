@@ -109,7 +109,7 @@ interface AlerterProps {
   alerts: Alert[]
 }
 
-export default function Alerter(props: AlerterProps) {
+export default function Alerter(props: AlerterProps): JSX.Element {
   const [shown, setShown] = React.useState<Alert | null>(null)
 
   AsyncState.useAsyncEffect(async () => {
@@ -128,7 +128,7 @@ export default function Alerter(props: AlerterProps) {
   })
 
   if (!shown) {
-    return false
+    return null
   }
 
   return (
