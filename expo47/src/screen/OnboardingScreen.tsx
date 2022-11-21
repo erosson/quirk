@@ -248,12 +248,7 @@ export default function OnboardingScreen(props: Props): JSX.Element {
           // height={Dimensions.get('window').width / 2}
           width={width}
           height={height}
-          data={[
-            "record",
-            "challenge",
-            "change",
-            "reminders-or-continue",
-          ]}
+          data={["record", "challenge", "change", "reminders-or-continue"]}
           renderItem={renderItem}
           onSnapToItem={setSlide}
           loop={false}
