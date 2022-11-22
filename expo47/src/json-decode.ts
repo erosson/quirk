@@ -36,14 +36,17 @@ export function object(v: any): object {
   }
   throw new Error(`not an object: ${v}`)
 }
-export function array<V>(v: any, child: (any) => V): V[] {
+export function array<V>(v: any, child: (c: any) => V): V[] {
   if (Array.isArray(v)) {
     return v.map((c) => child(c))
   }
   throw new Error(`not an array: ${v}`)
 }
-export function dict<V>(v: any, child: (any) => V): { [k: string]: V }
-export function dict<V>(v: any, child: (any, string) => V): { [k: string]: V }
+export function dict<V>(v: any, child: (c: any) => V): { [k: string]: V }
+export function dict<V>(
+  v: any,
+  child: (c: any, k: string) => V
+): { [k: string]: V }
 export function dict<V>(v: any, child: any): { [k: string]: V } {
   if (typeof v === "object") {
     const entries: [string, unknown][] = Object.entries(v)

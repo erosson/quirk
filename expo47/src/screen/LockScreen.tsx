@@ -12,7 +12,15 @@ import * as AsyncState from "../async-state"
 
 type Props = ScreenProps<Screen.LOCK>
 
-const KeypadButton = ({ title, onPress, style = {} }) => (
+const KeypadButton = ({
+  title,
+  onPress,
+  style = {},
+}: {
+  title: string
+  onPress: () => void
+  style?: { [s: string]: string }
+}) => (
   <GhostButton
     title={title}
     borderColor={theme.gray}
@@ -33,6 +41,11 @@ const KeypadSideButton = ({
   accessibilityLabel,
   onPress,
   style = {},
+}: {
+  icon: string
+  accessibilityLabel: string
+  onPress: () => void
+  style?: { [s: string]: string }
 }) => (
   <IconButton
     accessibilityLabel={accessibilityLabel}
@@ -46,7 +59,7 @@ const KeypadSideButton = ({
   />
 )
 
-const Notifier = ({ isActive }) => (
+const Notifier = ({ isActive }: { isActive: boolean }) => (
   <BouncyBigOnActive
     style={{
       width: 32,

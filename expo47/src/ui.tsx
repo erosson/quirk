@@ -36,7 +36,7 @@ Row.propTypes = {
   style: PropTypes.object,
 }
 
-export const FormContainer = ({ children, ...style }) => (
+export const FormContainer = ({ children, ...style }: { children: any }) => (
   <View
     style={{
       marginBottom: 24,
@@ -97,6 +97,12 @@ export const SelectorTextItem = ({
   description,
   selected = false,
   onPress,
+}: {
+  text: any
+  emoji: any
+  description: any
+  selected: boolean
+  onPress: () => void
 }) => (
   <TouchableOpacity
     onPress={onPress}
@@ -478,7 +484,13 @@ Container.propTypes = {
   children: PropTypes.any,
 }
 
-export const Label = ({ children, ...style }) => (
+export const Label = ({
+  children,
+  ...style
+}: {
+  children: any
+  [style: string]: any
+}) => (
   <Text
     style={{
       fontWeight: "700",
@@ -511,10 +523,10 @@ export const ThoughtDook = ({ style, source }: IllustrationComponent) => (
   />
 )
 
-export const I = ({ children }) => (
+export const I = ({ children }: { children: any }) => (
   <Text style={{ fontStyle: "italic" }}>{children}</Text>
 )
 
-export const B = ({ children }) => (
+export const B = ({ children }: { children: any }) => (
   <Text style={{ fontWeight: "bold" }}>{children}</Text>
 )

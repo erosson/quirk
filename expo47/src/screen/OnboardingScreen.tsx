@@ -131,7 +131,7 @@ const ChangeStep = () => (
   </View>
 )
 
-const RemindersStep = ({ onContinue }) => {
+const RemindersStep = ({ onContinue }: { onContinue: () => void }) => {
   const { feature } = React.useContext(Feature.Context)
   return (
     <View
@@ -213,7 +213,7 @@ export default function OnboardingScreen(props: Props): JSX.Element {
     })
   }
 
-  function renderItem({ item }): JSX.Element {
+  function renderItem({ item }: { item: string }): JSX.Element {
     switch (item) {
       case "record":
         return <RecordStep />

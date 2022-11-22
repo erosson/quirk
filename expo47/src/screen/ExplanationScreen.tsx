@@ -18,7 +18,7 @@ import haptic from "../haptic"
 
 type Props = ScreenProps<Screen.EXPLANATION>
 
-const Distortion = ({ children }) => (
+const Distortion = ({ children }: { children: any }) => (
   <View
     style={{
       marginBottom: 48,

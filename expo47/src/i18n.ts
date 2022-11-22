@@ -19,7 +19,7 @@ import nb from "./locals/nb.json"
 import sv from "./locals/sv.json"
 import ro from "./locals/ro.json"
 
-function walkReverse(obj) {
+function walkReverse(obj: object): object | string {
   return Object.fromEntries(
     Object.entries(obj).map(([key, val]) => [
       key,

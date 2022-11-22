@@ -132,7 +132,7 @@ test("encode and decode: nonempty", () => {
     challenge: "challenge",
     cognitiveDistortions: [D.bySlug["all-or-nothing"]],
   })
-  const enc: object = T.encode(t)
+  const enc: any = T.encode(t)
   const t2: T.Thought = T.decode(enc)
   expect({ ...t2, createdAt: t.createdAt, updatedAt: t.updatedAt }).toEqual(t)
   expect(t2.createdAt.getTime()).toBe(t.createdAt.getTime())

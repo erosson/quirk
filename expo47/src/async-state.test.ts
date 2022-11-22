@@ -42,7 +42,7 @@ test("useAsyncEffect simple success", async () => {
     state.status === "pending" ? state.promise : fail("state is not pending")
   )
   expect(state.status).toBe("success")
-  expect(state["value"]).toBeUndefined()
+  expect((state as any)["value"]).toBeUndefined()
 })
 
 test("useAsyncEffect simple failure", async () => {
@@ -57,7 +57,7 @@ test("useAsyncEffect simple failure", async () => {
     state.status === "pending" ? state.promise : fail("state is not pending")
   )
   expect(state.status).toBe("failure")
-  expect(state["error"]).toBeInstanceOf(Error)
+  expect((state as any)["error"]).toBeInstanceOf(Error)
 })
 
 test("useAsyncState simple success", async () => {
@@ -70,7 +70,7 @@ test("useAsyncState simple success", async () => {
     state.status === "pending" ? state.promise : fail("state is not pending")
   )
   expect(state.status).toBe("success")
-  expect(state["value"]).toBe(3)
+  expect((state as any)["value"]).toBe(3)
 })
 
 test("useAsyncState simple failure", async () => {
@@ -85,5 +85,5 @@ test("useAsyncState simple failure", async () => {
     state.status === "pending" ? state.promise : fail("state is not pending")
   )
   expect(state.status).toBe("failure")
-  expect(state["error"]).toBeInstanceOf(Error)
+  expect((state as any)["error"]).toBeInstanceOf(Error)
 })
