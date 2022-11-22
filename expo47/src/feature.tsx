@@ -59,7 +59,7 @@ export const Context = React.createContext({
 
 export function State({ children }: React.PropsWithChildren<{}>): JSX.Element {
   const [feature, updateFeature] = React.useReducer(
-    (state, newState) => ({ ...state, ...newState }),
+    (state: any, newState: any) => ({ ...state, ...newState }),
     defaults
   )
   return (
@@ -68,7 +68,7 @@ export function State({ children }: React.PropsWithChildren<{}>): JSX.Element {
     </Context.Provider>
   )
 }
-export function withState(Component) {
+export function withState(Component: React.ComponentType) {
   return () => (
     <State>
       <Component />

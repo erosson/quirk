@@ -36,7 +36,7 @@ const writeThoughts: { [name: string]: () => Promise<void> } = {
   invalid: async () => {
     const t = exampleThought()
     const enc = Thought.encode(t)
-    enc["automaticThought"] = false
+    ;(enc as any)["automaticThought"] = false
     const raw = JSON.stringify(enc)
     await AsyncStorage.setItem(t.uuid, raw)
     console.log("write invalid")
@@ -131,7 +131,10 @@ export default function DebugScreen(props: Props): JSX.Element {
   )
 }
 
-function renderEntry([key, val], i): JSX.Element {
+function renderEntry(
+  [key, val]: [string, string | JSX.Element],
+  i: number
+): JSX.Element {
   if (typeof val === "string") {
     return (
       <View

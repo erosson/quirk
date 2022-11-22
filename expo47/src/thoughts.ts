@@ -1,6 +1,6 @@
 import * as Distortion from "./distortions"
 import * as D from "./json-decode"
-import uuidv4 from "uuid/v4"
+import { v4 as uuidv4 } from "uuid"
 
 const CURRENT_VERSION = 1
 export interface Thought {
@@ -36,7 +36,7 @@ export interface CreateArgs {
   challenge: string
 }
 export const THOUGHTS_KEY_PREFIX = `@Quirk:thoughts:`
-export function getThoughtKey(info): string {
+export function getThoughtKey(info: string): string {
   return `${THOUGHTS_KEY_PREFIX}${info}`
 }
 
@@ -94,7 +94,7 @@ export function encode(
  *
  * Based on Elm's `JSON.Encode` and `JSON.Decode`.
  */
-export function decode(enc: object): Thought {
+export function decode(enc: any): Thought {
   try {
     D.object(enc)
     let v: unknown = enc["v"]
