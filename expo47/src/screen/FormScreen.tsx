@@ -32,14 +32,16 @@ export default function FormScreen(props: Props): JSX.Element {
     new Set<Distortion.Distortion>([])
   )
   // TODO loading spinner
-  AsyncState.useAsyncEffect(async () => {
+  const thought0 = AsyncState.useAsyncState<Thought.T | null>(async () => {
     if (thoughtID) {
       const thought = await ThoughtStore.read(thoughtID)
       setAutomatic(thought.automaticThought)
       setAlternative(thought.alternativeThought)
       setChallenge(thought.challenge)
       setDistortions(thought.cognitiveDistortions)
+      return thought
     }
+    return null
   }, [thoughtID])
 
   // `slide` is set from props on init, props on update, or setSlide in this file
@@ -60,12 +62,16 @@ export default function FormScreen(props: Props): JSX.Element {
   })
 
   async function onSave() {
-    const thought = Thought.create({
+    const args = {
       automaticThought: automatic,
       alternativeThought: alternative,
       challenge: challenge,
       cognitiveDistortions: distortions,
-    })
+    }
+    const thought0_: Thought.T | null = AsyncState.withDefault(thought0, null)
+    const thought: Thought.T = thought0_
+      ? { ...thought0_, ...args, updatedAt: new Date() }
+      : Thought.create(args)
     await ThoughtStore.write(thought)
     haptic.notification(Haptic.NotificationFeedbackType.Success)
     props.navigation.push(Screen.CBT_VIEW, { thoughtID: thought.uuid })
