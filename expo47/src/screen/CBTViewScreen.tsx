@@ -108,7 +108,7 @@ export default function CBTViewScreen(props: Props): JSX.Element {
             featherIconName={"x"}
             onPress={() => {
               haptic.impact(Haptic.ImpactFeedbackStyle.Light)
-              props.navigation.push(Screen.CBT_LIST, {})
+              props.navigation.push(Screen.CBT_LIST)
             }}
           />
         </Row>
