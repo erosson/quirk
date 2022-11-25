@@ -16,7 +16,7 @@
     "build:apk": "yarn _version && eas build -p android --profile apk",
     "build:android": "yarn _version && eas build -p android",
     "build:ios": "yarn _version && eas build -p ios",
-    "_version": "./scripts/version.sh > .version.json"
+    "_version": "bash -c \"./scripts/version.sh > .version.js \""
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.17.11",

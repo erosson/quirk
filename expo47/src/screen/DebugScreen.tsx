@@ -8,6 +8,7 @@ import { Screen, ScreenProps } from "../screens"
 import { KeyValuePair } from "@react-native-async-storage/async-storage/lib/typescript/types"
 import * as Thought from "../thoughts"
 import * as ThoughtStore from "../thoughtstore"
+import version from "../../.version"
 // TODO json imports seem to be broken
 // import versionJson from "../.version.json"
 
@@ -48,9 +49,9 @@ const constItems: [string, string | JSX.Element][] = [
   ["Expo version", Constants.expoVersion ?? "(unknown)"],
   ["App version", Constants.manifest?.version ?? "(unknown)"],
   ["Revision", Constants.manifest?.revisionId ?? "(dev)"],
-  // ["Revision Git", version.hash],
-  // ["Revision Date", version.date],
-  // ["Revision Timestamp", version.timestamp + ""],
+  ["Revision Git", version.hash],
+  ["Revision Date", version.date],
+  ["Revision Timestamp", version.timestamp + ""],
   [
     "Test exception reporting",
     <Button
