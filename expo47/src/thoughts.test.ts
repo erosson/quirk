@@ -202,9 +202,9 @@ test("legacy decode", () => {
 })
 
 test("decode failure", () => {
-  expect(() => T.decode(3 as any)).toThrow("couldn't decode thought")
-  expect(() => T.decode(null as any)).toThrow("couldn't decode thought")
-  expect(() => T.decode("LOL" as any)).toThrow("couldn't decode thought")
+  expect(() => T.decode(3 as any)).toThrow()
+  expect(() => T.decode(null as any)).toThrow()
+  expect(() => T.decode("LOL" as any)).toThrow()
 
   const t: T.Thought = T.create({
     automaticThought: "auto",
