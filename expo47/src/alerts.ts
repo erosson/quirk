@@ -2,12 +2,6 @@ import { Alert } from "./alerter"
 
 const alerts: Alert[] = [
   {
-    slug: "test",
-    priority: 0,
-    title: "👋 test",
-    body: `test`,
-  },
-  {
     slug: "alternative-thought-title",
     priority: 0,
     title: "👋 Hey-o!",
