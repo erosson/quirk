@@ -25,79 +25,77 @@ import { take } from "lodash"
 import { FadesIn } from "../animations"
 import * as AsyncState from "../async-state"
 
-const ThoughtItem = ({
-  thought,
-  historyButtonLabel,
-  onPress,
-  onDelete,
-}: {
+const ThoughtItem = (props: {
   thought: Thought.T
   historyButtonLabel: HistoryButtonLabelSetting
   onPress: (thought: Thought.T) => void
   onDelete: (thought: Thought.T) => void
-}) => (
-  <Row style={{ marginBottom: 18 }}>
-    <TouchableOpacity
-      onPress={() => onPress(thought)}
-      style={{
-        backgroundColor: "white",
-        borderColor: theme.lightGray,
-        borderBottomWidth: 2,
-        borderRadius: 8,
-        borderWidth: 1,
-        marginRight: 18,
-        flex: 1,
-      }}
-    >
-      <Paragraph
+}) => {
+  const { thought, historyButtonLabel, onPress, onDelete } = props
+  return (
+    <Row style={{ marginBottom: 18 }}>
+      <TouchableOpacity
+        onPress={() => onPress(thought)}
         style={{
-          color: theme.darkText,
-          fontWeight: "400",
-          fontSize: 16,
-          marginBottom: 8,
-          paddingLeft: 12,
-          paddingRight: 12,
-          paddingTop: 12,
-          paddingBottom: 6,
-        }}
-      >
-        {historyButtonLabel === "alternative-thought"
-          ? thought.alternativeThought
-          : thought.automaticThought}
-      </Paragraph>
-
-      <View
-        style={{
-          backgroundColor: theme.lightOffwhite,
-          paddingLeft: 12,
-          paddingRight: 12,
-          paddingBottom: 12,
-          paddingTop: 6,
-          margin: 4,
+          backgroundColor: "white",
+          borderColor: theme.lightGray,
+          borderBottomWidth: 2,
           borderRadius: 8,
+          borderWidth: 1,
+          marginRight: 18,
+          flex: 1,
         }}
       >
-        <Paragraph>
-          {take(
-            Array.from(thought.cognitiveDistortions).map((d) => d.emoji()),
-            8
-          )
-            .join(" ")
-            .trim()}
+        <Paragraph
+          style={{
+            color: theme.darkText,
+            fontWeight: "400",
+            fontSize: 16,
+            marginBottom: 8,
+            paddingLeft: 12,
+            paddingRight: 12,
+            paddingTop: 12,
+            paddingBottom: 6,
+          }}
+        >
+          {historyButtonLabel === "alternative-thought"
+            ? thought.alternativeThought
+            : thought.automaticThought}
         </Paragraph>
-      </View>
-    </TouchableOpacity>
 
-    <IconButton
-      style={{
-        alignSelf: "flex-start",
-      }}
-      accessibilityLabel={i18n.t("accessibility.delete_thought_button")}
-      featherIconName={"trash"}
-      onPress={() => onDelete(thought)}
-    />
-  </Row>
-)
+        <View
+          style={{
+            backgroundColor: theme.lightOffwhite,
+            paddingLeft: 12,
+            paddingRight: 12,
+            paddingBottom: 12,
+            paddingTop: 6,
+            margin: 4,
+            borderRadius: 8,
+          }}
+        >
+          <Paragraph>
+            {take(
+              Array.from(thought.cognitiveDistortions).map((d) => d.emoji()),
+              8
+            )
+              .join(" ")
+              .trim()}
+          </Paragraph>
+        </View>
+      </TouchableOpacity>
+
+      <IconButton
+        style={{
+          alignSelf: "flex-start",
+        }}
+        accessibilityLabel={i18n.t("accessibility.delete_thought_button")}
+        featherIconName={"trash"}
+        onPress={() => onDelete(thought)}
+      />
+    </Row>
+  )
+}
 
 const EmptyThoughtIllustration = () => (
   <View
@@ -121,19 +119,13 @@ const EmptyThoughtIllustration = () => (
   </View>
 )
 
-interface ThoughtListProps {
+const ThoughtItemList = (props: {
   groups: Thought.ThoughtGroup[]
   historyButtonLabel: HistoryButtonLabelSetting
   navigateToViewer: (thought: Thought.T) => void
   onItemDelete: (thought: Thought.T) => void
-}
-
-const ThoughtItemList = ({
-  groups,
-  navigateToViewer,
-  onItemDelete,
-  historyButtonLabel,
-}: ThoughtListProps) => {
+}) => {
+  const { groups, historyButtonLabel, navigateToViewer, onItemDelete } = props
   if (!groups || groups.length === 0) {
     return <EmptyThoughtIllustration />
   }
@@ -163,6 +155,77 @@ const ThoughtItemList = ({
   return <>{items}</>
 }
 
+const ParseErrorItem = (props: {
+  parseError: ThoughtStore.ParseError
+  onPress: (pe: ThoughtStore.ParseError) => void
+  onDelete: (pe: ThoughtStore.ParseError) => void
+}) => {
+  return (
+    <Row style={{ marginBottom: 18 }}>
+      <TouchableOpacity
+        onPress={() => props.onPress(props.parseError)}
+        style={{
+          backgroundColor: "white",
+          borderColor: theme.lightGray,
+          borderBottomWidth: 2,
+          borderRadius: 8,
+          borderWidth: 1,
+          marginRight: 18,
+          flex: 1,
+        }}
+      >
+        <Paragraph
+          style={{
+            color: theme.darkText,
+            fontWeight: "400",
+            fontSize: 16,
+            marginBottom: 8,
+            paddingLeft: 12,
+            paddingRight: 12,
+            paddingTop: 12,
+            paddingBottom: 6,
+          }}
+        >
+          {props.parseError.id}
+        </Paragraph>
+      </TouchableOpacity>
+
+      <IconButton
+        style={{
+          alignSelf: "flex-start",
+        }}
+        accessibilityLabel={i18n.t("accessibility.delete_thought_button")}
+        featherIconName={"trash"}
+        onPress={() => props.onDelete(props.parseError)}
+      />
+    </Row>
+  )
+}
+
+const ParseErrorList = (props: {
+  parseErrors: ThoughtStore.ParseError[]
+  navigateToViewer: (t: ThoughtStore.ParseError) => void
+  onItemDelete: (t: ThoughtStore.ParseError) => void
+}): JSX.Element | null => {
+  if (props.parseErrors.length === 0) {
+    return null
+  }
+
+  return (
+    <View key={"parseErrors"} style={{ marginBottom: 18 }}>
+      <Label>{`Failed parsing ${props.parseErrors.length} thoughts`}</Label>
+      {props.parseErrors.map((pe) => (
+        <ParseErrorItem
+          key={pe.id}
+          parseError={pe}
+          onPress={props.navigateToViewer}
+          onDelete={props.onItemDelete}
+        />
+      ))}
+    </View>
+  )
+}
+
 type Props = ScreenProps<Screen.CBT_LIST>
 
 export default function CBTListScreen({ navigation }: Props): JSX.Element {
@@ -180,7 +243,7 @@ export default function CBTListScreen({ navigation }: Props): JSX.Element {
       return Thought.groupThoughtsByDay(ts)
     }
   )
-  const errors: AsyncState.RemoteData<ThoughtStore.ParseError[]> =
+  const failures: AsyncState.RemoteData<ThoughtStore.ParseError[]> =
     AsyncState.map(thoughtRes, (rs) =>
       rs.filter(AsyncState.isFailure).map((f) => f.error)
     )
@@ -247,6 +310,31 @@ export default function CBTListScreen({ navigation }: Props): JSX.Element {
                     historyButtonLabel,
                     "alternative-thought"
                   )}
+                />
+              )
+            )}
+          </FadesIn>
+          <FadesIn pose={AsyncState.isResult(failures) ? "visible" : "hidden"}>
+            {AsyncState.fold(
+              failures,
+              () => null,
+              () => null,
+              (_) => null, // it's the same error as `groups`, no need to show it twice
+              (parseErrors) => (
+                <ParseErrorList
+                  parseErrors={parseErrors}
+                  navigateToViewer={(pe: ThoughtStore.ParseError) => {
+                    navigation.push(Screen.CBT_VIEW, {
+                      thoughtID: pe.id,
+                    })
+                  }}
+                  onItemDelete={async (pe: ThoughtStore.ParseError) => {
+                    universalHaptic.notification(
+                      Haptic.NotificationFeedbackType.Success
+                    )
+                    await ThoughtStore.remove(pe.id)
+                    setReload(reload + 1)
+                  }}
                 />
               )
             )}
