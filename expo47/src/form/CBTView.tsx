@@ -23,7 +23,7 @@ const cognitiveDistortionsToText = (
     </Paragraph>
   ))
 
-  if (!paragraphs || paragraphs.length === 0) {
+  if (paragraphs.length === 0) {
     return <Paragraph>🤷‍</Paragraph>
   }
 

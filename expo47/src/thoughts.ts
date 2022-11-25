@@ -95,44 +95,42 @@ export function encode(
  * Based on Elm's `JSON.Encode` and `JSON.Decode`.
  */
 export function decode(enc: any): Thought {
-  try {
-    D.object(enc)
-    let v: unknown = enc["v"]
-    switch (v) {
-      case 1:
-        // modern thought
-        return {
-          automaticThought: D.string(enc["automaticThought"]),
-          alternativeThought: D.string(enc["alternativeThought"]),
-          cognitiveDistortions: new Set(
-            D.array(enc["cognitiveDistortions"], Distortion.decode)
-          ),
-          challenge: D.string(enc["challenge"]),
-          uuid: D.string(enc["uuid"]),
-          v,
-          createdAt: D.date(enc["createdAt"]),
-          updatedAt: D.date(enc["updatedAt"]),
-        }
-      default:
-        // legacy thought
-        return {
-          automaticThought: D.string(enc["automaticThought"]),
-          alternativeThought: D.string(enc["alternativeThought"]),
-          cognitiveDistortions: new Set(
-            D.array(enc["cognitiveDistortions"], Distortion.decode)
-          ),
-          challenge: D.string(enc["challenge"]),
-          uuid: D.string(enc["uuid"]),
-          v: CURRENT_VERSION,
-          createdAt: D.date(enc["createdAt"]),
-          updatedAt: D.date(enc["updatedAt"]),
-        }
-    }
-  } catch (e) {
-    throw new Error(`couldn't decode thought: ${JSON.stringify(enc)}`, {
-      cause: e,
-    })
+  // try {
+  D.object(enc)
+  let v: unknown = enc["v"]
+  switch (v) {
+    case 1:
+      // modern thought
+      return {
+        automaticThought: D.string(enc["automaticThought"]),
+        alternativeThought: D.string(enc["alternativeThought"]),
+        cognitiveDistortions: new Set(
+          D.array(enc["cognitiveDistortions"], Distortion.decode)
+        ),
+        challenge: D.string(enc["challenge"]),
+        uuid: D.string(enc["uuid"]),
+        v,
+        createdAt: D.date(enc["createdAt"]),
+        updatedAt: D.date(enc["updatedAt"]),
+      }
+    default:
+      // legacy thought
+      return {
+        automaticThought: D.string(enc["automaticThought"]),
+        alternativeThought: D.string(enc["alternativeThought"]),
+        cognitiveDistortions: new Set(
+          D.array(enc["cognitiveDistortions"], Distortion.decode)
+        ),
+        challenge: D.string(enc["challenge"]),
+        uuid: D.string(enc["uuid"]),
+        v: CURRENT_VERSION,
+        createdAt: D.date(enc["createdAt"]),
+        updatedAt: D.date(enc["updatedAt"]),
+      }
   }
+  // } catch (cause) {
+  // throw new Error(`couldn't decode thought`, { cause })
+  // }
 }
 
 function toLegacyV0(t: Thought): LegacyThoughtV0 {

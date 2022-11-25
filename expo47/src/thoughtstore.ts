@@ -44,22 +44,29 @@ export async function read(id: T.ThoughtID): Promise<T.Thought> {
 export async function readResult(
   id: T.ThoughtID
 ): Promise<AsyncState.Result<T.Thought, ParseError>> {
-  return parseResult((await AsyncStorage.getItem(id)) ?? "")
+  return parseResult((await AsyncStorage.getItem(id)) ?? "", id)
 }
 
-export type ParseError = { error: any; raw: string }
+export interface ParseError {
+  error: any
+  raw: string
+  id: T.ThoughtID
+}
 function parseOrThrow(raw: string): T.Thought {
   const enc = JSON.parse(raw)
   return T.decode(enc)
 }
-function parseResult(raw: string): AsyncState.Result<T.Thought, ParseError> {
+function parseResult(
+  raw: string,
+  id: T.ThoughtID
+): AsyncState.Result<T.Thought, ParseError> {
   return AsyncState.mapError(
     AsyncState.tryResult(() => parseOrThrow(raw)),
-    (error) => ({ error, raw })
+    (error) => ({ error, raw, id })
   )
 }
 
-export async function remove(uuid: string) {
+export async function remove(uuid: T.ThoughtID) {
   try {
     await AsyncStorage.removeItem(uuid)
   } catch (error) {
@@ -76,7 +83,7 @@ export async function getExercises(): Promise<
 
   let rows = await AsyncStorage.multiGet(keys)
   return rows.map(([key, raw]: [string, string | null]) =>
-    parseResult(raw ?? "")
+    parseResult(raw ?? "", key)
   )
 }
 
