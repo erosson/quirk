@@ -5,7 +5,7 @@
   "scripts": {
     "start": "yarn _version && expo start",
     "_test": "jest",
-    "test": "yarn lint && yarn lint:prettier && yarn _version && yarn _test",
+    "test": "yarn _version && yarn lint && yarn lint:prettier && yarn _test",
     "android": "yarn _version && expo start --android",
     "ios": "yarn _version && expo start --ios",
     "web": "yarn _version && expo start --web",
