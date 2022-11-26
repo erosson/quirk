@@ -19,6 +19,7 @@
     "_version": "bash -c \"./scripts/version.sh > .version.js \""
   },
   "dependencies": {
+    "@erosson/json-encode-decode": "erosson/json-encode-decode#95e83b8",
     "@react-native-async-storage/async-storage": "^1.17.11",
     "@react-native-picker/picker": "^2.4.8",
     "@react-navigation/native": "^6.0.13",

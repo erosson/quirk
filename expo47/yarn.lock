@@ -1092,6 +1092,10 @@
   dependencies:
     "@types/hammerjs" "^2.0.36"
 
+"@erosson/json-encode-decode@erosson/json-encode-decode#95e83b8":
+  version "1.0.0"
+  resolved "https://codeload.github.com/erosson/json-encode-decode/tar.gz/95e83b89c604c43ae123e062c13103cfec9f0814"
+
 "@expo/bunyan@4.0.0", "@expo/bunyan@^4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@expo/bunyan/-/bunyan-4.0.0.tgz#be0c1de943c7987a9fbd309ea0b1acd605890c7b"
@@ -2269,15 +2273,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-native-snap-carousel@^3.8.5":
-  version "3.8.5"
-  resolved "https://registry.yarnpkg.com/@types/react-native-snap-carousel/-/react-native-snap-carousel-3.8.5.tgz#5b3cb208119e3599d5537b5fc83653a155c6275d"
-  integrity sha512-EMBwQo/om2HZM/J6u8Bvz7i0BEO/v6frrpmlvUQ579CMsgYQPlYzQ1ne4KDdRq08+yDSG8/8AwIi1R+185ROsg==
-  dependencies:
-    "@types/react" "*"
-    "@types/react-native" "*"
-
-"@types/react-native@*", "@types/react-native@^0.70.6":
+"@types/react-native@^0.70.6":
   version "0.70.6"
   resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.70.6.tgz#0d1bc3014111f64f13e0df643aec2ab03f021fdb"
   integrity sha512-ynQ2jj0km9d7dbnyKqVdQ6Nti7VQ8SLTA/KKkkS5+FnvGyvij2AOo1/xnkBR/jnSNXuzrvGVzw2n0VWfppmfKw==
