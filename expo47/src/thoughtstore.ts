@@ -54,7 +54,7 @@ export interface ParseError {
 }
 function parseOrThrow(raw: string): T.Thought {
   const enc = JSON.parse(raw)
-  return T.decode(enc)
+  return T.decoder.decodeValue(enc)
 }
 function parseResult(
   raw: string,

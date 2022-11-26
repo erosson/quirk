@@ -1,11 +1,11 @@
 import i18n from "./i18n"
 import { Platform } from "react-native"
 import * as _ from "lodash"
-import * as D from "./json-decode"
+import * as J from "@erosson/json-encode-decode"
 
 type DistortionID = string
 
-export interface Distortion {
+export type Distortion = {
   emoji: () => string
   label: () => string
   slug: string
@@ -14,7 +14,7 @@ export interface Distortion {
 export type T = Distortion
 
 // old-style distortions. These are persisted in user data, so we must maintain decode support forever
-export interface LegacyDistortionV0 {
+export type LegacyDistortionV0 = {
   emoji?: string
   label: string
   slug: string
@@ -46,25 +46,13 @@ export function encode(
 
 /**
  * Parse and validate a `Distortion` from JSON.
- *
- * All invalid input will throw an error; output will always be a valid `Distortion`.
- *
- * Based on Elm's `JSON.Encode` and `JSON.Decode`.
  */
-export function decode(encoded: DistortionID | LegacyDistortionV0): Distortion {
-  // we must maintain legacy decode support forever.
-  const id: DistortionID = D.string(
-    typeof encoded === "object" && encoded != null
-      ? // legacy encoded distortion-object
-        encoded["slug"]
-      : // modern encoded distortion-id
-        encoded
-  )
-  if (bySlug[id]) {
-    return bySlug[id]
-  }
-  throw new Error(`no such distortion id: ${id}`)
-}
+export const decoder: J.Decoder<Distortion> = J.oneOf(
+  J.string.field("slug"),
+  J.string
+).andThen((id) =>
+  id in bySlug ? J.succeed(bySlug[id]) : J.fail(`no such distortion id: ${id}`)
+)
 
 export function toLegacyV0(d: Distortion): LegacyDistortionV0 {
   return {

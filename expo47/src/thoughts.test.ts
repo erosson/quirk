@@ -117,8 +117,8 @@ test("groupThoughtsByDay displays the thoughts in order", () => {
 
 test("encode and decode: empty", () => {
   const t: T.Thought = empty()
-  const enc: object = T.encode(t)
-  const t2: T.Thought = T.decode(enc)
+  const enc = T.encode(t)
+  const t2: T.Thought = T.decoder.decodeValue(enc)
   expect({ ...t2, createdAt: t.createdAt, updatedAt: t.updatedAt }).toEqual(t)
   expect(t2.createdAt.getTime()).toBe(t.createdAt.getTime())
   expect(t2.updatedAt.getTime()).toBe(t.updatedAt.getTime())
@@ -133,7 +133,7 @@ test("encode and decode: nonempty", () => {
     cognitiveDistortions: [D.bySlug["all-or-nothing"]],
   })
   const enc: any = T.encode(t)
-  const t2: T.Thought = T.decode(enc)
+  const t2: T.Thought = T.decoder.decodeValue(enc)
   expect({ ...t2, createdAt: t.createdAt, updatedAt: t.updatedAt }).toEqual(t)
   expect(t2.createdAt.getTime()).toBe(t.createdAt.getTime())
   expect(t2.updatedAt.getTime()).toBe(t.updatedAt.getTime())
@@ -148,8 +148,8 @@ test("legacy encode and decode", () => {
     challenge: "challenge",
     cognitiveDistortions: [D.bySlug["all-or-nothing"]],
   })
-  const enc: object = T.encode(t, "legacy")
-  const t2: T.Thought = T.decode(enc)
+  const enc = T.encode(t, "legacy")
+  const t2: T.Thought = T.decoder.decodeValue(enc)
   expect(typeof enc).toBe("object")
   expect({ ...t2, createdAt: t.createdAt, updatedAt: t.updatedAt }).toEqual(t)
   expect(t2.createdAt.getTime()).toBe(t.createdAt.getTime())
@@ -168,7 +168,7 @@ test("non-legacy decode", () => {
     cognitiveDistortions: ["all-or-nothing", "all-or-nothing"],
     v: 1,
   }
-  const t2: T.Thought = T.decode(enc)
+  const t2: T.Thought = T.decoder.decodeValue(enc)
   expect(t2).toBeTruthy()
   expect(Array.from(t2.cognitiveDistortions)).toHaveLength(1)
   expect(Array.from(t2.cognitiveDistortions)[0]).toBe(
@@ -193,7 +193,7 @@ test("legacy decode", () => {
       },
     ],
   }
-  const t2: T.Thought = T.decode(enc)
+  const t2: T.Thought = T.decoder.decodeValue(enc)
   expect(t2).toBeTruthy()
   expect(Array.from(t2.cognitiveDistortions)).toHaveLength(1)
   expect(Array.from(t2.cognitiveDistortions)[0]).toBe(
@@ -202,9 +202,9 @@ test("legacy decode", () => {
 })
 
 test("decode failure", () => {
-  expect(() => T.decode(3 as any)).toThrow()
-  expect(() => T.decode(null as any)).toThrow()
-  expect(() => T.decode("LOL" as any)).toThrow()
+  expect(() => T.decoder.decodeValue(3 as any)).toThrow()
+  expect(() => T.decoder.decodeValue(null as any)).toThrow()
+  expect(() => T.decoder.decodeValue("LOL" as any)).toThrow()
 
   const t: T.Thought = T.create({
     automaticThought: "auto",
@@ -219,13 +219,13 @@ test("decode failure", () => {
     label: "whatever",
     description: "blah",
   }
-  expect(T.decode(enc)).toBeTruthy()
-  expect(() => T.decode({ ...enc, uuid: 3 })).toThrow()
-  expect(() => T.decode({ ...enc, automaticThought: 3 })).toThrow()
-  expect(() => T.decode({ ...enc, createdAt: "no" })).toThrow()
-  expect(() => T.decode(_.omit(enc, "uuid"))).toThrow()
-  expect(() => T.decode(_.omit(enc, "automaticThought"))).toThrow()
-  expect(() => T.decode(_.omit(enc, "createdAt"))).toThrow()
+  expect(T.decoder.decodeValue(enc)).toBeTruthy()
+  expect(() => T.decoder.decodeValue({ ...enc, uuid: 3 })).toThrow()
+  expect(() => T.decoder.decodeValue({ ...enc, automaticThought: 3 })).toThrow()
+  expect(() => T.decoder.decodeValue({ ...enc, createdAt: "no" })).toThrow()
+  expect(() => T.decoder.decodeValue(_.omit(enc, "uuid"))).toThrow()
+  expect(() => T.decoder.decodeValue(_.omit(enc, "automaticThought"))).toThrow()
+  expect(() => T.decoder.decodeValue(_.omit(enc, "createdAt"))).toThrow()
 })
 
 test("create from distortion-slugs", () => {

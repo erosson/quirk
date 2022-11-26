@@ -25,7 +25,7 @@ test("encode and decode", () => {
   expect(d).toBeTruthy()
   expect(d.slug).toBe("all-or-nothing")
   const enc: string = D.encode(d)
-  const d2: D.Distortion = D.decode(enc)
+  const d2: D.Distortion = D.decoder.decodeValue(enc)
   expect(typeof enc).toBe("string")
   expect(d2).toBe(d)
 })
@@ -35,7 +35,7 @@ test("legacy encode and decode", () => {
   expect(d).toBeTruthy()
   expect(d.slug).toBe("all-or-nothing")
   const enc: D.LegacyDistortionV0 = D.encode(d, "legacy")
-  const d2: D.Distortion = D.decode(enc)
+  const d2: D.Distortion = D.decoder.decodeValue(enc as any)
   expect(typeof enc).toBe("object")
   expect(d2).toBe(d)
 })
@@ -47,19 +47,19 @@ test("legacy decode", () => {
     label: "whatever",
     description: "blah",
   }
-  const d2: D.Distortion = D.decode(enc)
+  const d2: D.Distortion = D.decoder.decodeValue(enc as any)
   expect(d2).toBe(D.bySlug["all-or-nothing"])
 })
 
 test("decode failure", () => {
-  expect(() => D.decode(3 as any)).toThrow("not a string")
-  expect(() => D.decode(null as any)).toThrow("not a string")
-  expect(() => D.decode("LOL")).toThrow("no such distortion")
+  expect(() => D.decoder.decodeValue(3 as any)).toThrow("Expecting a STRING")
+  expect(() => D.decoder.decodeValue(null as any)).toThrow("Expecting a STRING")
+  expect(() => D.decoder.decodeValue("LOL")).toThrow("no such distortion")
   const enc: D.LegacyDistortionV0 = {
     slug: "LOL-or-nothing",
     emoji: "💩",
     label: "whatever",
     description: "blah",
   }
-  expect(() => D.decode(enc)).toThrow("no such distortion")
+  expect(() => D.decoder.decodeValue(enc as any)).toThrow("no such distortion")
 })

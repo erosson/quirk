@@ -1,5 +1,5 @@
 import * as Distortion from "./distortions"
-import * as D from "./json-decode"
+import * as J from "@erosson/json-encode-decode"
 import { v4 as uuidv4 } from "uuid"
 
 const CURRENT_VERSION = 1
@@ -61,13 +61,13 @@ export function create(args: CreateArgs): Thought {
  *
  * Based on Elm's `JSON.Encode` and `JSON.Decode`.
  */
-export function encode(t: Thought): object
-export function encode(t: Thought, mode: "default"): object
-export function encode(t: Thought, mode: "legacy"): object
+export function encode(t: Thought): J.Value
+export function encode(t: Thought, mode: "default"): J.Value
+export function encode(t: Thought, mode: "legacy"): J.Value
 export function encode(
   t: Thought,
   mode: "legacy" | "default" = "default"
-): object {
+): J.Value {
   switch (mode) {
     case "legacy":
       return {
@@ -90,48 +90,49 @@ export function encode(
 /**
  * Parse and validate a `Thought` from JSON.
  *
- * All invalid input will throw an error; output will always be a valid `Distortion`.
- *
- * Based on Elm's `JSON.Encode` and `JSON.Decode`.
+ *     decoder.decodeValue(...)
  */
-export function decode(enc: any): Thought {
-  // try {
-  D.object(enc)
-  let v: unknown = enc["v"]
-  switch (v) {
-    case 1:
-      // modern thought
-      return {
-        automaticThought: D.string(enc["automaticThought"]),
-        alternativeThought: D.string(enc["alternativeThought"]),
-        cognitiveDistortions: new Set(
-          D.array(enc["cognitiveDistortions"], Distortion.decode)
-        ),
-        challenge: D.string(enc["challenge"]),
-        uuid: D.string(enc["uuid"]),
-        v,
-        createdAt: D.date(enc["createdAt"]),
-        updatedAt: D.date(enc["updatedAt"]),
-      }
-    default:
-      // legacy thought
-      return {
-        automaticThought: D.string(enc["automaticThought"]),
-        alternativeThought: D.string(enc["alternativeThought"]),
-        cognitiveDistortions: new Set(
-          D.array(enc["cognitiveDistortions"], Distortion.decode)
-        ),
-        challenge: D.string(enc["challenge"]),
-        uuid: D.string(enc["uuid"]),
-        v: CURRENT_VERSION,
-        createdAt: D.date(enc["createdAt"]),
-        updatedAt: D.date(enc["updatedAt"]),
-      }
-  }
-  // } catch (cause) {
-  // throw new Error(`couldn't decode thought`, { cause })
-  // }
-}
+export const decoder: J.Decoder<Thought> = J.number
+  .field("v")
+  .maybe()
+  .andThen((v: number | null) => {
+    switch (v) {
+      case 1:
+        return decoderV1
+      default:
+        return decoderLegacy
+    }
+  })
+
+const decoderV1: J.Decoder<Thought> = J.combine({
+  automaticThought: J.string.field("automaticThought"),
+  alternativeThought: J.string.field("alternativeThought"),
+  cognitiveDistortions: Distortion.decoder
+    .array()
+    .map((ds) => new Set(ds))
+    .field("cognitiveDistortions"),
+  challenge: J.string.field("challenge"),
+  uuid: J.string.field("uuid"),
+  v: J.number
+    .andThen((v) => (v === 1 ? J.succeed(1) : J.fail("version must be 1")))
+    .field("v") as J.Decoder<1>,
+  createdAt: J.date.field("createdAt"),
+  updatedAt: J.date.field("updatedAt"),
+})
+
+const decoderLegacy: J.Decoder<Thought> = J.combine({
+  automaticThought: J.string.field("automaticThought"),
+  alternativeThought: J.string.field("alternativeThought"),
+  cognitiveDistortions: Distortion.decoder
+    .array()
+    .map((ds) => new Set(ds))
+    .field("cognitiveDistortions"),
+  challenge: J.string.field("challenge"),
+  uuid: J.string.field("uuid"),
+  v: J.succeed(1) as J.Decoder<1>,
+  createdAt: J.date.field("createdAt"),
+  updatedAt: J.date.field("updatedAt"),
+})
 
 function toLegacyV0(t: Thought): LegacyThoughtV0 {
   return {
