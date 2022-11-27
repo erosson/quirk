@@ -34,6 +34,11 @@ export type Distortion = {
   descriptionKey?: string
 }
 
+export type DistortionData = {
+  $schema?: string
+  data: Distortion[]
+}
+
 /**
  * Unique identifier of each thought.
  *

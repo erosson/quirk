@@ -20,7 +20,8 @@ test("ajv validates some data, with a programmatic def", () => {
 })
 test("ajv validates some data, with a generated def", () => {
   // https://ajv.js.org/guide/getting-started.html
-  const ajv = new AJV.default({ schemas: [schema] })
+  // const ajv = new AJV.default({ schemas: [schema] })
+  const ajv = new AJV.default({ schemas: { "FreeCBT.schema.json": schema } })
   const validator = ajv.compile<Model.Distortion>(distortionSchema)
   verify(validator)
 })
