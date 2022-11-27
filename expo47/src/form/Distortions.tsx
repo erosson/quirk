@@ -22,7 +22,7 @@ export default (props: {
       <ScrollView>
         <View
           style={{
-            paddingBottom: 48,
+            paddingBottom: 160,
           }}
         >
           <SubHeader
