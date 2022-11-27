@@ -1418,7 +1418,7 @@
     find-up "^5.0.0"
     js-yaml "^4.1.0"
 
-"@freecbt/schema@file:./../schema":
+"@freecbt/schema@file:../schema":
   version "0.0.0"
 
 "@gar/promisify@^1.0.1":
