@@ -16,14 +16,16 @@
     "build:apk": "yarn _version && eas build -p android --profile apk",
     "build:android": "yarn _version && eas build -p android",
     "build:ios": "yarn _version && eas build -p ios",
-    "_version": "bash -c \"./scripts/version.sh > .version.js \""
+    "_version": "bash ./scripts/version.sh > .version.js && (cd ../schema && yarn && yarn build)"
   },
   "dependencies": {
     "@erosson/json-encode-decode": "erosson/json-encode-decode#944921f",
+    "@freecbt/schema": "file:./../schema",
     "@react-native-async-storage/async-storage": "^1.17.11",
     "@react-native-picker/picker": "^2.4.8",
     "@react-navigation/native": "^6.0.13",
     "@react-navigation/native-stack": "^6.9.1",
+    "ajv": "^8.11.2",
     "expo": "~47.0.6",
     "expo-haptics": "^12.0.1",
     "expo-linking": "^3.2.3",
