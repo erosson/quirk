@@ -15,6 +15,5 @@ jobs:
         with:
           node-version: 16.x
       - run: yarn --dev --frozen-lockfile
-        working-directory: expo47
       - run: yarn test
         working-directory: expo47
