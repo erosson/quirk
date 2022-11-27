@@ -4,6 +4,7 @@
   "main": "src/freecbt.schema.ts",
   "private": "true",
   "scripts": {
+    "postinstall": "yarn build",
     "start": "chokidar \"src/**/*.schema.ts\" -c \"yarn build\"",
     "build": "ts-node src/build.ts",
     "_build": "ts-json-schema-generator --path \"\" --id \"\" --out dist/FreeCBT.schema.json",
