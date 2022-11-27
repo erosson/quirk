@@ -8,9 +8,7 @@ import { Screen, ScreenProps } from "../screens"
 import { KeyValuePair } from "@react-native-async-storage/async-storage/lib/typescript/types"
 import * as Thought from "../thoughts"
 import * as ThoughtStore from "../thoughtstore"
-import version from "../../.version"
-// TODO json imports seem to be broken
-// import versionJson from "../.version.json"
+import version from "@freecbt/schema/dist/version.json"
 
 type Props = ScreenProps<Screen.DEBUG>
 

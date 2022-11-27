@@ -5,7 +5,9 @@
   "private": "true",
   "scripts": {
     "start": "chokidar \"src/**/*.schema.ts\" -c \"yarn build\"",
-    "build": "ts-node src/build.ts",
+    "build": "yarn build:schema && yarn build:version",
+    "build:version": "bash ./scripts/version.sh > dist/version.json",
+    "build:schema": "ts-node src/build.ts",
     "_build": "ts-json-schema-generator --path \"\" --id \"\" --out dist/FreeCBT.schema.json",
     "_build2": "typescript-json-schema \"src/**/*.schema.ts\" \"*\" --out dist/freecbt2.schema.json --required"
   },
