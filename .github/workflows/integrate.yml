@@ -2,19 +2,19 @@ name: Continuous Integration
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
-      with:
-        node-version: 16.x
-    - run: yarn --dev --frozen-lockfile
-      working-directory: expo47
-    - run: yarn test
-      working-directory: expo47
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+      - run: yarn --dev --frozen-lockfile
+        working-directory: expo47
+      - run: yarn test
+        working-directory: expo47
