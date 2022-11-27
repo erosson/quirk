@@ -1092,9 +1092,9 @@
   dependencies:
     "@types/hammerjs" "^2.0.36"
 
-"@erosson/json-encode-decode@erosson/json-encode-decode#95e83b8":
+"@erosson/json-encode-decode@erosson/json-encode-decode#944921f":
   version "1.0.0"
-  resolved "https://codeload.github.com/erosson/json-encode-decode/tar.gz/95e83b89c604c43ae123e062c13103cfec9f0814"
+  resolved "https://codeload.github.com/erosson/json-encode-decode/tar.gz/944921f712ee86c6a67f07b8e8e6237f53367d82"
 
 "@expo/bunyan@4.0.0", "@expo/bunyan@^4.0.0":
   version "4.0.0"
