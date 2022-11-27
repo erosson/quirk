@@ -1,0 +1,20 @@
+{
+  "name": "@freecbt/schema",
+  "version": "0.0.0",
+  "main": "src/freecbt.schema.ts",
+  "private": "true",
+  "scripts": {
+    "start": "chokidar \"src/**/*.schema.ts\" -c \"yarn build\"",
+    "build": "ts-node src/build.ts",
+    "_build": "ts-json-schema-generator --path \"\" --id \"\" --out dist/FreeCBT.schema.json",
+    "_build2": "typescript-json-schema \"src/**/*.schema.ts\" \"*\" --out dist/freecbt2.schema.json --required"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.190",
+    "chokidar-cli": "^3.0.0",
+    "lodash": "^4.17.21",
+    "ts-json-schema-generator": "^1.1.2",
+    "ts-node": "^10.9.1",
+    "typescript-json-schema": "^0.55.0"
+  }
+}
