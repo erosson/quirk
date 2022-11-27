@@ -1,5 +1,6 @@
 {
     "scripts": {
+        "install": "bash -c \"(cd schema && yarn install --frozen-lockfile && yarn build) && (cd expo47 && yarn install --frozen-lockfile)\"",
         "start": "cd expo47 && yarn start",
         "build": "cd expo47 && yarn build",
         "test": "cd expo47 && yarn test"
