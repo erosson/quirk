@@ -11,9 +11,11 @@ async function write(key: string, body: any) {
 }
 
 async function main() {
+  const idHost = "https://freecbt.erosson.org/"
+  const idPath = "FreeCBT.schema.json"
   const config: TSJ.Config = {
     path: "src/**/*.schema.ts",
-    schemaId: "https://freecbt.erosson.org/FreeCBT.schema.json",
+    schemaId: `${idHost}${idPath}`,
     type: "*",
   }
   const schema = TSJ.createGenerator(config).createSchema(config.type)
@@ -26,7 +28,7 @@ async function main() {
   const result = await Promise.all([
     write(`FreeCBT`, schema),
     ...Object.keys(schema.definitions ?? {}).map((key) =>
-      write(key, { $ref: `${schema.$id}#/definitions/${key}` })
+      write(key, { $ref: `${idPath}#/definitions/${key}` })
     ),
   ])
   console.log(result)

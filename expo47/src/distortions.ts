@@ -2,14 +2,46 @@ import i18n from "./i18n"
 import { Platform } from "react-native"
 import * as _ from "lodash"
 import * as J from "@erosson/json-encode-decode"
+import { data } from "./data/distortions.json"
+import * as Schema from "@freecbt/schema"
 
 type DistortionID = string
 
-export type Distortion = {
-  emoji: () => string
-  label: () => string
-  slug: string
-  description: () => string
+export class Distortion {
+  constructor(public data: Schema.Distortion) {}
+
+  get slug(): string {
+    return this.data.slug
+  }
+  get labelKey(): string {
+    return this.data.labelKey ?? _.snakeCase(this.slug)
+  }
+  get descriptionKey(): string {
+    return this.data.descriptionKey ?? `${_.snakeCase(this.slug)}_one_liner`
+  }
+  label(): string {
+    return i18n.t(this.labelKey)
+  }
+  description(): string {
+    return i18n.t(this.descriptionKey)
+  }
+  emoji(): string {
+    const [first, fallback] = this.data.emoji
+    if (fallback == null) {
+      return first
+    }
+    // I'm not saying iOS is better, but wider support for emojis is reaaallll nice
+    if (Platform.OS === "ios") {
+      return first
+    }
+
+    // update your phones people
+    if ((Platform.Version as number) <= 23) {
+      return fallback
+    }
+
+    return first
+  }
 }
 export type T = Distortion
 
@@ -63,98 +95,7 @@ export function toLegacyV0(d: Distortion): LegacyDistortionV0 {
   }
 }
 
-const emj = (first: string, fallback: string) => {
-  // I'm not saying iOS is better, but wider support for emojis is reaaallll nice
-  if (Platform.OS === "ios") {
-    return first
-  }
-
-  // update your phones people
-  if ((Platform.Version as number) <= 23) {
-    return fallback
-  }
-
-  return first
-}
-
-export const list: Distortion[] = [
-  {
-    slug: "all-or-nothing",
-    emoji: () => "🌓",
-    label: () => i18n.t("all_or_nothing_thinking"),
-    description: () => i18n.t("all_or_nothing_thinking_one_liner"),
-  },
-  {
-    slug: "overgeneralization",
-    emoji: () => "👯‍",
-    label: () => i18n.t("over_generalization"),
-    description: () => i18n.t("overgeneralization_one_liner"),
-  },
-  {
-    slug: "mind-reading",
-    emoji: () => emj("🧠", "💭"),
-    label: () => i18n.t("mind_reading"),
-    description: () => i18n.t("mind_reading_one_liner"),
-  },
-  {
-    slug: "fortune-telling",
-    emoji: () => "🔮",
-    label: () => i18n.t("fortune_telling"),
-    description: () => i18n.t("fortune_telling_one_liner"),
-  },
-  {
-    slug: "magnification-of-the-negative",
-    emoji: () => "👎",
-    label: () => i18n.t("magnification_of_the_negative"),
-    description: () => i18n.t("magnification_of_the_negative_one_liner"),
-  },
-  {
-    slug: "minimization-of-the-positive",
-    emoji: () => "👍",
-    label: () => i18n.t("minimization_of_the_positive"),
-    description: () => i18n.t("minimization_of_the_positive_one_liner"),
-  },
-  {
-    slug: "catastrophizing",
-    emoji: () => emj("🤯", "💥"),
-    label: () => i18n.t("catastrophizing"),
-    description: () => i18n.t("catastrophizing_one_liner"),
-  },
-  {
-    slug: "emotional-reasoning",
-    emoji: () => "🎭",
-    label: () => i18n.t("emotional_reasoning"),
-    description: () => i18n.t("emotional_reasoning_one_liner"),
-  },
-  {
-    slug: "should-statements",
-    emoji: () => "✨",
-    label: () => i18n.t("should_statements"),
-    description: () => i18n.t("should_statements_one_liner"),
-  },
-  {
-    slug: "labeling",
-    // ya know, because onigiri has like a little seaweed label.
-    // Trust me it makese sense
-    emoji: () => emj("🏷", "🍙"),
-    label: () => i18n.t("labeling"),
-    description: () => i18n.t("labeling_one_liner"),
-  },
-  {
-    slug: "self-blaming",
-    // look man don't ask me why it's a no-pedestrian as a fallback
-    // update your phones people
-    emoji: () => emj("👁", "🚷"),
-    label: () => i18n.t("self_blaming"),
-    description: () => i18n.t("self_blaming_one_liner"),
-  },
-  {
-    slug: "other-blaming",
-    emoji: () => emj("🧛‍", "👺"),
-    label: () => i18n.t("other_blaming"),
-    description: () => i18n.t("other_blaming_one_liner"),
-  },
-]
+export const list: Distortion[] = data.map((d) => new Distortion(d))
 export function sortedList(): Distortion[] {
   return _.sortBy(list, (d) => d.label().toUpperCase())
 }
