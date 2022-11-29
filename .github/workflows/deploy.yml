@@ -22,4 +22,6 @@ jobs:
           expo-password: ${{ secrets.EXPO_CLI_PASSWORD }}
       - run: yarn --dev --frozen-lockfile
       - run: yarn test
+        working-directory: expo47
       - run: yarn deploy # `expo publish` plus some prepublish chores
+        working-directory: expo47
