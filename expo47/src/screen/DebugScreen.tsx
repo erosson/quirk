@@ -138,8 +138,9 @@ export default function DebugScreen(props: Props): JSX.Element {
     ],
     ...(dump ? withDefault(storage, []) : []).map(
       ([key, val]: KeyValuePair): [string, string] => [
-        key,
-        `AsyncStorage["${key}"]: \n${val ?? ""}`,
+        "key",
+        // `AsyncStorage["${key}"]: \n${val ?? ""}`,
+        `${val ?? ""}`,
       ]
     ),
   ]
