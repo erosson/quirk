@@ -1,5 +1,13 @@
 import React from "react"
-import { ScrollView, View, Text, Switch, Platform, Button } from "react-native"
+import {
+  ScrollView,
+  View,
+  Text,
+  Switch,
+  Platform,
+  Button,
+  Alert,
+} from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import Constants from "expo-constants"
 import * as Feature from "../feature"
@@ -89,6 +97,19 @@ const constItems: [string, string | JSX.Element][] = [
   [
     "Test: create an invalid thought",
     <Button title="Invalid" onPress={() => writeThoughts.invalid()} />,
+  ],
+  [
+    "Delete all user data",
+    <Button
+      title="Delete"
+      onPress={() =>
+        Alert.alert(
+          "Delete all user data?",
+          "There is no undo. Are you sure you want to delete all AsyncStorage data?",
+          [{ text: "Yes", onPress: () => AsyncStorage.clear() }, { text: "No" }]
+        )
+      }
+    />,
   ],
 ]
 export default function DebugScreen(props: Props): JSX.Element {
