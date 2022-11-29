@@ -256,45 +256,54 @@ export default function SettingScreen(props: Props): JSX.Element {
                 >
                   {i18n.t("settings.pincode.description")}
                 </Paragraph>
-                {hasPincode_ ? (
-                  <>
-                    <ActionButton
-                      flex={1}
-                      title={i18n.t("settings.pincode.button.update")}
-                      width={"100%"}
-                      fillColor="#EDF0FC"
-                      textColor={theme.darkBlue}
-                      onPress={() => {
-                        props.navigation.push(Screen.LOCK, {
-                          isSettingCode: true,
-                        })
-                      }}
-                    />
-                    <ActionButton
-                      flex={1}
-                      title={i18n.t("settings.pincode.button.clear")}
-                      width={"100%"}
-                      fillColor="#EDF0FC"
-                      textColor={theme.darkBlue}
-                      onPress={async () => {
-                        await clearPincode()
-                        setRefresh(refresh + 1)
-                      }}
-                    />
-                  </>
-                ) : (
-                  <ActionButton
-                    flex={1}
-                    title={i18n.t("settings.pincode.button.set")}
-                    width={"100%"}
-                    fillColor="#EDF0FC"
-                    textColor={theme.darkBlue}
-                    onPress={() => {
-                      props.navigation.push(Screen.LOCK, {
-                        isSettingCode: true,
-                      })
-                    }}
-                  />
+                {AsyncState.fold(
+                  hasPincode_,
+                  () => null,
+                  () => null,
+                  (error) => (
+                    <Text>{error}</Text>
+                  ),
+                  (show) =>
+                    show ? (
+                      <>
+                        <ActionButton
+                          flex={1}
+                          title={i18n.t("settings.pincode.button.update")}
+                          width={"100%"}
+                          fillColor="#EDF0FC"
+                          textColor={theme.darkBlue}
+                          onPress={() => {
+                            props.navigation.push(Screen.LOCK, {
+                              isSettingCode: true,
+                            })
+                          }}
+                        />
+                        <ActionButton
+                          flex={1}
+                          title={i18n.t("settings.pincode.button.clear")}
+                          width={"100%"}
+                          fillColor="#EDF0FC"
+                          textColor={theme.darkBlue}
+                          onPress={async () => {
+                            await clearPincode()
+                            setRefresh(refresh + 1)
+                          }}
+                        />
+                      </>
+                    ) : (
+                      <ActionButton
+                        flex={1}
+                        title={i18n.t("settings.pincode.button.set")}
+                        width={"100%"}
+                        fillColor="#EDF0FC"
+                        textColor={theme.darkBlue}
+                        onPress={() => {
+                          props.navigation.push(Screen.LOCK, {
+                            isSettingCode: true,
+                          })
+                        }}
+                      />
+                    )
                 )}
               </Row>
 
