@@ -31,7 +31,7 @@
     "@erosson/json-encode-decode": "erosson/json-encode-decode#944921f",
     "@freecbt/schema": "file:../schema",
     "@react-native-picker/picker": "^2.4.8",
-    "@react-navigation/native": "^6.0.13",
+    "@react-navigation/native": "^6.0.16",
     "@react-navigation/native-stack": "^6.9.1",
     "ajv": "^8.11.2",
     "expo": "~47.0.6",
