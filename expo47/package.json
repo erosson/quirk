@@ -33,7 +33,7 @@
     "@react-native-picker/picker": "^2.4.8",
     "@react-navigation/native": "^6.0.13",
     "@react-navigation/native-stack": "^6.9.1",
-    "expo": "~47.0.6",
+    "expo": "~48.0.15",
     "expo-clipboard": "^4.0.1",
     "expo-document-picker": "^11.0.1",
     "expo-file-system": "^15.1.1",
