@@ -18,6 +18,7 @@ import ptBR from "./locals/pt-br.json"
 import nb from "./locals/nb.json"
 import sv from "./locals/sv.json"
 import ro from "./locals/ro.json"
+import fa from ".locals/fa.json"
 
 function walkReverse(obj: object): object | string {
   return Object.fromEntries(
@@ -47,6 +48,7 @@ const i18n = new I18n({
   nb,
   sv,
   ro,
+  fa,
   // testing with an obviously-transformed language makes it easy to find and
   // remove hardcoded strings. Hidden behind `feature.testLocalesVisible`.
   _test: walkReverse(en),
