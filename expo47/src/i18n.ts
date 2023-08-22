@@ -18,7 +18,7 @@ import ptBR from "./locals/pt-br.json"
 import nb from "./locals/nb.json"
 import sv from "./locals/sv.json"
 import ro from "./locals/ro.json"
-import fa from ".locals/fa.json"
+import fa from "./locals/fa.json"
 
 function walkReverse(obj: object): object | string {
   return Object.fromEntries(
