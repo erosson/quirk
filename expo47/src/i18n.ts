@@ -2,7 +2,7 @@ import * as Localization from "expo-localization"
 import { getSetting } from "./setting/settingstore"
 import { LOCALE_KEY } from "./setting"
 import { I18n } from "i18n-js"
-import bg from './locals/bg.json'
+import bg from "./locals/bg.json"
 import en from "./locals/en.json"
 import it from "./locals/it.json"
 import fr from "./locals/fr.json"
